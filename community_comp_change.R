@@ -18,4 +18,6 @@ abundance_df <- read.csv("occurance2017-2023.csv")
 #test model 
 hist(abundance_df$occurrenceCount)
 
-lmer(occurrenceCount ~ Year * treatment + originSite +(1||Species))
+test <- lmer(occurrenceCount ~ year * treatment + originSite +(1|species),
+     data = abundance_df)
+summary(test)
