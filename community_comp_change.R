@@ -61,4 +61,30 @@ plot(re.effects)
 #calculate diversity metrics for each site and treatment using vegan 
 
 #reformat data
-pivot_wider(abundance_df1)
+comm_matrix <- pivot_wider(abundance_df1, names_from = species, values_from = occurrenceCount)
+
+#remove extra columns 
+comm_matrix = subset(comm_matrix, select = -c(turfID, originSite, destinationSite,
+                                              originPlotID, treatment, date_yyyymmdd, functionalGroup, unknownMorpho, percentCover) )
+
+#add column for year and treatment
+comm_matrix$tx_year = NA
+comm_matrix$tx_year <- paste(comm_matrix$treatmentOriginGroup, "_",comm_matrix$year)
+comm_matrix <- comm_matrix %>% relocate(tx_year)
+comm_matrix = subset(comm_matrix, select = -c(year, treatmentOriginGroup) )
+
+#replace NAs with 0s
+comm_matrix[is.na(comm_matrix)] <- 0
+
+#switch plot IDs to row names
+comm_matrix1 <- comm_matrix %>%
+  group_by(tx_year) %>%
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = TRUE
+  )
+
+
+#calculate diversity
+diversity(comm_matrix1, index = "shannon", groups, equalize.groups = FALSE, MARGIN = 1, base = exp(1))
