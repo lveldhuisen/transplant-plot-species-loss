@@ -7,6 +7,7 @@ install.packages("performance") #model diagnostics
 install.packages("ggeffects") #easy prediction & comparison
 install.packages("sjPlot") #visualize random effects
 install.packages("vegan") #community diversity
+install.packages("stringr") #to remove spaces
 
 library(tidyverse)
 library(lme4)
@@ -15,6 +16,8 @@ library(performance)
 library(ggeffects)
 library(sjPlot)
 library(vegan)
+library(stringr)
+library(dplyr)
 
 #bring in data
 abundance_df <- read.csv("occurance2017-2023.csv")
@@ -76,6 +79,9 @@ comm_matrix = subset(comm_matrix, select = -c(year, treatmentOriginGroup) )
 #replace NAs with 0s
 comm_matrix[is.na(comm_matrix)] <- 0
 
+#remove other additional columns
+comm_matrix = subset(comm_matrix, select = -c(X, X.1) )
+
 #switch plot IDs to row names
 comm_matrix1 <- comm_matrix %>%
   group_by(tx_year) %>%
@@ -84,7 +90,17 @@ comm_matrix1 <- comm_matrix %>%
     sum,
     na.rm = TRUE
   )
+comm_matrix1 <- comm_matrix1 %>% column_to_rownames(var = "tx_year")
 
 
 #calculate diversity
-diversity(comm_matrix1, index = "shannon", groups, equalize.groups = FALSE, MARGIN = 1, base = exp(1))
+shannon <- diversity(comm_matrix1, index = "shannon")
+shannon_df <- as.data.frame(shannon)
+shannon_df$tx_year <- row.names(shannon_df)
+
+
+ggplot(data = shannon_df, aes(x=tx_year, y=shannon))+
+  geom_boxplot()+
+  facet_wrap(~. )
+
+             
