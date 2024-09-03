@@ -58,4 +58,7 @@ summary(model1)
 (re.effects <- plot_model(model1, type = "re", show.values = TRUE))
 plot(re.effects)
 
- 
+#calculate diversity metrics for each site and treatment using vegan 
+
+#reformat data
+pivot_wider(abundance_df1)
