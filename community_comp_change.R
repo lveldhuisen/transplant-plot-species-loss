@@ -24,13 +24,13 @@ abundance_df <- read.csv("occurance2017-2023.csv")
 abundance_df$year <- as.factor(abundance_df$year)
 
 #use only these years
-ins <- c("2018","2023")
+ins <- c("2018","2019","2021","2022","2023")
 
 #get rid of extra control plots
-outs <- c("untouched","within site transplant")
+outs <- c("untouched","within_site_transplant")
 
 # remove non-species from species column
-gc.outs <- c("litter", "bare soil", "rock")
+gc.outs <- c("litter", "bare_soil", "rock")
 
 #remove block 6 plots since they were transplanted in 2018
 block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
@@ -39,36 +39,15 @@ block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
 
 #filter data for things you never want
 abundance_df1 <- abundance_df %>% filter(!is.na(treatment),
-                                         !species %in% gc.outs)
-abundance_df1 <- abundance_df1 %>% filter(!originPlotID %in% block.outs)
+                                         !species %in% gc.outs,
+                                         !originPlotID %in% block.outs,
+                                         year %in% ins)
 
-#reorder treatments
-abundance_df1$treatment <- relevel(factor(abundance_df1$treatment),
-                                   ref = "netted_untouched")
-#test model 
-hist(abundance_df$occurrenceCount)
-
-#set up sum to zero contrast
-abundance_df$originSite <- as.factor(abundance_df1$originSite)
-contrasts(abundance_df1$originSite) <- contr.sum(length(levels(abundance_df1$originSite)))
-
-#model
-model1 <- lmer(log1p(occurrenceCount) ~ year + treatment + originSite + 
-                 (treatment|species), 
-               data = abundance_df1 %>% filter(year %in% ins & 
-                                                 !treatment %in% outs))
-
-#check model diagnostics before you look at summary. Is this model fucked?
-check_model(model1)
-
-#see model summary
-summary(model1)
-
-#visualize random effects 
-(re.effects <- plot_model(model1, type = "re", show.values = TRUE))
-plot(re.effects)
 
 #calculate diversity metrics for each site and treatment using vegan 
+
+#slice to only use one plot per treatment per year to compare to 2017 data
+
 
 #reformat data
 comm_matrix <- pivot_wider(abundance_df1, names_from = species, values_from = occurrenceCount)
@@ -98,7 +77,6 @@ comm_matrix1 <- comm_matrix %>%
     na.rm = TRUE
   )
 comm_matrix1 <- comm_matrix1 %>% column_to_rownames(var = "tx_year")
-
 
 #calculate shannon diversity
 shannon <- diversity(comm_matrix1, index = "shannon")
