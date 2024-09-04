@@ -28,16 +28,23 @@ ins <- c("2018","2023")
 
 #get rid of extra control plots
 outs <- c("untouched","within site transplant")
+
 # remove non-species from species column
 gc.outs <- c("litter", "bare soil", "rock")
+
+#remove block 6 plots since they were transplanted in 2018
+block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
+                "pf6-2", "pf6-3","pf6-4", "um6-1", "um6-2","um6-3","um6-4",
+                "um6-5","um6-6")
 
 #filter data for things you never want
 abundance_df1 <- abundance_df %>% filter(!is.na(treatment),
                                          !species %in% gc.outs)
-#reorder treatments
+abundance_df1 <- abundance_df1 %>% filter(!originPlotID %in% block.outs)
 
+#reorder treatments
 abundance_df1$treatment <- relevel(factor(abundance_df1$treatment),
-                                   ref = "netted untouched")
+                                   ref = "netted_untouched")
 #test model 
 hist(abundance_df$occurrenceCount)
 
@@ -93,14 +100,37 @@ comm_matrix1 <- comm_matrix %>%
 comm_matrix1 <- comm_matrix1 %>% column_to_rownames(var = "tx_year")
 
 
-#calculate diversity
+#calculate shannon diversity
 shannon <- diversity(comm_matrix1, index = "shannon")
+
+#make dataframe and reformat to use for plot
 shannon_df <- as.data.frame(shannon)
 shannon_df$tx_year <- row.names(shannon_df)
 
+shannon_df <- shannon_df %>%
+  separate(col = tx_year, into = c("tx_site", "year"), sep = " _ ")
 
-ggplot(data = shannon_df, aes(x=tx_year, y=shannon))+
+#plot
+shannon_fig <- ggplot(data = shannon_df, aes(x=year, y=shannon))+
   geom_boxplot()+
-  facet_wrap(~. )
+  facet_wrap(.~ tx_site)+
+    theme_bw()
+plot(shannon_fig)
 
+#calculate simpson's diversity 
+simpson <- diversity(comm_matrix1, index = "simpson")
+
+#make dataframe and reformat to use for plot
+simpson_df <- as.data.frame(simpson)
+simpson_df$tx_year <- row.names(simpson_df)
+
+simpson_df <- simpson_df %>%
+  separate(col = tx_year, into = c("tx_site", "year"), sep = " _ ")
+
+#plot
+simpson_fig <- ggplot(data = simpson_df, aes(x=year, y=simpson))+
+  geom_boxplot()+
+  facet_wrap(.~ tx_site)+
+  theme_bw()
+plot(simpson_fig)
              
