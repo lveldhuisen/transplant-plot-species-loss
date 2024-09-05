@@ -50,11 +50,14 @@ abundance_df1 <- abundance_df %>% filter(!is.na(treatment),
 
 
 #reformat data
-comm_matrix <- pivot_wider(abundance_df1, names_from = species, values_from = occurrenceCount)
+comm_matrix <- pivot_wider(abundance_df1, names_from = species, 
+                           values_from = occurrenceCount)
 
 #remove extra columns 
 comm_matrix = subset(comm_matrix, select = -c(turfID, originSite, destinationSite,
-                                              originPlotID, treatment, date_yyyymmdd, functionalGroup, unknownMorpho, percentCover) )
+                                              treatment, date_yyyymmdd, 
+                                              functionalGroup, unknownMorpho, 
+                                              percentCover) )
 
 #add column for year and treatment
 comm_matrix$tx_year = NA
@@ -62,8 +65,16 @@ comm_matrix$tx_year <- paste(comm_matrix$treatmentOriginGroup, "_",comm_matrix$y
 comm_matrix <- comm_matrix %>% relocate(tx_year)
 comm_matrix = subset(comm_matrix, select = -c(year, treatmentOriginGroup) )
 
+#make matrix with plot IDs
+comm_matrix$ID = NA
+comm_matrix$ID <- paste(comm_matrix$treatmentOriginGroup, "_",comm_matrix$year, 
+                        "_", comm_matrix$originPlotID)
+comm_matrixID <- comm_matrix %>% relocate(ID)
+comm_matrixID = subset(comm_matrixID, select = -c(year, treatmentOriginGroup) )
+comm_matrixID = subset(comm_matrixID, select = -c(X, X.1) )
+
 #replace NAs with 0s
-comm_matrix[is.na(comm_matrix)] <- 0
+comm_matrixID[is.na(comm_matrixID)] <- 0
 
 #remove other additional columns
 comm_matrix = subset(comm_matrix, select = -c(X, X.1) )
@@ -78,8 +89,18 @@ comm_matrix1 <- comm_matrix %>%
   )
 comm_matrix1 <- comm_matrix1 %>% column_to_rownames(var = "tx_year")
 
+#switch plot IDs to row names for the matrix including plot IDs
+comm_matrixID <- comm_matrixID %>%
+  group_by(ID) %>%
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = TRUE
+  )
+comm_matrixID <- comm_matrixID %>% column_to_rownames(var = "ID")
+
 #calculate shannon diversity
-shannon <- diversity(comm_matrix1, index = "shannon")
+shannon_plots <- diversity(comm_matrixID, index = "shannon")
 
 #make dataframe and reformat to use for plot
 shannon_df <- as.data.frame(shannon)
@@ -88,12 +109,26 @@ shannon_df$tx_year <- row.names(shannon_df)
 shannon_df <- shannon_df %>%
   separate(col = tx_year, into = c("tx_site", "year"), sep = " _ ")
 
+#make dataframe including plot numbers and reformat to use for plot
+shannon_df_plotID <- as.data.frame(shannon_plots)
+shannon_df_plotID$ID <- row.names(shannon_df_plotID)
+
+shannon_df_plotID <- shannon_df_plotID %>%
+  separate(col = ID, into = c("tx_site", "year", "plotID"), sep = " _ ")
+
 #plot
 shannon_fig <- ggplot(data = shannon_df, aes(x=year, y=shannon))+
   geom_boxplot()+
   facet_wrap(.~ tx_site)+
     theme_bw()
 plot(shannon_fig)
+
+#plot including variation between plots of same tx
+shannon_fig_plots <- ggplot(data = shannon_df_plotID, aes(x=year, y=shannon))+
+  geom_boxplot()+
+  facet_wrap(.~ tx_site)+
+  theme_bw()
+plot(shannon_fig_plots)
 
 #calculate simpson's diversity 
 simpson <- diversity(comm_matrix1, index = "simpson")

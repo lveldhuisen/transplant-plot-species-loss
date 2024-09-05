@@ -41,7 +41,7 @@ abundance_df1$treatment <- relevel(factor(abundance_df1$treatment),
 hist(abundance_df$occurrenceCount)
 
 #set up sum to zero contrast
-abundance_df$originSite <- as.factor(abundance_df1$originSite)
+abundance_df1$originSite <- as.factor(abundance_df1$originSite)
 contrasts(abundance_df1$originSite) <- contr.sum(length(levels(abundance_df1$originSite)))
 
 #model
@@ -58,4 +58,5 @@ summary(model1)
 
 #visualize random effects 
 (re.effects <- plot_model(model1, type = "re", show.values = TRUE))
+
 plot(re.effects)
