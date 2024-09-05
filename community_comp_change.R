@@ -67,8 +67,8 @@ comm_matrix = subset(comm_matrix, select = -c(year, treatmentOriginGroup) )
 
 #make matrix with plot IDs
 comm_matrix$ID = NA
-comm_matrix$ID <- paste(comm_matrix$treatmentOriginGroup, "_",comm_matrix$year, 
-                        "_", comm_matrix$originPlotID)
+comm_matrix$ID <- paste(comm_matrix$treatmentOriginGroup, "_",comm_matrix$year, "_",
+                        comm_matrix$originPlotID)
 comm_matrixID <- comm_matrix %>% relocate(ID)
 comm_matrixID = subset(comm_matrixID, select = -c(year, treatmentOriginGroup) )
 comm_matrixID = subset(comm_matrixID, select = -c(X, X.1) )
@@ -100,7 +100,8 @@ comm_matrixID <- comm_matrixID %>%
 comm_matrixID <- comm_matrixID %>% column_to_rownames(var = "ID")
 
 #calculate shannon diversity
-shannon_plots <- diversity(comm_matrixID, index = "shannon")
+shannon <- diversity(comm_matrix1, index = "shannon")
+shannon_plots <- diversity(comm_matrixID, groups = , index = "shannon")
 
 #make dataframe and reformat to use for plot
 shannon_df <- as.data.frame(shannon)
@@ -124,7 +125,7 @@ shannon_fig <- ggplot(data = shannon_df, aes(x=year, y=shannon))+
 plot(shannon_fig)
 
 #plot including variation between plots of same tx
-shannon_fig_plots <- ggplot(data = shannon_df_plotID, aes(x=year, y=shannon))+
+shannon_fig_plots <- ggplot(data = shannon_df_plotID, aes(x=year, y=shannon_plots))+
   geom_boxplot()+
   facet_wrap(.~ tx_site)+
   theme_bw()
