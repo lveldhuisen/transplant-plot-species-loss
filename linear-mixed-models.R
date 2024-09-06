@@ -49,11 +49,6 @@ model1 <- lmer(log1p(occurrenceCount) ~ year + treatment + originSite +
                  (treatment|species), 
                data = abundance_df1 %>% filter(year %in% ins & 
                                                  !treatment %in% outs))
-#model for shannon diversity
-model2 <- lmer(shannon_plots ~ year + treatment + originSite + (1|replicates),
-               data = h_dat)
-
-check_model(model2)
 
 #check model diagnostics before you look at summary. Is this model fucked?
 check_model(model1)
@@ -65,3 +60,39 @@ summary(model1)
 (re.effects <- plot_model(model1, type = "re", show.values = TRUE))
 
 plot(re.effects)
+
+#model for shannon diversity
+
+#reorder treatments
+h_dat$treatment <- relevel(factor(h_dat$treatment),
+                                   ref = "netted_untouched")
+
+#model
+model2 <- lmer(shannon_plots ~ year + treatment + originSite + (1|replicates),
+               data = h_dat)
+
+check_model(model2)
+summary(model2)
+
+#save model2 output 
+saveRDS(model2, file = "ModelOutput/Shannon_LMM.RDS")
+
+#make figure 
+shannon_output <- readRDS("ModelOutput/Shannon_LMM.RDS")
+
+test <- ggpredict(shannon_output, terms = c("year", "treatment"))
+
+test2 <- ggemmeans(shannon_output, terms = c("year", "treatment"))
+
+test3 <- ggaverage(shannon_output, terms = c("year", "treatment"))
+
+
+#test predictions
+comparisons <- 
+
+test4 <- test_predictions(shannon_output, terms = c("year","treatment"), 
+                          test = "(2018-2023) = (2021-2023") #need to fix
+
+
+
+#ggeffects 

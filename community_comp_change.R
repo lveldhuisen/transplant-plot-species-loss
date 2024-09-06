@@ -151,7 +151,7 @@ shannon_df_plotID <- shannon_df_plotID %>%
 ###figure including variation between plots of same tx#######
 shannon_fig_plots <- ggplot(data = shannon_df_plotID, aes(x=year, y=shannon_plots))+
   geom_boxplot()+
-  facet_wrap(.~ site_tx)+
+  facet_wrap(.~ treatmentOriginGroup)+
   theme_bw()
 plot(shannon_fig_plots)
 
