@@ -29,6 +29,7 @@ ins <- c("2018","2019","2021","2022","2023")
 
 #get rid of extra control plots
 outs <- c("untouched","within_site_transplant")
+ins_controlonly <- c("netted_untouched","within_site_transplant","untouched" )
 
 # remove non-species from species column
 gc.outs <- c("litter", "bare_soil", "rock")
@@ -42,11 +43,20 @@ block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
 abundance_df1 <- abundance_df %>% filter(!is.na(treatment),
                                          !species %in% gc.outs,
                                          !originPlotID %in% block.outs,
+                                         !treatment %in% outs,
+                                         year %in% ins)
+
+#filter data for dataframe with control plots only
+abundance_df_controlonly <- abundance_df %>% filter(!is.na(treatment),
+                                         !species %in% gc.outs,
+                                         !originPlotID %in% block.outs,
+                                         treatment %in% ins_controlonly,
                                          year %in% ins)
 
 
 #calculate diversity metrics for each site and treatment using vegan------------ 
 
+##Shannon pooling all plots per treatment#######
 #reformat data
 comm_matrix <- pivot_wider(abundance_df1, names_from = species, 
                            values_from = occurrenceCount)
@@ -63,20 +73,6 @@ comm_matrix$tx_year <- paste(comm_matrix$treatmentOriginGroup, "_",comm_matrix$y
 comm_matrix <- comm_matrix %>% relocate(tx_year)
 comm_matrix = subset(comm_matrix, select = -c(year, treatmentOriginGroup) )
 
-#make matrix with plot IDs
-comm_matrix$ID = NA
-comm_matrix$ID <- paste(comm_matrix$treatmentOriginGroup, "_",comm_matrix$year, "_",
-                        comm_matrix$originPlotID)
-comm_matrixID <- comm_matrix %>% relocate(ID)
-comm_matrixID = subset(comm_matrixID, select = -c(year, treatmentOriginGroup) )
-comm_matrixID = subset(comm_matrixID, select = -c(X, X.1) )
-
-#replace NAs with 0s
-comm_matrixID[is.na(comm_matrixID)] <- 0
-
-#remove other additional columns
-comm_matrix = subset(comm_matrix, select = -c(X, X.1) )
-
 #switch plot IDs to row names
 comm_matrix1 <- comm_matrix %>%
   group_by(tx_year) %>%
@@ -86,16 +82,6 @@ comm_matrix1 <- comm_matrix %>%
     na.rm = TRUE
   )
 comm_matrix1 <- comm_matrix1 %>% column_to_rownames(var = "tx_year")
-
-#switch plot IDs to row names for the matrix including plot IDs
-comm_matrixID <- comm_matrixID %>%
-  group_by(ID) %>%
-  summarise_if(
-    is.numeric,
-    sum,
-    na.rm = TRUE
-  )
-comm_matrixID <- comm_matrixID %>% column_to_rownames(var = "ID")
 
 #calculate shannon diversity
 shannon <- diversity(comm_matrix1, index = "shannon")
@@ -108,6 +94,35 @@ shannon_df$tx_year <- row.names(shannon_df)
 shannon_df <- shannon_df %>%
   separate(col = tx_year, into = c("tx_site", "year"), sep = " _ ")
 
+###figure for all plots combined (higher diversity)######
+shannon_fig <- ggplot(data = shannon_df, aes(x=year, y=shannon))+
+  geom_boxplot()+
+  facet_wrap(.~ tx_site)+
+  theme_bw()
+plot(shannon_fig)
+
+
+##Shannon for each individual plot and averaging by origin site and treatment###
+#make matrix with plot IDs
+comm_matrix$ID = NA
+comm_matrix$ID <- paste(comm_matrix$treatmentOriginGroup, "_",comm_matrix$year, "_",
+                        comm_matrix$originPlotID)
+comm_matrixID <- comm_matrix %>% relocate(ID)
+comm_matrixID = subset(comm_matrixID, select = -c(year, treatmentOriginGroup, X, X.1) )
+
+#replace NAs with 0s
+comm_matrixID[is.na(comm_matrixID)] <- 0
+
+#switch plot IDs to row names for the matrix including plot IDs
+comm_matrixID <- comm_matrixID %>%
+  group_by(ID) %>%
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = TRUE
+  )
+comm_matrixID <- comm_matrixID %>% column_to_rownames(var = "ID")
+
 #make dataframe including plot numbers and reformat to use for plot
 shannon_df_plotID <- as.data.frame(shannon_plots)
 shannon_df_plotID$ID <- row.names(shannon_df_plotID)
@@ -115,14 +130,7 @@ shannon_df_plotID$ID <- row.names(shannon_df_plotID)
 shannon_df_plotID <- shannon_df_plotID %>%
   separate(col = ID, into = c("tx_site", "year", "plotID"), sep = " _ ")
 
-#figure for alll plots combined (higher diversity)
-shannon_fig <- ggplot(data = shannon_df, aes(x=year, y=shannon))+
-  geom_boxplot()+
-  facet_wrap(.~ tx_site)+
-    theme_bw()
-plot(shannon_fig)
-
-#figure including variation between plots of same tx
+###figure including variation between plots of same tx#######
 shannon_fig_plots <- ggplot(data = shannon_df_plotID, aes(x=year, y=shannon_plots))+
   geom_boxplot()+
   facet_wrap(.~ tx_site)+
