@@ -46,15 +46,66 @@ abundance_df1 <- abundance_df %>% filter(!is.na(treatment),
                                          !treatment %in% outs,
                                          year %in% ins)
 
+
+#Shannon diversity calculations------------------------------------------------
+
+##Shannon for three different controls only, no transplant data#######
+
 #filter data for dataframe with control plots only
 abundance_df_controlonly <- abundance_df %>% filter(!is.na(treatment),
-                                         !species %in% gc.outs,
-                                         !originPlotID %in% block.outs,
-                                         treatment %in% ins_controlonly,
-                                         year %in% ins)
+                                                    !species %in% gc.outs,
+                                                    !originPlotID %in% block.outs,
+                                                    treatment %in% ins_controlonly,
+                                                    year %in% ins)
 
+#reformat data
+comm_matrix_controls <- pivot_wider(abundance_df_controlonly, names_from = species, 
+                           values_from = occurrenceCount)
 
-#calculate diversity metrics for each site and treatment using vegan------------ 
+#remove extra columns 
+comm_matrix_controls = subset(comm_matrix_controls, select = -c(originSite, 
+                                              destinationSite,date_yyyymmdd, 
+                                              functionalGroup, unknownMorpho, 
+                                              percentCover) )
+
+#make matrix with plot IDs
+comm_matrix_controls$ID = NA
+
+comm_matrix_controls$ID <- paste(comm_matrix_controls$treatmentOriginGroup, "_",comm_matrix_controls$year, "_", comm_matrix_controls$originPlotID, "_", comm_matrix_controls$treatment)
+
+comm_matrix_controls <- comm_matrix_controls %>% relocate(ID)
+comm_matrix_controls = subset(comm_matrix_controls, select = -c(year, treatmentOriginGroup, X, X.1, treatment) )
+
+#replace NAs with 0s
+comm_matrix_controls[is.na(comm_matrix_controls)] <- 0
+
+#switch plot IDs to row names for the matrix including plot IDs
+comm_matrix_controls <- comm_matrix_controls %>%
+  group_by(ID) %>%
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = TRUE
+  )
+comm_matrix_controls <- comm_matrix_controls %>% column_to_rownames(var = "ID")
+
+#calculate shannon diversity
+shannon_controls <- diversity(comm_matrix_controls, index = "shannon")
+
+#make dataframe including plot numbers and reformat to use for plot
+shannon_df_controls <- as.data.frame(shannon_controls)
+shannon_df_controls$ID <- row.names(shannon_df_controls)
+
+shannon_df_controls <- shannon_df_controls %>%
+  separate(col = ID, into = c("tx_site", "year", "plotID","treatment"), sep = " _ ")
+
+###figure including variation between plots of same tx#######
+shannon_fig_controls <- ggplot(data = shannon_df_controls, aes(x=year, y=shannon_controls, color = treatment))+
+  geom_boxplot()+
+  #facet_wrap(.~ treatment)+
+  theme_bw()
+
+plot(shannon_fig_controls)
 
 ##Shannon pooling all plots per treatment#######
 #reformat data
