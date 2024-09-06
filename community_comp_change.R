@@ -19,6 +19,7 @@ library(vegan)
 library(stringr)
 library(dplyr)
 
+#Data cleaning and formatting---------------------------------------------------
 #bring in data
 abundance_df <- read.csv("occurance2017-2023.csv")
 abundance_df$year <- as.factor(abundance_df$year)
@@ -44,10 +45,7 @@ abundance_df1 <- abundance_df %>% filter(!is.na(treatment),
                                          year %in% ins)
 
 
-#calculate diversity metrics for each site and treatment using vegan 
-
-#slice to only use one plot per treatment per year to compare to 2017 data
-
+#calculate diversity metrics for each site and treatment using vegan------------ 
 
 #reformat data
 comm_matrix <- pivot_wider(abundance_df1, names_from = species, 
@@ -117,21 +115,21 @@ shannon_df_plotID$ID <- row.names(shannon_df_plotID)
 shannon_df_plotID <- shannon_df_plotID %>%
   separate(col = ID, into = c("tx_site", "year", "plotID"), sep = " _ ")
 
-#plot
+#figure for alll plots combined (higher diversity)
 shannon_fig <- ggplot(data = shannon_df, aes(x=year, y=shannon))+
   geom_boxplot()+
   facet_wrap(.~ tx_site)+
     theme_bw()
 plot(shannon_fig)
 
-#plot including variation between plots of same tx
+#figure including variation between plots of same tx
 shannon_fig_plots <- ggplot(data = shannon_df_plotID, aes(x=year, y=shannon_plots))+
   geom_boxplot()+
   facet_wrap(.~ tx_site)+
   theme_bw()
 plot(shannon_fig_plots)
 
-#calculate simpson's diversity 
+#calculate simpson's diversity--------------------------------------------------
 simpson <- diversity(comm_matrix1, index = "simpson")
 
 #make dataframe and reformat to use for plot
