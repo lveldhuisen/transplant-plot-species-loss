@@ -40,6 +40,7 @@ matrix_forphylogeny <- matrix_forphylogeny %>%
   rename(
     Agoseris_heterophylla = Agoseris_sp.,
     Agoseris_glauca_var._dasycephala = Agoseris_glauca,
+    Aquilegia_coerulea = Aquilegia_caerulea,
     Orobanche_fasciculata = Aphyllon_fasciculatum,
     Carex_nelsonii = Carex_sp.,
     Chamerion_angustifolium = Chamaenerion_angustifolium,
@@ -104,11 +105,15 @@ matrix_forphylogeny <- rbind(matrix_forphylogeny, sum_row)
 #get rid of unknowns 
 matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(moss, unknown_forb,
                                                               Unknown_round_leaves,
-                                                              unknown_seedling))
+                                                              unknown_seedling,
+                                                              Senecio_crassulus))
 
 #prune tree
 pruned.tree <- treedata(SBtree, unlist(matrix_forphylogeny[452,matrix_forphylogeny[452,]>0]), warnings = F)$phy
 plot(pruned.tree)
 
 #PD for treatments and years---------------------------------------------------
+pd_allplots <- ses.pd(matrix_forphylogeny, pruned.tree, null.model = c("sample.pool"),
+       runs = 5000, include.root=TRUE)
+
 
