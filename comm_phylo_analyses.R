@@ -34,41 +34,6 @@ abundance_forphylogeny <- abundance_df %>% filter(!is.na(treatment),
 #reformat data to be community data matrix
 matrix_forphylogeny <- pivot_wider(abundance_forphylogeny, names_from = species, 
                                     values_from = occurrenceCount)
-#remove extra columns
-matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(
-  turfID, originSite, destinationSite,originPlotID,date_yyyymmdd,
-  treatment,functionalGroup, unknownMorpho, year, percentCover, X, X.1) )
-
-#replace NAs with 0s
-matrix_forphylogeny[is.na(matrix_forphylogeny)] <- 0
-
-#switch treatments to row names for the matrix 
-matrix_forphylogeny <- matrix_forphylogeny %>%
-  group_by(treatmentOriginGroup) %>%
-  summarise_if(
-    is.numeric,
-    sum,
-    na.rm = TRUE
-  )
-#make row names
-matrix_forphylogeny <- matrix_forphylogeny %>% column_to_rownames(var = "treatmentOriginGroup")
-
-#sum columns to have column with all species for phylogeny
-species_sums <- colSums(matrix_forphylogeny)
-
-# Convert column sums to a data frame row
-sum_row <- as.data.frame(t(species_sums))
-names(sum_row) <- names(matrix_forphylogeny)  # Ensure column names match
-
-rownames(sum_row) <- c("all") 
-
-#add sum df to community matrix
-matrix_forphylogeny <- rbind(matrix_forphylogeny, sum_row)
-
-#get rid of unknowns 
-matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(moss, unknown_forb,
-                                                              Unknown_round_leaves,
-                                                              unknown_seedling))
 
 #substitute species names that aren't in phylogeny (see replacement list in Google Drive)
 matrix_forphylogeny <- matrix_forphylogeny %>% 
@@ -98,7 +63,52 @@ matrix_forphylogeny <- matrix_forphylogeny %>%
     Veratrum_virginicum = Veratrum_californicum
   )
 
+#make column for row IDs with turf id, tx & year
+matrix_forphylogeny$ID = NA
+matrix_forphylogeny$ID <- paste(matrix_forphylogeny$treatmentOriginGroup, "_",
+                                matrix_forphylogeny$year, "_",
+                        matrix_forphylogeny$originPlotID)
+matrix_forphylogeny <- matrix_forphylogeny %>% relocate(ID)
+
+#remove extra columns
+matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(
+  turfID, originSite, destinationSite,originPlotID,date_yyyymmdd,
+  treatment,treatmentOriginGroup, functionalGroup, unknownMorpho, year, percentCover, X, X.1) )
+
+#replace NAs with 0s
+matrix_forphylogeny[is.na(matrix_forphylogeny)] <- 0
+
+#switch treatments to row names for the matrix 
+matrix_forphylogeny <- matrix_forphylogeny %>%
+  group_by(ID) %>%
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = TRUE
+  )
+#make row names
+matrix_forphylogeny <- matrix_forphylogeny %>% column_to_rownames(var = "ID")
+
+#sum columns to have column with all species for phylogeny
+species_sums <- colSums(matrix_forphylogeny)
+
+# Convert column sums to a data frame row
+sum_row <- as.data.frame(t(species_sums))
+names(sum_row) <- names(matrix_forphylogeny)  # Ensure column names match
+
+rownames(sum_row) <- c("all") 
+
+#add sum df to community matrix
+matrix_forphylogeny <- rbind(matrix_forphylogeny, sum_row)
+
+#get rid of unknowns 
+matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(moss, unknown_forb,
+                                                              Unknown_round_leaves,
+                                                              unknown_seedling))
 
 #prune tree
-pruned.tree <- treedata(SBtree, unlist(matrix_forphylogeny[10,matrix_forphylogeny[10,]>0]), warnings = F)$phy
+pruned.tree <- treedata(SBtree, unlist(matrix_forphylogeny[452,matrix_forphylogeny[452,]>0]), warnings = F)$phy
 plot(pruned.tree)
+
+#PD for treatments and years---------------------------------------------------
+

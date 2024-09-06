@@ -99,7 +99,7 @@ shannon_df_controls$ID <- row.names(shannon_df_controls)
 shannon_df_controls <- shannon_df_controls %>%
   separate(col = ID, into = c("tx_site", "year", "plotID","treatment"), sep = " _ ")
 
-###figure including variation between plots of same tx#######
+###figure for control plots only#######
 shannon_fig_controls <- ggplot(data = shannon_df_controls, aes(x=year, y=shannon_controls, color = treatment))+
   geom_boxplot()+
   #facet_wrap(.~ treatment)+
@@ -153,7 +153,7 @@ shannon_fig <- ggplot(data = shannon_df, aes(x=year, y=shannon))+
 plot(shannon_fig)
 
 
-##Shannon for each individual plot and averaging by origin site and treatment###
+##Shannon for each individual plot and averaging by origin site and treatment#####
 #make matrix with plot IDs
 comm_matrix$ID = NA
 comm_matrix$ID <- paste(comm_matrix$treatmentOriginGroup, "_",comm_matrix$year, "_",
