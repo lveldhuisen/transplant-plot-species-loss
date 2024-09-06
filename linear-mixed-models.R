@@ -49,6 +49,11 @@ model1 <- lmer(log1p(occurrenceCount) ~ year + treatment + originSite +
                  (treatment|species), 
                data = abundance_df1 %>% filter(year %in% ins & 
                                                  !treatment %in% outs))
+#model for shannon diversity
+model2 <- lmer(shannon_plots ~ year + treatment + originSite + (1|replicates),
+               data = h_dat)
+
+check_model(model2)
 
 #check model diagnostics before you look at summary. Is this model fucked?
 check_model(model1)
