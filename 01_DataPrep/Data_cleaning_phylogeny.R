@@ -20,7 +20,7 @@ is.rooted(SBtree)
 
 ##prune tree to include all species from all treatments and control groups, including 2017##
 #bring in raw data
-abundance_df <- read.csv("occurance2017-2023.csv")
+abundance_df <- read.csv("Data/occurance2017-2023.csv")
 
 #remove non-species from species column
 gc.outs <- c("litter", "bare_soil", "rock")
