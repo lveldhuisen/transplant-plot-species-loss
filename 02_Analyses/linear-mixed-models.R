@@ -10,35 +10,16 @@ library(vegan)
 library(stringr)
 library(dplyr)
 
+#Model to predict abundance numbers across years & tx--------------------------
 #bring in data
-abundance_df <- read.csv("occurance2017-2023.csv")
-abundance_df$year <- as.factor(abundance_df$year)
-
-#use only these years
-ins <- c("2018","2023")
-
-#get rid of extra control plots
-outs <- c("untouched","within_site_transplant")
-
-# remove non-species from species column
-gc.outs <- c("litter", "bare_soil", "rock")
-
-#remove block 6 plots since they were transplanted in 2018
-block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
-                "pf6-2", "pf6-3","pf6-4", "um6-1", "um6-2","um6-3","um6-4",
-                "um6-5","um6-6")
-
-#filter data for things you never want
-abundance_df1 <- abundance_df %>% filter(!is.na(treatment),
-                                         !species %in% gc.outs,
-                                         !treatment %in% outs,
-                                         !originPlotID %in% block.outs)
+abundance_df1 <- read.csv("Data/abundance_clean2018-2023.csv")
+abundance_df1$year <- as.factor(abundance_df$year)
 
 #reorder treatments
 abundance_df1$treatment <- relevel(factor(abundance_df1$treatment),
                                    ref = "netted_untouched")
 #test model 
-hist(abundance_df$occurrenceCount)
+hist(abundance_df1$occurrenceCount)
 
 #set up sum to zero contrast
 abundance_df1$originSite <- as.factor(abundance_df1$originSite)
@@ -61,11 +42,16 @@ summary(model1)
 
 plot(re.effects)
 
-#model for shannon diversity
+#Model for shannon diversity across years & tx---------------------------------
+#bring in data
+h_dat <- read.csv("Data/Shannon_fulldataset2018-2023.csv")
 
 #reorder treatments
 h_dat$treatment <- relevel(factor(h_dat$treatment),
                                    ref = "netted_untouched")
+
+#remove extra column
+h_dat = subset(h_dat, select = -c(X.1))
 
 #model
 model2 <- lmer(shannon_plots ~ year + treatment + originSite + (1|replicates),
