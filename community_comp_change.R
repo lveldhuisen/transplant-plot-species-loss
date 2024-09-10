@@ -1,6 +1,3 @@
-#data wrangling and reformatting with Lorah's transplant data
-#pivot wider to make comm phylo matrix 
-
 library(tidyverse) 
 library(lme4) #modelling
 library(lmerTest) #provides p values
@@ -38,6 +35,9 @@ plot(shannon_fig_controls)
 ##Shannon for each individual plot and averaging by origin site and treatment#####
 comm_matrixID <- read.csv("Data/Community_matrix_ByPlot.csv")
 
+#change plots to row names
+comm_matrixID <- comm_matrixID %>% column_to_rownames(var = "X")
+
 #calculate shannon diversity
 shannon_plots <- diversity(comm_matrixID, index = "shannon")
 
@@ -56,24 +56,8 @@ shannon_fig_plots <- ggplot(data = shannon_df_plotID, aes(x=year, y=shannon_plot
   theme_bw()
 plot(shannon_fig_plots)
 
-#reorganize data to use in linear mixed models---------------------------------
+write.csv(shannon_df_plotID, file = "Data/Shannon_ByPlot2018-2023.csv")
 
-shannon_df_plotID <- shannon_df_plotID %>% 
-  rename(
-  treatmentOriginGroup = site_tx)
-
-#get rid of multiple rows per plot
-join_dat <- abundance_df1 %>% select(!8:15) %>% 
-  group_by(originPlotID, treatmentOriginGroup, year) %>%
-  slice(1)
-
-#merge dataframes
-h_dat <- left_join(shannon_df_plotID, join_dat, by = c("turfID",
-                                                            "year","treatmentOriginGroup"))
-
-#add column to ID replication
-h_dat$replicates <- paste(h_dat$originSite,"_", h_dat$destinationSite,"_",
-                          h_dat$treatment,"_", h_dat$year)
 
 #calculate simpson's diversity--------------------------------------------------
 simpson <- diversity(comm_matrix1, index = "simpson")
