@@ -35,7 +35,7 @@ pd_df <- read.csv("Data/PD_byPlot.csv")
 abundance_df2 <- read.csv("Data/occurance2017-2023.csv")
 
 #get rid of extra control plots
-#outs <- c("untouched","within_site_transplant")
+outs <- c("untouched","within_site_transplant")
 
 # remove non-species from species column
 gc.outs <- c("litter", "bare_soil", "rock")
@@ -45,11 +45,12 @@ block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
                 "pf6-2", "pf6-3","pf6-4", "um6-1", "um6-2","um6-3","um6-4",
                 "um6-5","um6-6")
 
+
 #filter data for things you never want
 abundance_df2 <- abundance_df2 %>% filter(!is.na(treatment),
                                          !species %in% gc.outs,
-                                         !originPlotID %in% block.outs)
-                                         #!treatment %in% outs)
+                                         !originPlotID %in% block.outs,
+                                         !treatment %in% outs)
 
 #get rid of extra X columns
 abundance_df2 = subset(abundance_df2, select = -c(X,X.1))
@@ -65,7 +66,6 @@ pd_df <- pd_df %>%
   rename(
     treatmentOriginGroup = tx_site,
     originPlotID = plotID)
-
 
 #get rid of merged column
 pd_df = subset(pd_df, select = -c(X))
