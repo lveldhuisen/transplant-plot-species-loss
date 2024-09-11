@@ -77,6 +77,9 @@ pd_dat <- left_join(pd_df, join_dat, by = c("turfID","originPlotID", "year","tre
 pd_dat$replicates <- paste(pd_dat$originSite,"_", pd_dat$destinationSite,"_",
                           pd_dat$treatment,"_", pd_dat$year)
 
+#get rid of 2017
+pd_dat18to23 <- pd_dat %>% filter(!year %in% 2017)
+
 ##MPD#########
 
 #bring in data

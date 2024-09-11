@@ -72,6 +72,9 @@ test2 <- ggemmeans(shannon_output, terms = c("year", "treatment"))
 
 test3 <- ggaverage(shannon_output, terms = c("year", "treatment"))
 
+pred2 <- ggpredict(model2, terms = c("year", "treatment", "originSite"))
+plot(pred2)
+
 
 #test predictions
 comparisons <- 
@@ -83,13 +86,16 @@ test4 <- test_predictions(shannon_output, terms = c("year","treatment"),
 
 #ggeffects 
 
-#Model for phylogneetic diversity across years & tx---------------------------------
+#Model for phylognetic diversity across years & tx---------------------------------
 #bring in data
 
 
 #reorder treatments
 pd_dat$treatment <- relevel(factor(pd_dat$treatment),
                            ref = "netted_untouched")
+
+pd_dat$year <- relevel(factor(pd_dat$year),
+                            ref = "2017")
 hist(pd_dat$pd.obs.z)
 
 #model
@@ -97,7 +103,12 @@ model3 <- lmer(pd.obs.z ~ year + treatment + originSite + (1|replicates),
                data = pd_dat)
 
 check_model(model3)
+isSingular(model3)
 summary(model3)
+
+pred3 <- ggpredict(model3, terms = c("year", "treatment", "originSite"))
+plot(pred3)
+
 
 #save model3 output 
 saveRDS(model3, file = "ModelOutput/PD_LMM.RDS")
@@ -107,4 +118,5 @@ saveRDS(model3, file = "ModelOutput/PD_LMM.RDS")
 pd_output <- readRDS("ModelOutput/PD_LMM.RDS")
 
 #test predictions
-test4 <- test_predictions(pd_output, terms = c("year","treatment")) #need to fix
+test4 <- test_predictions(pd_output, terms = c("year","treatment"), 
+                          type = "random", ref = "year") #need to fix
