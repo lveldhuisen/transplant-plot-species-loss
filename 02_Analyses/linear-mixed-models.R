@@ -91,7 +91,6 @@ test4 <- test_predictions(shannon_output, terms = c("year","treatment"),
 pd_dat$treatment <- relevel(factor(pd_dat$treatment),
                            ref = "netted_untouched")
 hist(pd_dat$pd.obs.z)
-pd_dat <- na.omit(pd_dat)
 
 #model
 model3 <- lmer(pd.obs.z ~ year + treatment + originSite + (1|replicates),

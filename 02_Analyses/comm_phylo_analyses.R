@@ -14,7 +14,7 @@ library(car)
 
 #Need to make tree from "Data_cleaning_phylogeny.R" before running anything here
 
-#PD for treatments and years---------------------------------------------------
+#PD---------------------------------------------------
 #calculate PD
 pd_allplots <- ses.pd(matrix_forphylogeny, pruned.tree, null.model = c("sample.pool"),
        runs = 5000, include.root=TRUE)
@@ -28,10 +28,10 @@ pd_allplots = subset(pd_allplots, select = -c(ntaxa, pd.obs,
 #split plots and treatments into separate columns
 pd_allplots$ID <- row.names(pd_allplots)
 pd_df <- pd_allplots %>%
-  separate(col = ID, into = c("tx_site", "year", "plotID"), sep = " _ ")
+  separate(col = ID, into = c("turfID","tx_site", "year", "plotID"), sep = " _ ")
 
 #delete 'all' row
-pd_df <- pd_df[-c(452),]
+pd_df <- pd_df[-c(378),]
 
 #save as csv
 write.csv(pd_df, file = "Data/PD_byPlot.csv")

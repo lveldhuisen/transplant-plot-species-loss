@@ -13,12 +13,12 @@ library(car)
 #import & prune S&B phylogeny-------------------------------------------------
 setwd("~/Library/CloudStorage/OneDrive-UniversityofArizona/Arizona PhD/Research/RMBL phylogeny/Smith&Brown18") #phylogeny not stored in R project
 
-##import S&B18 tree and check data## 
+##import S&B18 tree and check data#####
 SBtree <- read.tree(file = "ALLMB.tre")
 write.tree(SBtree)
 is.rooted(SBtree)
 
-##prune tree to include all species from all treatments and control groups, including 2017##
+##prune tree to include all species from all treatments and control groups, including 2017####
 #bring in raw data
 abundance_df <- read.csv("Data/occurance2017-2023.csv")
 
@@ -69,7 +69,8 @@ matrix_forphylogeny <- matrix_forphylogeny %>%
 
 #make column for row IDs with turf id, tx & year
 matrix_forphylogeny$ID = NA
-matrix_forphylogeny$ID <- paste(matrix_forphylogeny$treatmentOriginGroup, "_",
+matrix_forphylogeny$ID <- paste(matrix_forphylogeny$turfID,"_",
+  matrix_forphylogeny$treatmentOriginGroup, "_",
                                 matrix_forphylogeny$year, "_",
                                 matrix_forphylogeny$originPlotID)
 matrix_forphylogeny <- matrix_forphylogeny %>% relocate(ID)
@@ -112,5 +113,5 @@ matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(moss, unknown_forb
                                                               Senecio_crassulus))
 
 #prune tree
-pruned.tree <- treedata(SBtree, unlist(matrix_forphylogeny[377,matrix_forphylogeny[377,]>0]), warnings = F)$phy
+pruned.tree <- treedata(SBtree, unlist(matrix_forphylogeny[378,matrix_forphylogeny[378,]>0]), warnings = F)$phy
 plot(pruned.tree)
