@@ -94,19 +94,22 @@ test4 <- test_predictions(shannon_output, terms = c("year","treatment"),
 pd_dat$treatment <- relevel(factor(pd_dat$treatment),
                            ref = "netted_untouched")
 
+pd_dat18to23$treatment <- relevel(factor(pd_dat18to23$treatment),
+                            ref = "netted_untouched")
+
 pd_dat$year <- relevel(factor(pd_dat$year),
                             ref = "2017")
 hist(pd_dat$pd.obs.z)
 
 #model
 model3 <- lmer(pd.obs.z ~ year + treatment + originSite + (1|replicates),
-               data = pd_dat)
+               data = pd_dat18to23)
 
 check_model(model3)
-isSingular(model3)
 summary(model3)
+Anova(model3)
 
-pred3 <- ggpredict(model3, terms = c("year", "treatment", "originSite"))
+pred3 <- ggpredict(model3, terms = c("originSite", "treatment"))
 plot(pred3)
 
 
@@ -118,5 +121,10 @@ saveRDS(model3, file = "ModelOutput/PD_LMM.RDS")
 pd_output <- readRDS("ModelOutput/PD_LMM.RDS")
 
 #test predictions
-test4 <- test_predictions(pd_output, terms = c("year","treatment"), 
-                          type = "random", ref = "year") #need to fix
+test4 <- test_predictions(pd_output) #need to fix
+
+residuals <- residuals(model3)
+
+# Plot residuals
+plot(fitted(model3), residuals)
+abline(h = 0, col = "red")

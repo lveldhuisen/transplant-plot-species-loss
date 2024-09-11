@@ -27,14 +27,18 @@ pd_allplots = subset(pd_allplots, select = -c(ntaxa, pd.obs,
 
 #split plots and treatments into separate columns
 pd_allplots$ID <- row.names(pd_allplots)
-pd_df <- pd_allplots %>%
-  separate(col = ID, into = c("turfID","tx_site", "year", "plotID"), sep = " _ ")
 
 #delete 'all' row
-pd_df <- pd_df[-c(378),]
+pd_df <- pd_allplots[-c(378),]
+
+pd_df <- pd_df %>%
+  separate(col = ID, into = c("turfID","tx_site", "year", "plotID"), sep = " _ ")
 
 #save as csv
 write.csv(pd_df, file = "Data/PD_byPlot.csv")
+
+#bring in data
+pd_df <- read.csv("Data/PD_byPlot.csv")
 
 #figure
 pd_fig <- ggplot(data = pd_df, aes(x=year, y=pd.obs.z))+
