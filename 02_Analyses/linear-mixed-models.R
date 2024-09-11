@@ -90,7 +90,8 @@ test4 <- test_predictions(shannon_output, terms = c("year","treatment"),
 #reorder treatments
 pd_dat$treatment <- relevel(factor(pd_dat$treatment),
                            ref = "netted_untouched")
-
+hist(pd_dat$pd.obs.z)
+pd_dat <- na.omit(pd_dat)
 
 #model
 model3 <- lmer(pd.obs.z ~ year + treatment + originSite + (1|replicates),
@@ -101,3 +102,10 @@ summary(model3)
 
 #save model3 output 
 saveRDS(model3, file = "ModelOutput/PD_LMM.RDS")
+
+#make figure 
+#bring in model results
+pd_output <- readRDS("ModelOutput/PD_LMM.RDS")
+
+#test predictions
+test4 <- test_predictions(pd_output, terms = c("year","treatment")) #need to fix
