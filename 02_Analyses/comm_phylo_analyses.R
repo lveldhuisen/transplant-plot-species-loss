@@ -20,7 +20,7 @@ pd_allplots <- ses.pd(matrix_forphylogeny, pruned.tree, null.model = c("sample.p
        runs = 5000, include.root=TRUE)
 
 #delete unnecessary columns 
-pd_allplots <- pd_allplots = subset(pd_allplots, select = -c(ntaxa, pd.obs, 
+pd_allplots = subset(pd_allplots, select = -c(ntaxa, pd.obs, 
                                                              pd.rand.mean, 
                                                              pd.obs.rank,runs))
 
@@ -32,6 +32,9 @@ pd_df <- pd_allplots %>%
 
 #delete 'all' row
 pd_df <- pd_df[-c(452),]
+
+#save as csv
+write.csv(pd_df, file = "Data/PD_byPlot.csv")
 
 #figure
 pd_fig <- ggplot(data = pd_df, aes(x=year, y=pd.obs.z))+
@@ -60,7 +63,10 @@ MPD_df <- MPD_allplots %>%
   separate(col = ID, into = c("tx_site", "year", "plotID"), sep = " _ ")
 
 #delete 'all' row
-MPD_df <- MPD_df[-c(452),]
+MPD_df <- MPD_df[-c(377),]
+
+#save as csv
+write.csv(MPD_df, file = "Data/MPD_byPlot.csv")
 
 #figure
 mpd_fig <- ggplot(data = MPD_df, aes(x=year, y=mpd.obs.z))+
@@ -89,7 +95,10 @@ mntd_df <- mntd_allplots %>%
   separate(col = ID, into = c("tx_site", "year", "plotID"), sep = " _ ")
 
 #delete 'all' row
-mntd_df <- mntd_df[-c(452),]
+mntd_df <- mntd_df[-c(377),]
+
+#save as csv
+write.csv(mntd_df, file = "Data/MNTD_byPlot.csv")
 
 #figure
 mntd_fig <- ggplot(data = mntd_df, aes(x=year, y=mntd.obs.z))+

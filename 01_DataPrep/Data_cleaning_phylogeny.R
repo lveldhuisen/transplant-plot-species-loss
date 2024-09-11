@@ -25,9 +25,15 @@ abundance_df <- read.csv("Data/occurance2017-2023.csv")
 #remove non-species from species column
 gc.outs <- c("litter", "bare_soil", "rock")
 
+#remove block 6 plots since they were transplanted in 2018
+block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
+                "pf6-2", "pf6-3","pf6-4", "um6-1", "um6-2","um6-3","um6-4",
+                "um6-5","um6-6")
+
 #filter data for things you never want
 abundance_forphylogeny <- abundance_df %>% filter(!is.na(treatment),
-                                                  !species %in% gc.outs)
+                                                  !species %in% gc.outs,
+                                                  !originPlotID %in% block.outs)
 
 #reformat data to be community data matrix
 matrix_forphylogeny <- pivot_wider(abundance_forphylogeny, names_from = species, 
@@ -54,8 +60,7 @@ matrix_forphylogeny <- matrix_forphylogeny %>%
     Poa_pratensis_subsp._pratensis = Poa_pratensis,
     Polygonum_douglasii_subsp._douglasii = Polygonum_douglasii,
     Rhodiola_integrifolia = Sedum_integrifolium,
-    Senecio_triangularis = Senecio_integerrimus,
-    Senecio_serra = Senecio_sp., 
+    Senecio_triangularis = Senecio_integerrimus, 
     Achnatherum_nelsonii = Stipa_nelsonii, 
     Symphyotrichum_foliaceum = Symphyotrichum_ascendens, 
     Bouteloua_gracilis = unknown_grass,
@@ -107,5 +112,5 @@ matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(moss, unknown_forb
                                                               Senecio_crassulus))
 
 #prune tree
-pruned.tree <- treedata(SBtree, unlist(matrix_forphylogeny[452,matrix_forphylogeny[452,]>0]), warnings = F)$phy
+pruned.tree <- treedata(SBtree, unlist(matrix_forphylogeny[377,matrix_forphylogeny[377,]>0]), warnings = F)$phy
 plot(pruned.tree)

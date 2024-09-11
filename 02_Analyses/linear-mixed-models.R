@@ -48,7 +48,7 @@ h_dat <- read.csv("Data/Shannon_fulldataset2018-2023.csv")
 
 #reorder treatments
 h_dat$treatment <- relevel(factor(h_dat$treatment),
-                                   ref = "netted_untouched")
+                           ref = "netted_untouched")
 
 #remove extra column
 h_dat = subset(h_dat, select = -c(X.1))
@@ -82,3 +82,22 @@ test4 <- test_predictions(shannon_output, terms = c("year","treatment"),
 
 
 #ggeffects 
+
+#Model for phylogneetic diversity across years & tx---------------------------------
+#bring in data
+
+
+#reorder treatments
+pd_dat$treatment <- relevel(factor(pd_dat$treatment),
+                           ref = "netted_untouched")
+
+
+#model
+model3 <- lmer(pd.obs.z ~ year + treatment + originSite + (1|replicates),
+               data = pd_dat)
+
+check_model(model3)
+summary(model3)
+
+#save model3 output 
+saveRDS(model3, file = "ModelOutput/PD_LMM.RDS")
