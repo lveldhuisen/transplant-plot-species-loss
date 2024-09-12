@@ -57,7 +57,6 @@ abundance_df2 <- abundance_df2 %>% filter(!is.na(treatment),
 #get rid of extra X columns
 abundance_df2 = subset(abundance_df2, select = -c(X,X.1))
 
-
 #get rid of multiple rows per plot
 join_dat <- abundance_df2 %>% select(!8:13) %>% 
   group_by(turfID,year) %>%
@@ -96,12 +95,23 @@ mpd_df <- mpd_df %>%
 #get rid of merged column
 mpd_df = subset(mpd_df, select = -c(X))
 
+#get rid of 2017
+mpd_df <- mpd_df %>% filter(!year %in% 2017)
+
 #merge dataframes
-mpd_dat <- left_join(mpd_df, join_dat, by = c("originPlotID", "year","treatmentOriginGroup"))
+mpd_dat <- left_join(mpd_df, join_dat, by = c("turfID","originPlotID", "year",
+                                              "treatmentOriginGroup"))
 
 #add column to ID replication
 mpd_dat$replicates <- paste(mpd_dat$originSite,"_", mpd_dat$destinationSite,"_",
                            mpd_dat$treatment,"_", mpd_dat$year)
+
+#get rid of extra control treatments
+mpd_dat <- mpd_dat %>% filter(!treatment %in% outs)
+mpd_dat <- na.omit(mpd_dat)
+
+#save as csv
+write.csv(mpd_dat, file= "Data/MPD_byPlot18-23.csv")
 
 ##MNTD######
 #bring in data
@@ -123,5 +133,8 @@ mntd_dat <- left_join(mntd_df, join_dat, by = c("originPlotID", "year","treatmen
 mntd_dat$replicates <- paste(mntd_dat$originSite,"_", mntd_dat$destinationSite,"_",
                             mntd_dat$treatment,"_", mntd_dat$year)
 
+#Add range sizes into abundance data to use in linear modeling------------------
 
+#bring in data
+abundance_df1 <- read.csv("Data/abundance_clean2018-2023.csv")
 

@@ -64,7 +64,7 @@ MPD_allplots = subset(MPD_allplots, select = -c(ntaxa, mpd.obs,
 #split plots and treatments into separate columns
 MPD_allplots$ID <- row.names(MPD_allplots)
 MPD_df <- MPD_allplots %>%
-  separate(col = ID, into = c("tx_site", "year", "plotID"), sep = " _ ")
+  separate(col = ID, into = c("turfID","tx_site", "year", "plotID"), sep = " _ ")
 
 #delete 'all' row
 MPD_df <- MPD_df[-c(377),]
