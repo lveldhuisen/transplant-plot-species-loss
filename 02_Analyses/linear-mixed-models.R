@@ -1,4 +1,5 @@
-#linear mixed models to see which species are changing and how
+#linear mixed models to see which species are changing and how, also includes
+#changes in shannon diversity and phylogenetic diversity 
 
 library(tidyverse)
 library(lme4)
@@ -59,6 +60,7 @@ model2 <- lmer(shannon_plots ~ year + treatment + originSite + (1|replicates),
 
 check_model(model2)
 summary(model2)
+Anova(model2)
 
 #save model2 output 
 saveRDS(model2, file = "ModelOutput/Shannon_LMM.RDS")
@@ -72,34 +74,25 @@ test2 <- ggemmeans(shannon_output, terms = c("year", "treatment"))
 
 test3 <- ggaverage(shannon_output, terms = c("year", "treatment"))
 
-pred2 <- ggpredict(model2, terms = c("year", "treatment", "originSite"))
+pred2 <- ggpredict(model2, terms = c("year","treatment", "originSite"))
 plot(pred2)
 
 
 #test predictions
-comparisons <- 
+test4 <- test_predictions(shannon_output, terms = c("year","treatment","originSite")) #need to fix
 
-test4 <- test_predictions(shannon_output, terms = c("year","treatment"), 
-                          test = "(2018-2023) = (2021-2023") #need to fix
-
-
-
-#ggeffects 
 
 #Model for phylognetic diversity across years & tx---------------------------------
 #bring in data
 
-
 #reorder treatments
-pd_dat$treatment <- relevel(factor(pd_dat$treatment),
-                           ref = "netted_untouched")
 
 pd_dat18to23$treatment <- relevel(factor(pd_dat18to23$treatment),
                             ref = "netted_untouched")
 
-pd_dat$year <- relevel(factor(pd_dat$year),
-                            ref = "2017")
-hist(pd_dat$pd.obs.z)
+pd_dat18to23$year <- relevel(factor(pd_dat18to23$year),
+                            ref = "2018")
+hist(pd_dat18to23$pd.obs.z)
 
 #model
 model3 <- lmer(pd.obs.z ~ year + treatment + originSite + (1|replicates),
@@ -122,9 +115,3 @@ pd_output <- readRDS("ModelOutput/PD_LMM.RDS")
 
 #test predictions
 test4 <- test_predictions(pd_output) #need to fix
-
-residuals <- residuals(model3)
-
-# Plot residuals
-plot(fitted(model3), residuals)
-abline(h = 0, col = "red")

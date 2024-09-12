@@ -10,6 +10,11 @@ abundance_df1 <- read.csv("Data/abundance_clean2018-2023.csv")
 #get rid of extra column in abundance df
 abundance_df1 = subset(abundance_df1, select = -c(X))
 
+#get rid of extra control plots
+outs <- c("untouched","within_site_transplant")
+
+abundance_df1 <- abundance_df1 %>% filter(!treatment %in% outs)
+
 #get rid of multiple rows per plot
 join_dat <- abundance_df1 %>% select(!8:13) %>% 
   group_by(originPlotID, treatmentOriginGroup, year) %>%
@@ -33,9 +38,6 @@ write.csv(h_dat, file = "Data/Shannon_fulldataset2018-2023.csv")
 #bring in data
 pd_df <- read.csv("Data/PD_byPlot.csv")
 abundance_df2 <- read.csv("Data/occurance2017-2023.csv")
-
-#get rid of extra control plots
-outs <- c("untouched","within_site_transplant")
 
 # remove non-species from species column
 gc.outs <- c("litter", "bare_soil", "rock")
