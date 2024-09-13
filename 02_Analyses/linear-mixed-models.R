@@ -53,6 +53,9 @@ h_dat <- read.csv("Data/Shannon_fulldataset2018-2023.csv")
 h_dat$treatment <- relevel(factor(h_dat$treatment),
                            ref = "netted_untouched")
 
+h_dat$year <- relevel(factor(h_dat$year),
+                           ref = "2018")
+
 #remove extra column
 h_dat = subset(h_dat, select = -c(X.1))
 
@@ -94,6 +97,7 @@ test4 <- test_predictions(shannon_output, terms = c("year","treatment","originSi
 #Model for phylognetic diversity across years & tx---------------------------------
 #bring in data
 
+
 #set up sum to zero contrast
 pd_dat18to23$originSite <- as.factor(pd_dat18to23$originSite)
 contrasts(pd_dat18to23$originSite) <- contr.sum(length(levels(pd_dat18to23$originSite)))
@@ -103,7 +107,7 @@ contrasts(pd_dat18to23$originSite) <- contr.sum(length(levels(pd_dat18to23$origi
 pd_dat18to23$treatment <- relevel(factor(pd_dat18to23$treatment),
                             ref = "netted_untouched")
 
-#pd_dat18to23$year <- relevel(factor(pd_dat18to23$year),
+pd_dat18to23$year <- relevel(factor(pd_dat18to23$year),
                             ref = "2018")
 hist(pd_dat18to23$pd.obs.z)
 
@@ -115,7 +119,7 @@ check_model(model3)
 summary(model3)
 Anova(model3)
 
-pred3 <- ggpredict(model3, terms = c("originSite", "treatment"))
+pred3 <- ggpredict(model3, terms = c("originSite","treatment"))
 plot(pred3)
 
 
