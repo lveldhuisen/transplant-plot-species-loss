@@ -42,7 +42,7 @@ matrix_forphylogeny <- pivot_wider(abundance_forphylogeny, names_from = species,
 #substitute species names that aren't in phylogeny (see replacement list in Google Drive)
 matrix_forphylogeny <- matrix_forphylogeny %>% 
   rename(
-    Agoseris_heterophylla = Agoseris_sp.,
+    Agoseris_glauca_var._dasycephala = Agoseris_sp.,
     Agoseris_glauca_var._dasycephala = Agoseris_glauca,
     Aquilegia_coerulea = Aquilegia_caerulea,
     Orobanche_fasciculata = Aphyllon_fasciculatum,
@@ -62,8 +62,7 @@ matrix_forphylogeny <- matrix_forphylogeny %>%
     Rhodiola_integrifolia = Sedum_integrifolium,
     Senecio_triangularis = Senecio_integerrimus, 
     Achnatherum_nelsonii = Stipa_nelsonii, 
-    Symphyotrichum_foliaceum = Symphyotrichum_ascendens, 
-    Bouteloua_gracilis = unknown_grass,
+    Symphyotrichum_foliaceum = Symphyotrichum_ascendens,
     Veratrum_virginicum = Veratrum_californicum
   )
 
@@ -110,7 +109,8 @@ matrix_forphylogeny <- rbind(matrix_forphylogeny, sum_row)
 matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(moss, unknown_forb,
                                                               Unknown_round_leaves,
                                                               unknown_seedling,
-                                                              Senecio_crassulus))
+                                                              Senecio_crassulus,
+                                                              unknown_grass))
 
 #prune tree
 pruned.tree <- treedata(SBtree, unlist(matrix_forphylogeny[378,matrix_forphylogeny[378,]>0]), warnings = F)$phy

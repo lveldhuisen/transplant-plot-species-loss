@@ -13,7 +13,7 @@ abundance_df$year <- as.factor(abundance_df$year)
 ins <- c("2018","2019","2021","2022","2023")
 
 #get rid of extra control plots
-outs <- c("untouched","within_site_transplant")
+outs <- c("untouched","netted_untouched")
 
 # remove non-species from species column
 gc.outs <- c("litter", "bare_soil", "rock")

@@ -7,7 +7,9 @@ library(red) #range size calculations
 #download data from GBIF--------------------------
 
 #get taxon key 
-name_backbone("Festuca_thurberi")
+name_backbone("Achillea_millefolium")
+
+countries <- c("US","MX","CA")
 
 #download occurrence data from GBIF directly
 
@@ -15,20 +17,21 @@ occ_download(
   pred("hasGeospatialIssue", FALSE),
   pred("hasCoordinate", TRUE),
   pred("occurrenceStatus","PRESENT"),
+  pred_in("country", c("US","CA","MX")),
   pred_gte("year",1990),
-  pred("taxonKey",2704922),
+  pred("taxonKey",3120060),
   format = "SIMPLE_CSV",
   user="leah.veldhuisen", 
   pwd="Columbia2305", 
-  email="leah.veldhuisen@gmail.com"
-)
+  email="leah.veldhuisen@gmail.com")
 
-d <- occ_download_get('0014123-240906103802322') %>%
+d <- occ_download_get('0015737-240906103802322') %>%
   occ_download_import()
 
 ##clean up data list to only have species name, lat and long##############
+
 df1 <- d %>%
-  select(species, decimalLatitude, decimalLongitude,coordinateUncertaintyInMeters)
+  select(species, decimalLatitude, decimalLongitude,coordinateUncertaintyInMeters,countryCode)
 df1 <- df1[df1$coordinateUncertaintyInMeters < 1000, ]
 df1 <- na.omit(df1)
 df1 <- df1 %>%
