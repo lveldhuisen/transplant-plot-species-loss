@@ -7,7 +7,7 @@ library(red) #range size calculations
 #download data from GBIF--------------------------
 
 #get taxon key 
-name_backbone("Elymus_repens")
+name_backbone("Festuca_thurberi")
 
 #download occurrence data from GBIF directly
 
@@ -16,14 +16,14 @@ occ_download(
   pred("hasCoordinate", TRUE),
   pred("occurrenceStatus","PRESENT"),
   pred_gte("year",1990),
-  pred("taxonKey",5290299),
+  pred("taxonKey",2704922),
   format = "SIMPLE_CSV",
   user="leah.veldhuisen", 
   pwd="Columbia2305", 
   email="leah.veldhuisen@gmail.com"
 )
 
-d <- occ_download_get('0014101-240906103802322') %>%
+d <- occ_download_get('0014123-240906103802322') %>%
   occ_download_import()
 
 ##clean up data list to only have species name, lat and long##############

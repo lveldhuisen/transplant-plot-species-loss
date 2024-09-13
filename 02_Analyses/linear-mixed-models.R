@@ -14,7 +14,7 @@ library(dplyr)
 #Model to predict abundance numbers across years & tx--------------------------
 #bring in data
 abundance_df1 <- read.csv("Data/abundance_clean2018-2023.csv")
-abundance_df1$year <- as.factor(abundance_df$year)
+abundance_df1$year <- as.factor(abundance_df1$year)
 
 #reorder treatments
 abundance_df1$treatment <- relevel(factor(abundance_df1$treatment),
@@ -103,7 +103,7 @@ contrasts(pd_dat18to23$originSite) <- contr.sum(length(levels(pd_dat18to23$origi
 pd_dat18to23$treatment <- relevel(factor(pd_dat18to23$treatment),
                             ref = "netted_untouched")
 
-pd_dat18to23$year <- relevel(factor(pd_dat18to23$year),
+#pd_dat18to23$year <- relevel(factor(pd_dat18to23$year),
                             ref = "2018")
 hist(pd_dat18to23$pd.obs.z)
 
