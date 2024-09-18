@@ -7,7 +7,7 @@ library(red) #range size calculations
 #download data from GBIF--------------------------
 
 #get taxon key 
-name_backbone("Collomia_linearis")
+name_backbone("Agoseris_aurantiaca")
 
 countries <- c("US","MX","CA")
 
@@ -19,13 +19,13 @@ occ_download(
   pred("occurrenceStatus","PRESENT"),
   pred_in("country", c("US","CA","MX")),
   pred_gte("year",1990),
-  pred("taxonKey",2927552),
+  pred("taxonKey",3092928),
   format = "SIMPLE_CSV",
   user="leah.veldhuisen", 
   pwd="Columbia2305", 
   email="leah.veldhuisen@gmail.com")
 
-d <- occ_download_get('0021562-240906103802322') %>%
+d <- occ_download_get('0021995-240906103802322') %>%
   occ_download_import()
 
 #pred_in("country", c("US","CA","MX")),
