@@ -22,8 +22,9 @@ is.rooted(SBtree)
 #bring in raw data
 abundance_df <- read.csv("Data/occurance2017-2023.csv")
 
-#remove non-species from species column
-gc.outs <- c("litter", "bare_soil", "rock")
+#remove non-species and unidentified from species column
+gc.outs <- c("litter", "bare_soil", "rock", "Erigeron_sp.","Erigeron_coulteri",
+             "")
 
 #remove block 6 plots since they were transplanted in 2018
 block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
@@ -49,9 +50,7 @@ matrix_forphylogeny <- matrix_forphylogeny %>%
     Carex_nelsonii = Carex_sp.,
     Chamerion_angustifolium = Chamaenerion_angustifolium,
     Epilobium_ciliatum = Epilobium_sp.,
-    Erigeron_pinnatisectus = Erigeron_coulteri,
     Erigeron_grandiflorus = Erigeron_elatior,
-    Erigeron_compositus = Erigeron_sp., 
     Festuca_rubra_subsp._rubra = Festuca_rubra,
     Helianthella_uniflora = Helianthella_quinquenervis,
     Heterotheca_villosa = Heterotheca_pumila,
