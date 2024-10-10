@@ -133,6 +133,9 @@ mntd_dat <- left_join(mntd_df, join_dat, by = c("originPlotID", "year","treatmen
 mntd_dat$replicates <- paste(mntd_dat$originSite,"_", mntd_dat$destinationSite,"_",
                             mntd_dat$treatment,"_", mntd_dat$year)
 
+#save as csv
+write.csv(mntd_dat, file= "Data/MNTD_byPlot18-23.csv")
+
 #Add range sizes into abundance data to use in linear modeling------------------
 
 #bring in data

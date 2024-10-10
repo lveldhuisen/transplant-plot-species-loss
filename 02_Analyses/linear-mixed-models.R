@@ -140,6 +140,19 @@ mpd_dat <- read.csv("Data/MPD_byPlot18-23.csv")
 
 hist(mpd_dat$mpd.obs.z)
 
+#set up sum to zero contrast
+mpd_dat$originSite <- as.factor(mpd_dat$originSite)
+contrasts(mpd_dat$originSite) <- contr.sum(length(levels(mpd_dat$originSite)))
+
+#reorder treatments
+
+mpd_dat$treatment <- relevel(factor(mpd_dat$treatment),
+                                  ref = "netted_untouched")
+
+mpd_dat$year <- relevel(factor(mpd_dat$year),
+                             ref = "2018")
+hist(mpd_dat$mpd.obs.z)
+
 #model
 model4 <- lmer(mpd.obs.z ~ year + treatment + originSite + (1|replicates),
                data = mpd_dat)
@@ -161,3 +174,47 @@ pred4 <- ggpredict(model4, terms = c("originSite", "treatment"))
 plot(pred4)
 
 test_mpd <- test_predictions(mpd_output, terms = c("orginSite","treatment"))
+
+#Model for MNTD across treatment and years---------------------------------------
+
+#bring in data
+mntd_dat <- read.csv("Data/MNTD_byPlot18-23.csv")
+
+hist(mntd_dat$mntd.obs.z)
+
+#set up sum to zero contrast
+mntd_dat$originSite <- as.factor(mntd_dat$originSite)
+contrasts(mntd_dat$originSite) <- contr.sum(length(levels(mntd_dat$originSite)))
+
+#reorder treatments
+
+mntd_dat$treatment <- relevel(factor(mntd_dat$treatment),
+                             ref = "netted_untouched")
+
+mntd_dat$year <- relevel(factor(mntd_dat$year),
+                        ref = "2018")
+hist(mntd_dat$mntd.obs.z)
+
+#model
+model5 <- lmer(mntd.obs.z ~ year + treatment + originSite + (1|replicates),
+               data = mntd_dat)
+
+#check model
+check_model(model5)
+summary(model5)
+Anova(model5)
+
+#save model3 output 
+saveRDS(model5, file = "ModelOutput/MNTD_LMM.RDS")
+
+#visualize results
+
+#bring in model results
+mntd_output <- readRDS("ModelOutput/MNTD_LMM.RDS")
+
+pred5 <- ggpredict(model5, terms = c("originSite", "treatment"))
+plot(pred5)
+
+test_mntd <- test_predictions(mntd_output, terms = c("orginSite","treatment"))
+
+

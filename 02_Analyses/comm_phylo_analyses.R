@@ -41,7 +41,7 @@ write.csv(pd_df, file = "Data/PD_byPlot.csv")
 pd_df <- read.csv("Data/PD_byPlot.csv")
 
 #figure
-pd_fig <- ggplot(data = pd_df, aes(x=year, y=pd.obs.z))+
+pd_fig <- ggplot(data = pd_df, aes(x=year, y=pd.obs.z, group = year))+
   geom_boxplot()+
   facet_wrap(.~ tx_site)+
   theme_bw()+
@@ -96,16 +96,16 @@ mntd_allplots = subset(mntd_allplots, select = -c(ntaxa, mntd.obs,
 #split plots and treatments into separate columns
 mntd_allplots$ID <- row.names(mntd_allplots)
 mntd_df <- mntd_allplots %>%
-  separate(col = ID, into = c("tx_site", "year", "plotID"), sep = " _ ")
+  separate(col = ID, into = c("turfID","tx_site", "year", "plotID"), sep = " _ ")
 
 #delete 'all' row
-mntd_df <- mntd_df[-c(377),]
+mntd_df <- mntd_df[-c(378),]
 
 #save as csv
 write.csv(mntd_df, file = "Data/MNTD_byPlot.csv")
 
 #figure
-mntd_fig <- ggplot(data = mntd_df, aes(x=year, y=mntd.obs.z))+
+mntd_fig <- ggplot(data = mntd_df, aes(x=year, y=mntd.obs.z, group = year))+
   geom_boxplot()+
   facet_wrap(.~ tx_site)+
   theme_bw()+
