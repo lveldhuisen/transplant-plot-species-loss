@@ -24,7 +24,7 @@ abundance_df <- read.csv("Data/occurance2017-2023.csv")
 
 #remove non-species and unidentified from species column
 gc.outs <- c("litter", "bare_soil", "rock", "Erigeron_sp.","Erigeron_coulteri",
-             "")
+             "Senecio_crassulus", "Agoseris_sp.")
 
 #remove block 6 plots since they were transplanted in 2018
 block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
@@ -43,7 +43,6 @@ matrix_forphylogeny <- pivot_wider(abundance_forphylogeny, names_from = species,
 #substitute species names that aren't in phylogeny (see replacement list in Google Drive)
 matrix_forphylogeny <- matrix_forphylogeny %>% 
   rename(
-    Agoseris_glauca_var._dasycephala = Agoseris_sp.,
     Agoseris_glauca_var._dasycephala = Agoseris_glauca,
     Aquilegia_coerulea = Aquilegia_caerulea,
     Orobanche_fasciculata = Aphyllon_fasciculatum,
@@ -108,7 +107,6 @@ matrix_forphylogeny <- rbind(matrix_forphylogeny, sum_row)
 matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(moss, unknown_forb,
                                                               Unknown_round_leaves,
                                                               unknown_seedling,
-                                                              Senecio_crassulus,
                                                               unknown_grass))
 
 #prune tree
