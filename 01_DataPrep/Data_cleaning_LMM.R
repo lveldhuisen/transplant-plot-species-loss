@@ -138,6 +138,7 @@ write.csv(mntd_dat, file= "Data/MNTD_byPlot18-23.csv")
 
 #Add range sizes into abundance data to use in linear modeling------------------
 
-#bring in data
-abundance_df1 <- read.csv("Data/abundance_clean2018-2023.csv")
+#log AOO vlaues
+abundance_df1$AOO_log <-log(abundance_df1$AOO)
+
 

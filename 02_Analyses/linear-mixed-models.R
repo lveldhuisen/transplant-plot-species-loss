@@ -29,7 +29,7 @@ abundance_df1$originSite <- as.factor(abundance_df1$originSite)
 contrasts(abundance_df1$originSite) <- contr.sum(length(levels(abundance_df1$originSite)))
 
 #model
-model1 <- lmer(log1p(occurrenceCount) ~ year + treatment + originSite + 
+model1 <- lmer(log1p(occurrenceCount) ~ year + treatment + originSite +
                  (treatment|species), 
                data = abundance_df1)
 
@@ -94,7 +94,7 @@ plot(pred2)
 test4 <- test_predictions(shannon_output, terms = c("year","treatment","originSite")) #need to fix
 
 
-#Model for phylognetic diversity across years & tx---------------------------------
+#Model for PD across years & tx---------------------------------
 #bring in data
 
 
