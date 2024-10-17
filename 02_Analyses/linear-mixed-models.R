@@ -39,11 +39,14 @@ check_model(model1)
 #see model summary
 summary(model1)
 Anova(model1)
+tab_model(model1)
 
 #visualize random effects 
 (re.effects <- plot_model(model1, type = "re", show.values = TRUE))
 
 plot(re.effects)
+
+table <- get_model_data(model1, type = "re")
 
 #Model for shannon diversity across years & tx---------------------------------
 #bring in data
