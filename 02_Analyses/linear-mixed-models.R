@@ -10,6 +10,7 @@ library(sjPlot)
 library(vegan)
 library(stringr)
 library(dplyr)
+library(merTools)
 
 #Model to predict abundance numbers across years & tx--------------------------
 #bring in data
@@ -30,8 +31,7 @@ contrasts(abundance_df1$originSite) <- contr.sum(length(levels(abundance_df1$ori
 
 #model
 model1 <- lmer(log1p(occurrenceCount) ~ year + treatment + originSite +
-                 (treatment|species), 
-               data = abundance_df1)
+                 (1+treatment|species), data = abundance_df1, REML = FALSE)
 
 #check model diagnostics before you look at summary. Is this model fucked?
 check_model(model1)
@@ -42,11 +42,17 @@ Anova(model1)
 tab_model(model1)
 
 #visualize random effects 
-(re.effects <- plot_model(model1, type = "re", show.values = TRUE))
+plotREsim(REsim(model1))
+
+re.effects <- plot_model(model1, type = "re", show.values = TRUE)
 
 plot(re.effects)
 
+#make table of species abundance change
 table <- get_model_data(model1, type = "re")
+
+#save as csv
+write.csv(table, file = "Data/Abundance_change.csv")
 
 #Model for shannon diversity across years & tx---------------------------------
 #bring in data
