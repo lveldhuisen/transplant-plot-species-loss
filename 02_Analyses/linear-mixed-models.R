@@ -11,6 +11,7 @@ library(vegan)
 library(stringr)
 library(dplyr)
 library(merTools)
+library(sjPlot)
 
 #Model to predict abundance numbers across years & tx--------------------------
 #bring in data
@@ -54,7 +55,7 @@ table <- get_model_data(model1, type = "re")
 #save as csv
 write.csv(table, file = "Data/Abundance_change.csv")
 
-#Model for shannon diversity across years & tx---------------------------------
+#Model for Shannon diversity across years & tx---------------------------------
 #bring in data
 h_dat <- read.csv("Data/Shannon_fulldataset2018-2023.csv")
 
@@ -98,12 +99,16 @@ test3 <- ggaverage(shannon_output, terms = c("year", "treatment"))
 pred2 <- ggpredict(model2, terms = c("year","treatment", "originSite"))
 plot(pred2)
 
+plot_model(model2,
+                   show.values=TRUE, show.p=TRUE,
+                   title="Effect of year and treatment on Shannon diversity")
+
 
 #test predictions
 test4 <- test_predictions(shannon_output, terms = c("year","treatment","originSite")) #need to fix
 
 
-#Model for PD across years & tx---------------------------------
+#Model for PD across treatment and years---------------------------------
 #bring in data
 
 
@@ -128,7 +133,7 @@ check_model(model3)
 summary(model3)
 Anova(model3)
 
-pred3 <- ggpredict(model3, terms = c("originSite","treatment"))
+pred3 <- ggpredict(model3, terms = c("year", "treatment","originSite"))
 plot(pred3)
 
 
@@ -141,6 +146,10 @@ pd_output <- readRDS("ModelOutput/PD_LMM.RDS")
 
 #test predictions
 test4 <- test_predictions(pd_output, terms = c("orginSite","treatment")) #need to fix
+
+plot_model(model3,
+                   show.values=TRUE, show.p=TRUE,
+                   title="Effect of year and treatment on phylogenetic diversity")
 
 #Model for MPD across treatment and years---------------------------------------
 
@@ -171,7 +180,7 @@ check_model(model4)
 summary(model4)
 Anova(model4)
 
-#save model3 output 
+#save model 4 output 
 saveRDS(model4, file = "ModelOutput/MPD_LMM.RDS")
 
 #visualize results
@@ -183,6 +192,10 @@ pred4 <- ggpredict(model4, terms = c("originSite", "treatment"))
 plot(pred4)
 
 test_mpd <- test_predictions(mpd_output, terms = c("orginSite","treatment"))
+
+plot_model(model4,
+           show.values=TRUE, show.p=TRUE,
+           title="Effect of year and treatment on MPD")
 
 #Model for MNTD across treatment and years---------------------------------------
 
@@ -225,5 +238,9 @@ pred5 <- ggpredict(model5, terms = c("originSite", "treatment"))
 plot(pred5)
 
 test_mntd <- test_predictions(mntd_output, terms = c("orginSite","treatment"))
+
+plot_model(model5,
+           show.values=TRUE, show.p=TRUE,
+           title="Effect of year and treatment on MNTD")
 
 
