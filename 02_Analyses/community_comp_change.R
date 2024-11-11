@@ -32,7 +32,7 @@ shannon_fig_controls <- ggplot(data = shannon_df_controls, aes(x=year, y=shannon
 
 plot(shannon_fig_controls)
 
-##Shannon for each individual plot and averaging by origin site and treatment#####
+##Shannon for each individual plot#####
 comm_matrixID <- read.csv("Data/Community_matrix_ByPlot.csv")
 
 #change plots to row names
@@ -46,14 +46,14 @@ shannon_df_plotID <- as.data.frame(shannon_plots)
 shannon_df_plotID$ID <- row.names(shannon_df_plotID)
 
 shannon_df_plotID <- shannon_df_plotID %>%
-  separate(col = ID, into = c("turfID","year","site_tx"), 
-           sep = " _ ")
+  separate(col = ID, into = c("originturfID","treatment","destinationturfID",
+                              "year","destinationsite"), sep = "_")
 
 ###figure including variation between plots of same tx#######
 shannon_fig_plots <- ggplot(data = shannon_df_plotID, aes(x=year, y=shannon_plots))+
   geom_boxplot()+
-  facet_wrap(.~ treatmentOriginGroup)+
-  theme_bw()
+  theme_bw()+
+  facet_wrap(.~ site_tx)
 plot(shannon_fig_plots)
 
 write.csv(shannon_df_plotID, file = "Data/Shannon_ByPlot2018-2023.csv")

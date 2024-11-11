@@ -4,16 +4,18 @@ library(dplyr)
 #Make dataframe with Shannon values for linear models---------------------------
 
 #bring in data
-shannon_df_plotID <- read.csv("Data/Shannon_ByPlot2018-2023.csv")
+shannon_df_plotID <- read.csv("Data/Shannon_fulldataset2018-2023.csv")
 abundance_df1 <- read.csv("Data/abundance_clean2018-2023.csv")
 
-#get rid of extra column in abundance df
+#get rid of extra columns
 abundance_df1 = subset(abundance_df1, select = -c(X))
+shannon_df_plotID = subset(shannon_df_plotID, select = -c(X.1,X))
 
 #get rid of extra control plots
-outs <- c("untouched","within_site_transplant")
+outs <- c("untouched","netted_untouched")
 
 abundance_df1 <- abundance_df1 %>% filter(!treatment %in% outs)
+shannon_df_plotID <- shannon_df_plotID %>% filter(!treatment %in% outs)
 
 #get rid of multiple rows per plot
 join_dat <- abundance_df1 %>% select(!8:13) %>% 

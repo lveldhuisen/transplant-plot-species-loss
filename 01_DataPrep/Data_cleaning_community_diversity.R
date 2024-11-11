@@ -35,7 +35,7 @@ abundance_df1 = subset(abundance_df1, select = -c(X,X.1))
 #save clean vertically-formatted abundance data
 write.csv(abundance_df1, file = "abundance_clean2018-2023.csv")
 
-###reformat to matrix or Vegan########
+###reformat to matrix for Vegan########
 
 #reformat data
 comm_matrix <- pivot_wider(abundance_df1, names_from = species, 

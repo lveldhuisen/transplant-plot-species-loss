@@ -32,13 +32,14 @@ contrasts(abundance_df1$originSite) <- contr.sum(length(levels(abundance_df1$ori
 
 #model
 model1 <- lmer(log1p(occurrenceCount) ~ year + treatment + originSite +
-                 (1+treatment|species), data = abundance_df1, REML = FALSE)
+                 (1+ treatment|species), data = abundance_df1, REML = FALSE)
 
 #check model diagnostics before you look at summary. Is this model fucked?
 check_model(model1)
 
 #see model summary
 summary(model1)
+ranova(model1)
 Anova(model1)
 tab_model(model1)
 
@@ -49,11 +50,19 @@ re.effects <- plot_model(model1, type = "re", show.values = TRUE)
 
 plot(re.effects)
 
+#test plotting
+
 #make table of species abundance change
 table <- get_model_data(model1, type = "re")
 
 #save as csv
 write.csv(table, file = "Data/Abundance_change.csv")
+
+#check residuals
+plot(fitted(model1), resid(model1, type = "pearson"))# this will create the plot
+abline(0,0, col="red")
+qqnorm(resid(model1))
+qqline(resid(model1), col = "red")
 
 #Model for Shannon diversity across years & tx---------------------------------
 #bring in data
@@ -61,7 +70,7 @@ h_dat <- read.csv("Data/Shannon_fulldataset2018-2023.csv")
 
 #reorder treatments
 h_dat$treatment <- relevel(factor(h_dat$treatment),
-                           ref = "netted_untouched")
+                           ref = "within_site_transplant")
 
 h_dat$year <- relevel(factor(h_dat$year),
                            ref = "2018")
@@ -96,7 +105,7 @@ test2 <- ggemmeans(shannon_output, terms = c("year", "treatment"))
 
 test3 <- ggaverage(shannon_output, terms = c("year", "treatment"))
 
-pred2 <- ggpredict(model2, terms = c("year","treatment", "originSite"))
+pred2 <- ggpredict(model2, terms = c("year","treatment"))
 plot(pred2)
 
 plot_model(model2,
@@ -145,10 +154,10 @@ saveRDS(model3, file = "ModelOutput/PD_LMM.RDS")
 pd_output <- readRDS("ModelOutput/PD_LMM.RDS")
 
 #test predictions
+
 test4 <- test_predictions(pd_output, terms = c("orginSite","treatment")) #need to fix
 
-plot_model(model3,
-                   show.values=TRUE, show.p=TRUE,
+plot_model(model3,show.values=TRUE, show.p=TRUE,
                    title="Effect of year and treatment on phylogenetic diversity")
 
 #Model for MPD across treatment and years---------------------------------------
