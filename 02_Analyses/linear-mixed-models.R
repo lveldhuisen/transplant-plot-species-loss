@@ -105,9 +105,6 @@ h_dat$year <- relevel(factor(h_dat$year),
 #remove extra column
 h_dat = subset(h_dat, select = -c(X.1))
 
-
-hist(h_dat$shannon_plots)
-
 #set up sum to zero contrast
 h_dat$originSite <- as.factor(h_dat$originSite)
 contrasts(h_dat$originSite) <- contr.sum(length(levels(h_dat$originSite)))
@@ -119,6 +116,10 @@ model2 <- lmer(shannon_plots ~ year + treatment + originSite +
 check_model(model2)
 summary(model2)
 Anova(model2)
+
+#add model fits to dataframe to use in figure
+h_dat$fit <- predict(model2)
+write.csv(h_dat,"Data/h_dat.csv")
 
 #save model2 output 
 saveRDS(model2, file = "ModelOutput/Shannon_LMM.RDS")

@@ -7,7 +7,7 @@ library(dplyr)
 
 #Shannon diversity------------------------
 #bring in data
-shannon_df <- read.csv("Data/Shannon_fulldataset2018-2023.csv")
+shannon_df <- read.csv("Data/h_dat.csv")
 
 #use only within site transplant for control
 control.outs <- c("netted_untouched","untouched")
@@ -17,8 +17,8 @@ shannon_df <- shannon_df %>% filter(!is.na(treatment),
 #make plot
 ggplot(shannon_df, aes(x = year, y = shannon_plots, color = treatment)) +
   geom_point(alpha = .5, size = 1) +
-  geom_line(aes(group = turfID)) +
-  labs(x = 'Time', y = 'Shannon diversity', title = 'Change in Shannon diversity over time', color = 'Treatment') +
+  geom_line(aes(y=fit,group = turfID, lty = originSite)) +
+  labs(x = 'Time', y = 'Shannon diversity', color = 'Treatment') +
   theme_bw() +
   scale_color_viridis_d()
 
