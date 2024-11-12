@@ -20,8 +20,7 @@ pd_allplots <- ses.pd(matrix_forphylogeny, pruned.tree, null.model = c("sample.p
        runs = 5000, include.root=TRUE)
 
 #delete unnecessary columns 
-pd_allplots = subset(pd_allplots, select = -c(ntaxa, pd.obs, 
-                                                             pd.rand.mean, 
+pd_allplots = subset(pd_allplots, select = -c(ntaxa, pd.obs, pd.rand.mean, 
                                                              pd.obs.rank,runs))
 
 

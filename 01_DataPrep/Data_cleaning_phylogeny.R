@@ -31,14 +31,18 @@ block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
                 "pf6-2", "pf6-3","pf6-4", "um6-1", "um6-2","um6-3","um6-4",
                 "um6-5","um6-6")
 
+#delete unnecessary columns
+abundance_df = subset(abundance_df, select = -c(X,X.1, date_yyyymmdd,
+                                                functionalGroup,unknownMorpho,
+                                                percentCover))
+
 #filter data for things you never want
 abundance_forphylogeny <- abundance_df %>% filter(!is.na(treatment),
                                                   !species %in% gc.outs,
                                                   !originPlotID %in% block.outs)
 
 #reformat data to be community data matrix
-matrix_forphylogeny <- pivot_wider(abundance_forphylogeny, names_from = species, 
-                                   values_from = occurrenceCount)
+matrix_forphylogeny <- pivot_wider(abundance_forphylogeny, names_from = species, values_from = occurrenceCount)
 
 #substitute species names that aren't in phylogeny (see replacement list in Google Drive)
 matrix_forphylogeny <- matrix_forphylogeny %>% 
@@ -74,11 +78,15 @@ matrix_forphylogeny <- matrix_forphylogeny %>% relocate(ID)
 
 #remove extra columns
 matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(
-  turfID, originSite, destinationSite,originPlotID,date_yyyymmdd,
-  treatment,treatmentOriginGroup, functionalGroup, unknownMorpho, year, percentCover, X, X.1) )
+  turfID, originSite, destinationSite,originPlotID,
+  treatment,treatmentOriginGroup,year) )
 
-#replace NAs with 0s
-matrix_forphylogeny[is.na(matrix_forphylogeny)] <- 0
+#replace NAs with 0s in Excel bc file format is weird wtih NULLs
+write.csv(matrix_forphylogeny,"Data/matrix_nulls.csv", row.names = T)
+matrix_forphylogeny <- read.csv("Data/matrix_forphylogeny.csv")
+
+#delete extra column
+matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(X))
 
 #switch treatments to row names for the matrix 
 matrix_forphylogeny <- matrix_forphylogeny %>%
@@ -96,7 +104,7 @@ species_sums <- colSums(matrix_forphylogeny)
 
 # Convert column sums to a data frame row
 sum_row <- as.data.frame(t(species_sums))
-names(sum_row) <- names(matrix_forphylogeny)  # Ensure column names match
+names(sum_row) <- names(matrix_forphylogeny)  #Ensure column names match
 
 rownames(sum_row) <- c("all") 
 
@@ -104,10 +112,9 @@ rownames(sum_row) <- c("all")
 matrix_forphylogeny <- rbind(matrix_forphylogeny, sum_row)
 
 #get rid of unknowns 
-matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(moss, unknown_forb,
-                                                              Unknown_round_leaves,
-                                                              unknown_seedling,
-                                                              unknown_grass))
+matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(moss, unknown_forb,Unknown_round_leaves, unknown_seedling, unknown_grass))
+
+
 
 #prune tree
 pruned.tree <- treedata(SBtree, unlist(matrix_forphylogeny[378,matrix_forphylogeny[378,]>0]), warnings = F)$phy
