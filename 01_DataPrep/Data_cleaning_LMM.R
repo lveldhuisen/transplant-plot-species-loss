@@ -14,8 +14,8 @@ shannon_df_plotID = subset(shannon_df_plotID, select = -c(X.1,X))
 #get rid of extra control plots
 outs <- c("untouched","netted_untouched")
 
-abundance_df1 <- abundance_df1 %>% filter(!treatment %in% outs)
-shannon_df_plotID <- shannon_df_plotID %>% filter(!treatment %in% outs)
+#abundance_df1 <- abundance_df1 %>% filter(!treatment %in% outs)
+#shannon_df_plotID <- shannon_df_plotID %>% filter(!treatment %in% outs)
 
 #get rid of multiple rows per plot
 join_dat <- abundance_df1 %>% select(!8:13) %>% 
@@ -53,8 +53,8 @@ block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
 #filter data for things you never want
 abundance_df2 <- abundance_df2 %>% filter(!is.na(treatment),
                                          !species %in% gc.outs,
-                                         !originPlotID %in% block.outs,
-                                         !treatment %in% outs)
+                                         !originPlotID %in% block.outs)
+                                         #!treatment %in% outs)
 
 #get rid of extra X columns
 abundance_df2 = subset(abundance_df2, select = -c(X,X.1))
@@ -75,6 +75,11 @@ pd_df = subset(pd_df, select = -c(X))
 
 #merge dataframes
 pd_dat <- left_join(pd_df, join_dat, by = c("turfID","originPlotID", "year","treatmentOriginGroup"))
+
+#fix NA columns where site and treatment isn't transferring
+write.csv(pd_dat, "Data/pd_dat.csv")
+
+pd_dat <- read.csv("Data/pd_dat.csv")
 
 #add column to ID replication
 pd_dat$replicates <- paste(pd_dat$originSite,"_", pd_dat$destinationSite,"_",
@@ -134,6 +139,10 @@ mntd_dat <- left_join(mntd_df, join_dat, by = c("originPlotID", "year","treatmen
 #add column to ID replication
 mntd_dat$replicates <- paste(mntd_dat$originSite,"_", mntd_dat$destinationSite,"_",
                             mntd_dat$treatment,"_", mntd_dat$year)
+
+#get rid of extra control treatments and 2017
+mntd_dat <- mntd_dat %>% filter(!treatment %in% outs)
+mntd_dat <- mntd_dat %>% filter(!year %in% 2017)
 
 #save as csv
 write.csv(mntd_dat, file= "Data/MNTD_byPlot18-23.csv")

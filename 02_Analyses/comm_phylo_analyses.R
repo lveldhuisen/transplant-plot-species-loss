@@ -20,16 +20,19 @@ pd_allplots <- ses.pd(matrix_forphylogeny, pruned.tree, null.model = c("sample.p
        runs = 5000, include.root=TRUE)
 
 #delete unnecessary columns 
-pd_allplots = subset(pd_allplots, select = -c(ntaxa, pd.obs, pd.rand.mean, 
-                                                             pd.obs.rank,runs))
+pd_df = subset(pd_allplots, select = -c(ntaxa, pd.obs, pd.rand.mean, 
+                                              pd.obs.rank,runs))
 
+#remove space from row names
+#row.names(pd_df) <- gsub(' ', '', row.names(pd_df))
 
 #split plots and treatments into separate columns
-pd_allplots$ID <- row.names(pd_allplots)
+pd_df$ID <- row.names(pd_df)
 
 #delete 'all' row
-pd_df <- pd_allplots[-c(378),]
+pd_df <- pd_df[-c(378),]
 
+#split columns
 pd_df <- pd_df %>%
   separate(col = ID, into = c("turfID","tx_site", "year", "plotID"), sep = " _ ")
 
@@ -55,18 +58,16 @@ MPD_allplots <- ses.mpd(matrix_forphylogeny, cophenetic(pruned.tree),
                         iterations = 5000)  
 
 #delete unnecessary columns 
-MPD_allplots = subset(MPD_allplots, select = -c(ntaxa, mpd.obs, 
-                                                             mpd.rand.mean, mpd.rand.sd,
-                                                             mpd.obs.rank,runs))
-
+MPD_df = subset(MPD_allplots, select = -c(ntaxa, mpd.obs,mpd.rand.mean, mpd.rand.sd,
+                                          mpd.obs.rank,runs))
+#delete 'all' row and rows that didn't run 
+MPD_df <- MPD_df[-c(377),]
+MPD_df <- na.omit(MPD_df)
 
 #split plots and treatments into separate columns
-MPD_allplots$ID <- row.names(MPD_allplots)
-MPD_df <- MPD_allplots %>%
+MPD_df$ID <- row.names(MPD_df)
+MPD_df <- MPD_df %>%
   separate(col = ID, into = c("turfID","tx_site", "year", "plotID"), sep = " _ ")
-
-#delete 'all' row
-MPD_df <- MPD_df[-c(377),]
 
 #save as csv
 write.csv(MPD_df, file = "Data/MPD_byPlot.csv")
@@ -97,8 +98,9 @@ mntd_allplots$ID <- row.names(mntd_allplots)
 mntd_df <- mntd_allplots %>%
   separate(col = ID, into = c("turfID","tx_site", "year", "plotID"), sep = " _ ")
 
-#delete 'all' row
+#delete 'all' row and plots that didn't run
 mntd_df <- mntd_df[-c(378),]
+mntd_df <- na.omit(mntd_df)
 
 #save as csv
 write.csv(mntd_df, file = "Data/MNTD_byPlot.csv")
