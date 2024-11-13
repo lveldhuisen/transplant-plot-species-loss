@@ -233,19 +233,3 @@ Anova(model5)
 
 #save model output 
 saveRDS(model5, file = "ModelOutput/MNTD_LMM.RDS")
-
-#visualize results
-
-#bring in model results
-mntd_output <- readRDS("ModelOutput/MNTD_LMM.RDS")
-
-pred5 <- ggpredict(model5, terms = c("originSite", "treatment"))
-plot(pred5)
-
-test_mntd <- test_predictions(mntd_output, terms = c("orginSite","treatment"))
-
-plot_model(model5,
-           show.values=TRUE, show.p=TRUE,type = "est",
-           title="Effect of year and treatment on MNTD")
-
-

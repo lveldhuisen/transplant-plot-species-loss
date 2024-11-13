@@ -2,10 +2,12 @@ library(tidyverse)
 library(ggeffects)
 library(sjPlot)
 library(dplyr)
+library(patchwork)
 
-#plots for changing shannon and phylogentic diversity over time
+#plots for changing shannon and phylogentic diversity 
 
 #Shannon diversity------------------------
+
 ##change over time figure, very chaotic#####
 #bring in data
 shannon_df <- read.csv("Data/h_dat.csv")
@@ -43,13 +45,16 @@ pred2$x <- factor(pred2$x,
                              "warmed_one_step",
                              "warmed_two_steps"))
 
-#try figure
-ggplot(pred2)+
+#figure
+shannon_fig <- ggplot(pred2)+
   geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high))+
   geom_hline(yintercept = 2.07, linetype = "dashed")+
   theme_bw()+
   xlab("Treatment") +
-  ylab("predicted Shannon diversity")
+  ylab("predicted Shannon diversity")+
+  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
+
+plot(shannon_fig)
 
 #PD---------------
 ##change over time######
@@ -89,12 +94,13 @@ pred3$x <- factor(pred3$x,
                              "warmed_two_steps"))
 
 #try figure
-ggplot(pred3)+
+pd_fig <- ggplot(pred3)+
   geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high))+
   geom_hline(yintercept = -0.17, linetype = "dashed")+
   theme_bw()+
   xlab("Treatment") +
-  ylab("predicted PD")
+  ylab("predicted PD")+
+  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
 
 #MPD--------------------
 #bring in data
@@ -130,12 +136,44 @@ plot_model(model4,
            title="Effect of year and treatment on MPD")
 
 ##predicted MPD fig####
-ggplot(pred4)+
+mpd_fig <- ggplot(pred4)+
   geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high))+
   geom_hline(yintercept = -0.11, linetype = "dashed")+
   theme_bw()+
   xlab("Treatment") +
-  ylab("predicted MPD")
+  ylab("predicted MPD")+
+  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
 
+#MNTD-----------------------------
+#bring in model results
+model5 <- readRDS("ModelOutput/MNTD_LMM.RDS")
 
+pred5 <- ggpredict(model5, terms = c("treatment"))%>% 
+  filter(x !="netted_untouched",
+         x !="untouched")
 
+pred5$x <- factor(pred5$x, 
+                  levels = c("cooled_two_steps",
+                             "cooled_one_step",
+                             "within_site_transplant",
+                             "warmed_one_step",
+                             "warmed_two_steps"))
+
+##significance of fixed effects#######
+plot_model(model5,
+           show.values=TRUE, show.p=TRUE,type = "est",
+           title="Effect of year and treatment on MNTD")
+
+mntd_fig <- ggplot(pred5)+
+  geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high))+
+  geom_hline(yintercept = -0.388, linetype = "dashed")+
+  theme_bw()+
+  xlab("Treatment") +
+  ylab("predicted MNTD")+
+  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
+
+#combine figs-------------------
+all_fig <- (shannon_fig + pd_fig) / (mpd_fig + mntd_fig)+
+  plot_annotation(tag_levels = 'A')+
+  plot_layout(axis_titles = "collect")
+plot(all_fig)
