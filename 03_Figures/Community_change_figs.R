@@ -23,8 +23,8 @@ ggplot(shannon_df, aes(x = year, y = shannon_plots, color = treatment)) +
   geom_line(aes(y=fit,group = turfID)) +
   labs(x = 'Time', y = 'Shannon diversity', color = 'Treatment') +
   theme_bw() +
-  scale_color_viridis_d()+
-  facet_wrap(.~originSite)
+  scale_color_viridis_d()
+ # facet_wrap(.~originSite)
 
 ##significance of fixed effects#####
 #bring in data
@@ -51,7 +51,7 @@ shannon_fig <- ggplot(pred2)+
   geom_hline(yintercept = 2.07, linetype = "dashed")+
   theme_bw()+
   xlab("Treatment") +
-  ylab("predicted Shannon diversity")+
+  ylab("Shannon diversity")+
   scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
 
 plot(shannon_fig)
@@ -99,7 +99,7 @@ pd_fig <- ggplot(pred3)+
   geom_hline(yintercept = -0.17, linetype = "dashed")+
   theme_bw()+
   xlab("Treatment") +
-  ylab("predicted PD")+
+  ylab("PD")+
   scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
 
 #MPD--------------------
@@ -141,7 +141,7 @@ mpd_fig <- ggplot(pred4)+
   geom_hline(yintercept = -0.11, linetype = "dashed")+
   theme_bw()+
   xlab("Treatment") +
-  ylab("predicted MPD")+
+  ylab("MPD")+
   scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
 
 #MNTD-----------------------------
@@ -169,7 +169,7 @@ mntd_fig <- ggplot(pred5)+
   geom_hline(yintercept = -0.388, linetype = "dashed")+
   theme_bw()+
   xlab("Treatment") +
-  ylab("predicted MNTD")+
+  ylab("MNTD")+
   scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
 
 #combine figs-------------------
