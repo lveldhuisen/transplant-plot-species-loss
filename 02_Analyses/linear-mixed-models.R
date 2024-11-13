@@ -38,7 +38,7 @@ contrasts(abundance_df1$originSite) <- contr.sum(length(levels(abundance_df1$ori
 
 #model
 model1 <- lmer(log1p(occurrenceCount) ~ year + treatment + originSite +
-                 (1+ treatment|functionalGroup), data = abundance_df1, REML = FALSE)
+                 (1+ treatment|species), data = abundance_df1, REML = FALSE)
 
 #check model diagnostics before you look at summary. Is this model fucked?
 check_model(model1)
@@ -160,23 +160,11 @@ check_model(model3)
 summary(model3)
 Anova(model3)
 
-pred3 <- ggpredict(model3, terms = c("year", "treatment"))
-plot(pred3)
-
-
 #save model3 output 
 saveRDS(model3, file = "ModelOutput/PD_LMM.RDS")
 
-#make figure 
-#bring in model results
-pd_output <- readRDS("ModelOutput/PD_LMM.RDS")
-
 #test predictions
-
 test4 <- test_predictions(pd_output, terms = c("orginSite","treatment")) #need to fix
-
-plot_model(model3,show.values=TRUE, show.p=TRUE,
-                   title="Effect of year and treatment on PD")
 
 ##MPD across treatment and years---------------------------------------
 
@@ -209,13 +197,6 @@ Anova(model4)
 #save model 4 output 
 saveRDS(model4, file = "ModelOutput/MPD_LMM.RDS")
 
-#visualize results
-
-#bring in model results
-mpd_output <- readRDS("ModelOutput/MPD_LMM.RDS")
-
-pred4 <- ggpredict(model4, terms = c("treatment","originSite"))
-plot(pred4)
 
 test_mpd <- test_predictions(mpd_output, terms = c("orginSite","treatment"))
 
