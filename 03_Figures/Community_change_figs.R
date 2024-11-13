@@ -6,6 +6,7 @@ library(dplyr)
 #plots for changing shannon and phylogentic diversity over time
 
 #Shannon diversity------------------------
+##change over time figure, very chaotic#####
 #bring in data
 shannon_df <- read.csv("Data/h_dat.csv")
 
@@ -17,10 +18,38 @@ shannon_df <- shannon_df %>% filter(!is.na(treatment),
 #make plot
 ggplot(shannon_df, aes(x = year, y = shannon_plots, color = treatment)) +
   geom_point(alpha = .5, size = 1) +
-  geom_line(aes(y=fit,group = turfID, lty = originSite)) +
+  geom_line(aes(y=fit,group = turfID)) +
   labs(x = 'Time', y = 'Shannon diversity', color = 'Treatment') +
   theme_bw() +
-  scale_color_viridis_d()
+  scale_color_viridis_d()+
+  facet_wrap(.~originSite)
+
+##plot significance of fixed effects#####
+#bring in data
+h_model <- readRDS("ModelOutput/Shannon_LMM.RDS")
+
+plot_model(h_model,
+           show.values=TRUE, show.p=TRUE,
+           title="Effect of year and treatment on Shannon diversity")
+
+##plot model output for predicted shannon#####
+pred2 <- ggpredict(h_model, terms = c("treatment")) %>% 
+  filter(x !="netted_untouched",
+         x !="untouched")
+pred2$x <- factor(pred2$x, 
+                  levels = c("cooled_two_steps",
+                             "cooled_one_step",
+                             "within_site_transplant",
+                             "warmed_one_step",
+                             "warmed_two_steps"))
+
+#try figure
+ggplot(pred2)+
+  geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high))+
+  geom_hline(yintercept = 2.07, linetype = "dashed")+
+  theme_bw()+
+  xlab("Treatment") +
+  ylab("predicted Shannon diversity")
 
 #PD---------------
 #bring in data

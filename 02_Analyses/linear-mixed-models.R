@@ -38,7 +38,7 @@ contrasts(abundance_df1$originSite) <- contr.sum(length(levels(abundance_df1$ori
 
 #model
 model1 <- lmer(log1p(occurrenceCount) ~ year + treatment + originSite +
-                 (1+ treatment|species), data = abundance_df1, REML = FALSE)
+                 (1+ treatment|functionalGroup), data = abundance_df1, REML = FALSE)
 
 #check model diagnostics before you look at summary. Is this model fucked?
 check_model(model1)
@@ -52,7 +52,7 @@ tab_model(model1)
 #visualize random effects 
 plotREsim(REsim(model1))
 
-re.effects <- plot_model(model1, type = "re", show.values = TRUE)
+re.effects <- plot_model(model1, type = "re", show.values = TRUE, show.p = TRUE)
 
 plot(re.effects)
 
@@ -117,6 +117,10 @@ check_model(model2)
 summary(model2)
 Anova(model2)
 
+#tested for interaction between year and treatment, was not significant
+#cooled two steps had marginal significance in 2022 and 2023
+#anova showed interaction didnt significantly improve model performance
+
 #add model fits to dataframe to use in figure
 h_dat$fit <- predict(model2)
 write.csv(h_dat,"Data/h_dat.csv")
@@ -124,26 +128,12 @@ write.csv(h_dat,"Data/h_dat.csv")
 #save model2 output 
 saveRDS(model2, file = "ModelOutput/Shannon_LMM.RDS")
 
-#make figure 
-shannon_output <- readRDS("ModelOutput/Shannon_LMM.RDS")
-
-test <- ggpredict(shannon_output, terms = c("year", "treatment"))
-
-test2 <- ggemmeans(shannon_output, terms = c("year", "treatment"))
-
-test3 <- ggaverage(shannon_output, terms = c("year", "treatment"))
-
-pred2 <- ggpredict(model2, terms = c("year","treatment"))
-plot(pred2)
-
-plot_model(model2,
-                   show.values=TRUE, show.p=TRUE,
-                   title="Effect of year and treatment on Shannon diversity")
-
-
-#test predictions
+#test predictions, doesn't work
 test4 <- test_predictions(shannon_output, terms = c("year","treatment","originSite")) #need to fix
 
+plot_model(model2,
+           show.values=TRUE, show.p=TRUE,
+           title="Effect of year and treatment on Shannon diversity")
 
 ##PD across treatment and years---------------------------------
 #bring in data
