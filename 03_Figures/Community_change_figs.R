@@ -19,12 +19,12 @@ shannon_df <- shannon_df %>% filter(!is.na(treatment),
 
 #make plot
 ggplot(shannon_df, aes(x = year, y = shannon_plots, color = treatment)) +
-  geom_point(alpha = .5, size = 1) +
+  geom_point(alpha = .5, size = 1, lty=originSite) +
   geom_line(aes(y=fit,group = turfID)) +
   labs(x = 'Time', y = 'Shannon diversity', color = 'Treatment') +
   theme_bw() +
   scale_color_viridis_d()
- # facet_wrap(.~originSite)
+ #facet_wrap(.~originSite)
 
 ##significance of fixed effects#####
 #bring in data
