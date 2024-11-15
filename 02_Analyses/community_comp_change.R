@@ -76,5 +76,7 @@ simpson_fig <- ggplot(data = simpson_df, aes(x=year, y=simpson))+
   theme_bw()
 plot(simpson_fig)
 
+#species richness-----------------
+richness_df <- specnumber(comm_matrixID, groups = comm_matrixID$X, MARGIN = 1)
+richness_df <- as.data.frame(richness_df)             
 
-             

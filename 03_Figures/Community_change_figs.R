@@ -4,7 +4,7 @@ library(sjPlot)
 library(dplyr)
 library(patchwork)
 
-#plots for changing shannon and phylogentic diversity 
+#plots for changing shannon and phylogenetic diversity 
 
 #Shannon diversity------------------------
 
