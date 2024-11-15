@@ -135,6 +135,44 @@ plot_model(model2,
            show.values=TRUE, show.p=TRUE,
            title="Effect of year and treatment on Shannon diversity")
 
+##Richness across treatment and years--------------
+#bring in data
+h_dat <- read.csv("Data/Shannon_fulldataset2018-2023.csv")
+
+#use only within site transplant for control
+control.outs <- c("netted_untouched","untouched")
+h_dat <- h_dat %>% filter(!is.na(treatment),
+                                          !treatment %in% control.outs)
+
+#reorder treatments
+h_dat$treatment <- relevel(factor(h_dat$treatment),
+                           ref = "within_site_transplant")
+
+h_dat$year <- relevel(factor(h_dat$year),
+                      ref = "2018")
+
+#remove extra column
+h_dat = subset(h_dat, select = -c(X.1))
+
+#set up sum to zero contrast
+h_dat$originSite <- as.factor(h_dat$originSite)
+contrasts(h_dat$originSite) <- contr.sum(length(levels(h_dat$originSite)))
+
+#model
+model_r <- lmer(richness_df ~ year + treatment + originSite + 
+                 (1|replicates), data = h_dat)
+
+check_model(model_r)
+summary(model_r)
+Anova(model_r)
+
+#tested for interaction between year and treatment, was not significant
+#cooled two steps had marginal significance in 2022 and 2023
+#anova showed interaction didnt significantly improve model performance
+
+#save model2 output 
+saveRDS(model_r, file = "ModelOutput/Richness_LMM.RDS")
+
 ##PD across treatment and years---------------------------------
 #bring in data
 

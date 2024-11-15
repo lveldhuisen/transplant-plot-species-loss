@@ -78,5 +78,6 @@ plot(simpson_fig)
 
 #species richness-----------------
 richness_df <- specnumber(comm_matrixID, groups = comm_matrixID$X, MARGIN = 1)
-richness_df <- as.data.frame(richness_df)             
+richness_df <- as.data.frame(richness_df)    
+write.csv(richness_df, "Data/richness_data.csv")
 

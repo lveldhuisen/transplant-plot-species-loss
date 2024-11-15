@@ -56,6 +56,37 @@ shannon_fig <- ggplot(pred2)+
 
 plot(shannon_fig)
 
+#Richness--------------------
+
+#bring in data
+model_r <- readRDS("ModelOutput/Richness_LMM.RDS")
+
+##significance of fixed effects#####
+plot_model(model_r,
+           show.values=TRUE, show.p=TRUE,
+           title="Effect of year and treatment on species richness")
+##model output for predicted shannon#####
+pred_r <- ggpredict(model_r, terms = c("treatment")) %>% 
+  filter(x !="netted_untouched",
+         x !="untouched")
+pred_r$x <- factor(pred_r$x, 
+                  levels = c("cooled_two_steps",
+                             "cooled_one_step",
+                             "within_site_transplant",
+                             "warmed_one_step",
+                             "warmed_two_steps"))
+
+#figure
+richness_fig <- ggplot(pred_r)+
+  geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high))+
+  geom_hline(yintercept = 12.67, linetype = "dashed")+
+  theme_bw()+
+  xlab("Treatment") +
+  ylab("Species richness")+
+  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
+
+plot(richness_fig)
+
 #PD---------------
 ##change over time######
 #bring in data
