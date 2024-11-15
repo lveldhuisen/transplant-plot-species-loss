@@ -57,11 +57,12 @@ re.effects <- plot_model(model1, type = "re", show.values = TRUE, show.p = TRUE)
 plot(re.effects)
 
 #test plotting
+plot_model(model1,
+           show.values=TRUE, show.p=TRUE,
+           title="Effect of")
 
 #make table of species abundance change
 table <- get_model_data(model1, type = "re")
-
-#save as csv
 write.csv(table, file = "Data/Abundance_change.csv")
 
 #check residuals
