@@ -113,3 +113,6 @@ mntd_fig <- ggplot(data = mntd_df, aes(x=year, y=mntd.obs.z, group = year))+
   geom_hline(yintercept = 0)
 
 plot(mntd_fig)
+
+#Phylogenetic signal---------------------
+
