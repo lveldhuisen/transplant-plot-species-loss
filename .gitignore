@@ -53,6 +53,7 @@ rsconnect/
 *.zip
 *.pdf
 *.JPEG
+*.jpg
 *.img
 *.txt
 *.xlsx
