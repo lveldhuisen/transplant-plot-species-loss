@@ -43,11 +43,18 @@ species_df23 <- species_df %>% mutate(occ_2023 = ifelse(year == "2023", occurren
 species_df23 = subset(species_df23, select = -c(occurrenceCount, year))
 
 ##collapse 2018 and 2023 abundances into correct columns
-test <- species_df18 %>% left_join(species_df23, by = c("species", "treatment"),relationship = "many-to-many")
+test <- species_df18 %>% left_join(species_df23, by = c("species"="species", "treatment"="treatment"), relationship = "many-to-many")
 
+test <- test %>%
+  filter(!if_all(c(occ_2018, occ_2023), is.na))
 
+test <- na.omit(test)
 
-
+#add column for change over time
+test$change <- (test$occ_2023 - test$occ_2018)
 
 #figure----------
+
+ggplot(test, aes(treatment, species, fill= change)) + 
+  geom_tile()
 
