@@ -46,7 +46,7 @@ check_model(model1)
 #see model summary
 summary(model1)
 ranova(model1)
-Anova(model1)
+anova(model1)
 tab_model(model1)
 
 #visualize random effects 
@@ -116,7 +116,7 @@ model2 <- lmer(shannon_plots ~ year + treatment + originSite +
  
 check_model(model2)
 summary(model2)
-Anova(model2)
+anova(model2)
 
 #tested for interaction between year and treatment, was not significant
 #cooled two steps had marginal significance in 2022 and 2023
