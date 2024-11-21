@@ -1,5 +1,6 @@
 library(dplyr)
 library(tidyverse)
+library(viridis)
 
 #data cleaning--------------
 #bring in data
@@ -53,8 +54,25 @@ test <- na.omit(test)
 #add column for change over time
 test$change <- (test$occ_2023 - test$occ_2018)
 
-#figure----------
+#remove unknown species
+spec.outs <- c("unknown_forb")
 
+test <- test %>% filter(!species %in% spec.outs)
+
+#figure----------
+#reorder treatments
+test$treatment <- factor(test$treatment, 
+                  levels = c("cooled_two_steps",
+                             "cooled_one_step",
+                             "within_site_transplant",
+                             "warmed_one_step",
+                             "warmed_two_steps"))
+
+#figure
 ggplot(test, aes(treatment, species, fill= change)) + 
-  geom_tile()
+  geom_tile()+
+  scale_fill_viridis(discrete = FALSE)+
+  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))+
+  theme_bw()+
+  theme(axis.text.y = element_text(face = "italic"))
 
