@@ -132,6 +132,7 @@ pd_fig <- ggplot(pred3)+
   xlab("Treatment") +
   ylab("PD")+
   scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
+plot(pd_fig)
 
 #MPD--------------------
 #bring in data
