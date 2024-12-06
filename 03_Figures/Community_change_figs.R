@@ -72,7 +72,7 @@ shannon_fig <- ggplot(pred2)+
 
 plot(shannon_fig)
 
-#figure colored by origin site
+###figure colored by origin site#####
 ggplot(pred2)+
   geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high, color= group))+
   geom_hline(yintercept=2.07, linetype = "dashed", color = "#FDE72FFF")+
