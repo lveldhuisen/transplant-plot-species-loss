@@ -53,13 +53,14 @@ pred2$x <- factor(pred2$x,
 
 #make extra dataset to set different baseline horizontal lines in faceted fig
 dummy_shannon <- data.frame(group = c("Upper Montane","Pfeiler","Monument"))
-dummy_shannon$H <- c(2.37, 2.33, 2.07)
+dummy_shannon$H <- c(2.47, 2.29, 2.03)
 dummy_shannon$group <- factor(dummy_shannon$group,
                               levels  = c("Upper Montane",
                                           "Pfeiler",
                                           "Monument"))
 
 #figure faceted by origin site
+#12-6-2024 has nested interaction between treatment and origin site
 shannon_fig <- ggplot(pred2)+
   geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high))+
   geom_hline(data= dummy_shannon, aes(yintercept=H), linetype = "dashed")+
@@ -81,7 +82,8 @@ ggplot(pred2)+
   xlab("Treatment") +
   ylab("Shannon diversity")+
   scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))+
-  scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))
+  scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))+
+  labs(color='Origin site') 
 
 #Richness--------------------
 
