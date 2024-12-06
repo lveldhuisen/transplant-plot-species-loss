@@ -39,11 +39,11 @@ pred2 <- ggpredict(h_model, terms = c("treatment","originSite")) %>%
   filter(x !="netted_untouched",
          x !="untouched")
 
-#create column to group treatments by origin site
-pred2$groups = NA
-pred2$groups<- paste(pred2$x, "_",pred2$group)
-
 #reorder groups
+pred2$group <- factor(pred2$group,
+                      levels  = c("Upper Montane",
+                                  "Pfeiler",
+                                  "Monument"))
 pred2$groups <- factor(pred2$groups, 
                   levels = c("cooled_two_steps",
                              "cooled_one_step",
@@ -51,10 +51,18 @@ pred2$groups <- factor(pred2$groups,
                              "warmed_one_step",
                              "warmed_two_steps"))
 
+#make extra dataset to set different baseline horizontal lines in faceted fig
+dummy_shannon <- data.frame(group = c("Upper Montane","Pfeiler","Monument"))
+dummy_shannon$H <- c(2.37, 2.33, 2.07)
+dummy_shannon$group <- factor(dummy_shannon$group,
+                              levels  = c("Upper Montane",
+                                          "Pfeiler",
+                                          "Monument"))
+
 #figure
 shannon_fig <- ggplot(pred2)+
   geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high))+
-  #geom_hline(yintercept = 2.07, linetype = "dashed")+
+  geom_hline(data= dummy_shannon, aes(yintercept=H), linetype = "dashed")+
   theme_bw()+
   xlab("Treatment") +
   ylab("Shannon diversity")+
