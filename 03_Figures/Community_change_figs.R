@@ -35,10 +35,16 @@ plot_model(h_model,
            title="Effect of year and treatment on Shannon diversity")
 
 ##model output for predicted shannon#####
-pred2 <- ggpredict(h_model, terms = c("treatment")) %>% 
+pred2 <- ggpredict(h_model, terms = c("treatment","originSite")) %>% 
   filter(x !="netted_untouched",
          x !="untouched")
-pred2$x <- factor(pred2$x, 
+
+#create column to group treatments by origin site
+pred2$groups = NA
+pred2$groups<- paste(pred2$x, "_",pred2$group)
+
+#reorder groups
+pred2$groups <- factor(pred2$groups, 
                   levels = c("cooled_two_steps",
                              "cooled_one_step",
                              "within_site_transplant",
@@ -48,11 +54,12 @@ pred2$x <- factor(pred2$x,
 #figure
 shannon_fig <- ggplot(pred2)+
   geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high))+
-  geom_hline(yintercept = 2.07, linetype = "dashed")+
+  #geom_hline(yintercept = 2.07, linetype = "dashed")+
   theme_bw()+
   xlab("Treatment") +
   ylab("Shannon diversity")+
-  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
+  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))+
+  facet_wrap(.~group)
 
 plot(shannon_fig)
 
@@ -114,7 +121,7 @@ plot_model(model3,show.values=TRUE, show.p=TRUE,
 #bring in model results
 model3 <- readRDS("ModelOutput/PD_LMM.RDS")
 
-pred3 <- ggpredict(model3, terms = c("treatment")) %>% 
+pred3 <- ggpredict(model3, terms = c("treatment","originSite")) %>% 
   filter(x !="netted_untouched",
          x !="untouched")
 pred3$x <- factor(pred3$x, 
@@ -131,7 +138,9 @@ pd_fig <- ggplot(pred3)+
   theme_bw()+
   xlab("Treatment") +
   ylab("PD")+
-  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
+  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))+
+  facet_wrap(.~group)
+
 plot(pd_fig)
 
 #MPD--------------------

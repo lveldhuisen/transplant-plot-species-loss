@@ -43,7 +43,8 @@ comm_matrix <- pivot_wider(abundance_df1, names_from = species,
 
 #make matrix with plot IDs
 comm_matrix$ID = NA
-comm_matrix$ID <- paste(comm_matrix$turfID, "_",comm_matrix$year,"_",comm_matrix$treatmentOriginGroup)
+comm_matrix$ID <- paste(comm_matrix$treatmentOriginGroup, "_",comm_matrix$year,
+                        "_", comm_matrix$originPlotID)
 comm_matrixID <- comm_matrix %>% relocate(ID)
 comm_matrixID = subset(comm_matrixID, select = -c(turfID,originSite, destinationSite,
                                                   originPlotID, 
