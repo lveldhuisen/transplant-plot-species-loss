@@ -35,6 +35,10 @@ abundance_df1 = subset(abundance_df1, select = -c(X,X.1))
 #save clean vertically-formatted abundance data
 write.csv(abundance_df1, file = "abundance_clean2018-2023.csv")
 
+#count number of species
+
+abundance_df1 %>% distinct(originSite,species)
+
 ###reformat to matrix for Vegan########
 
 #reformat data

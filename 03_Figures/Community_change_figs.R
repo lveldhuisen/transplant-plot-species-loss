@@ -44,7 +44,7 @@ pred2$group <- factor(pred2$group,
                       levels  = c("Upper Montane",
                                   "Pfeiler",
                                   "Monument"))
-pred2$groups <- factor(pred2$groups, 
+pred2$x <- factor(pred2$x, 
                   levels = c("cooled_two_steps",
                              "cooled_one_step",
                              "within_site_transplant",
@@ -76,12 +76,21 @@ plot(shannon_fig)
 #bring in data
 model_r <- readRDS("ModelOutput/Richness_LMM.RDS")
 
+#make extra dataset to set different baseline horizontal lines in faceted fig
+dummy_r <- data.frame(group = c("Upper Montane","Pfeiler","Monument"))
+dummy_r$richness <- c(17.17, 15.65, 12.67)
+dummy_r$group <- factor(dummy_r$group,
+                              levels  = c("Upper Montane",
+                                          "Pfeiler",
+                                          "Monument"))
+
 ##significance of fixed effects#####
 plot_model(model_r,
            show.values=TRUE, show.p=TRUE,
            title="Effect of year and treatment on species richness")
+
 ##model output for predicted shannon#####
-pred_r <- ggpredict(model_r, terms = c("treatment")) %>% 
+pred_r <- ggpredict(model_r, terms = c("treatment","originSite")) %>% 
   filter(x !="netted_untouched",
          x !="untouched")
 pred_r$x <- factor(pred_r$x, 
@@ -90,15 +99,21 @@ pred_r$x <- factor(pred_r$x,
                              "within_site_transplant",
                              "warmed_one_step",
                              "warmed_two_steps"))
+#reorder groups
+pred_r$group <- factor(pred_r$group,
+                      levels  = c("Upper Montane",
+                                  "Pfeiler",
+                                  "Monument"))
 
 #figure
 richness_fig <- ggplot(pred_r)+
   geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high))+
-  geom_hline(yintercept = 12.67, linetype = "dashed")+
+  geom_hline(data= dummy_r, aes(yintercept=richness), linetype = "dashed")+
   theme_bw()+
   xlab("Treatment") +
   ylab("Species richness")+
-  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
+  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))+
+  facet_wrap(.~group)
 
 plot(richness_fig)
 
@@ -132,6 +147,7 @@ model3 <- readRDS("ModelOutput/PD_LMM.RDS")
 pred3 <- ggpredict(model3, terms = c("treatment","originSite")) %>% 
   filter(x !="netted_untouched",
          x !="untouched")
+
 pred3$x <- factor(pred3$x, 
                   levels = c("cooled_two_steps",
                              "cooled_one_step",
@@ -139,10 +155,24 @@ pred3$x <- factor(pred3$x,
                              "warmed_one_step",
                              "warmed_two_steps"))
 
+#reorder groups
+pred3$group <- factor(pred3$group,
+                      levels  = c("Upper Montane",
+                                  "Pfeiler",
+                                  "Monument"))
+
+#make extra dataset to set different baseline horizontal lines in faceted fig
+dummy_pd <- data.frame(group = c("Upper Montane","Pfeiler","Monument"))
+dummy_pd$pd <- c(-0.75, -1.12, -0.17)
+dummy_pd$group <- factor(dummy_pd$group,
+                        levels  = c("Upper Montane",
+                                    "Pfeiler",
+                                    "Monument"))
+
 #try figure
 pd_fig <- ggplot(pred3)+
   geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high))+
-  geom_hline(yintercept = -0.17, linetype = "dashed")+
+  geom_hline(data= dummy_pd, aes(yintercept=pd), linetype = "dashed")+
   theme_bw()+
   xlab("Treatment") +
   ylab("PD")+
@@ -169,7 +199,7 @@ ggplot(mpd_dat, aes(x = year, y = mpd.obs.z, color = treatment)) +
 #bring in model results
 model4 <- readRDS("ModelOutput/MPD_LMM.RDS")
 
-pred4 <- ggpredict(model4, terms = c("treatment"))%>% 
+pred4 <- ggpredict(model4, terms = c("treatment", "originSite"))%>% 
   filter(x !="netted_untouched",
          x !="untouched")
 pred4$x <- factor(pred4$x, 
@@ -179,25 +209,42 @@ pred4$x <- factor(pred4$x,
                              "warmed_one_step",
                              "warmed_two_steps"))
 
+#reorder groups
+pred4$group <- factor(pred4$group,
+                      levels  = c("Upper Montane",
+                                  "Pfeiler",
+                                  "Monument"))
+
 #figure for fixed effects
 plot_model(model4,
            show.values=TRUE, show.p=TRUE,
            title="Effect of year and treatment on MPD")
 
+#make extra dataset to set different baseline horizontal lines in faceted fig
+dummy_mpd <- data.frame(group = c("Upper Montane","Pfeiler","Monument"))
+dummy_mpd$mpd <- c(-0.4,-0.6,-0.11)
+dummy_mpd$group <- factor(dummy_pmd$group,
+                         levels  = c("Upper Montane",
+                                     "Pfeiler",
+                                     "Monument"))
+
 ##predicted MPD fig####
 mpd_fig <- ggplot(pred4)+
   geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high))+
-  geom_hline(yintercept = -0.11, linetype = "dashed")+
+  geom_hline(data= dummy_mpd, aes(yintercept=mpd), linetype = "dashed")+
   theme_bw()+
   xlab("Treatment") +
   ylab("MPD")+
-  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
+  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))+
+  facet_wrap(.~group)
+
+plot(mpd_fig)
 
 #MNTD-----------------------------
 #bring in model results
 model5 <- readRDS("ModelOutput/MNTD_LMM.RDS")
 
-pred5 <- ggpredict(model5, terms = c("treatment"))%>% 
+pred5 <- ggpredict(model5, terms = c("treatment", "originSite"))%>% 
   filter(x !="netted_untouched",
          x !="untouched")
 
@@ -208,18 +255,36 @@ pred5$x <- factor(pred5$x,
                              "warmed_one_step",
                              "warmed_two_steps"))
 
+#reorder groups
+pred5$group <- factor(pred5$group,
+                      levels  = c("Upper Montane",
+                                  "Pfeiler",
+                                  "Monument"))
+
+#make extra dataset to set different baseline horizontal lines in faceted fig
+dummy_mntd <- data.frame(group = c("Upper Montane","Pfeiler","Monument"))
+dummy_mntd$mntd <- c(-0.69,-1.15,-0.388)
+dummy_mntd$group <- factor(dummy_pd$group,
+                         levels  = c("Upper Montane",
+                                     "Pfeiler",
+                                     "Monument"))
+
 ##significance of fixed effects#######
 plot_model(model5,
            show.values=TRUE, show.p=TRUE,type = "est",
            title="Effect of year and treatment on MNTD")
 
+#predictions in figure 
 mntd_fig <- ggplot(pred5)+
   geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high))+
-  geom_hline(yintercept = -0.388, linetype = "dashed")+
+  geom_hline(data= dummy_mntd, aes(yintercept=mntd), linetype = "dashed")+
   theme_bw()+
   xlab("Treatment") +
   ylab("MNTD")+
-  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
+  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))+
+  facet_wrap(.~group)
+
+plot(mntd_fig)
 
 #combine figs-------------------
 all_fig <- (shannon_fig + pd_fig) / (mpd_fig + mntd_fig)+
