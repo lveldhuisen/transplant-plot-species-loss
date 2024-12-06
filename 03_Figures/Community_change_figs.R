@@ -59,7 +59,7 @@ dummy_shannon$group <- factor(dummy_shannon$group,
                                           "Pfeiler",
                                           "Monument"))
 
-#figure
+#figure faceted by origin site
 shannon_fig <- ggplot(pred2)+
   geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high))+
   geom_hline(data= dummy_shannon, aes(yintercept=H), linetype = "dashed")+
@@ -70,6 +70,18 @@ shannon_fig <- ggplot(pred2)+
   facet_wrap(.~group)
 
 plot(shannon_fig)
+
+#figure colored by origin site
+ggplot(pred2)+
+  geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high, color= group))+
+  geom_hline(yintercept=2.07, linetype = "dashed", color = "#FDE72FFF")+
+  geom_hline(yintercept=2.33, linetype = "dashed", color = "#22A884FF")+
+  geom_hline(yintercept=2.37, linetype = "dashed", color = "#414487FF")+
+  theme_bw()+
+  xlab("Treatment") +
+  ylab("Shannon diversity")+
+  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))+
+  scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))
 
 #Richness--------------------
 
