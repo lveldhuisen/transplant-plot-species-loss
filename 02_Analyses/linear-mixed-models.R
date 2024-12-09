@@ -111,7 +111,8 @@ h_dat$originSite <- as.factor(h_dat$originSite)
 contrasts(h_dat$originSite) <- contr.sum(length(levels(h_dat$originSite)))
 
 #model
-model2 <- lmer(shannon_plots ~ year + originSite/treatment  + (1|replicates), data = h_dat)
+model2 <- lmer(shannon_plots ~ year + 
+                 originSite/treatment  + (1|replicates), data = h_dat)
  
 check_model(model2)
 summary(model2)
@@ -159,12 +160,29 @@ h_dat$originSite <- as.factor(h_dat$originSite)
 contrasts(h_dat$originSite) <- contr.sum(length(levels(h_dat$originSite)))
 
 #model
-model_r <- lmer(richness_df ~ year + treatment + originSite + 
+model_r <- lmer(richness_df ~ year + originSite/treatment + 
                  (1|replicates), data = h_dat)
 
 check_model(model_r)
 summary(model_r)
 Anova(model_r)
+
+pred_R <- test_predictions(model_r, terms = c("originSite","treatment"))
+
+#save as csv
+write_csv(pred_R, file = "ModelOutput/Prediction_richness_nested.csv")
+
+#model
+model_r1 <- lmer(richness_df ~ year + originSite + treatment + 
+                  (1|replicates), data = h_dat)
+
+summary(model_r1)
+Anova(model_r1)
+AIC(model_r1,model_r)
+
+compare_performance(model_r,model_r1, rank = T) #nested looks better
+
+#try to ggeffects function 
 
 #tested for interaction between year and treatment, was not significant
 #cooled two steps had marginal significance in 2022 and 2023
