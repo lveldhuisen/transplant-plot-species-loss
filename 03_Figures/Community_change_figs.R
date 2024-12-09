@@ -97,7 +97,6 @@ shannon_fig_site <- ggplot(pred_s)+
   scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))+
   labs(color='Origin site')+
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
-
 plot(shannon_fig_site)
 
 #Richness--------------------
@@ -429,5 +428,5 @@ plot(mntd_fig_site)
 #combine figs-------------------
 all_fig <- (shannon_fig_site + pd_fig_site) / (mpd_fig_site + mntd_fig_site)+
   plot_annotation(tag_levels = 'A')+
-  plot_layout(axis_titles = "collect")
+  plot_layout(axis_titles = "collect", guides = "collect")
 plot(all_fig)
