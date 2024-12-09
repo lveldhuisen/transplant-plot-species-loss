@@ -73,17 +73,32 @@ shannon_fig <- ggplot(pred2)+
 plot(shannon_fig)
 
 ###figure colored by origin site#####
-ggplot(pred2)+
-  geom_pointrange(mapping = aes(x = x, y= predicted, ymin = conf.low, ymax = conf.high, color= group))+
-  geom_hline(yintercept=2.07, linetype = "dashed", color = "#FDE72FFF")+
-  geom_hline(yintercept=2.33, linetype = "dashed", color = "#22A884FF")+
-  geom_hline(yintercept=2.37, linetype = "dashed", color = "#414487FF")+
-  theme_bw()+
+#reorder groups
+pred_s$originSite <- factor(pred_s$originSite,
+                            levels  = c("Upper Montane",
+                                        "Pfeiler",
+                                        "Monument"))
+
+pred_s$comparison2 <- factor(pred_s$comparison2, 
+                             levels = c("cooled_two_steps",
+                                        "cooled_one_step",
+                                        "warmed_one_step",
+                                        "warmed_two_steps"))
+
+#figure 
+shannon_fig_site <- ggplot(pred_s)+
+  geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
+                                ymax = conf.low, 
+                                color=originSite), position = position_dodge(width = 0.3))+
+  theme_classic()+
   xlab("Treatment") +
-  ylab("Shannon diversity")+
-  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))+
+  ylab("Change in Shannon diversity")+
+  scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
   scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))+
-  labs(color='Origin site') 
+  labs(color='Origin site')+
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
+
+plot(shannon_fig_site)
 
 #Richness--------------------
 
@@ -151,10 +166,11 @@ richness_fig_site <- ggplot(pred_R)+
                                 color=originSite), position = position_dodge(width = 0.3))+
   theme_classic()+
   xlab("Treatment") +
-  ylab("Change in species richness from within site transplant")+
+  ylab("Change in species richness")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
   scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))+
-  labs(color='Origin site') 
+  labs(color='Origin site')+
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
 
 plot(richness_fig_site)
 
@@ -223,6 +239,34 @@ pd_fig <- ggplot(pred3)+
 
 plot(pd_fig)
 
+###figure colored by origin site#####
+#reorder groups
+pred_pd$originSite <- factor(pred_pd$originSite,
+                            levels  = c("Upper Montane",
+                                        "Pfeiler",
+                                        "Monument"))
+
+pred_pd$comparison2 <- factor(pred_pd$comparison2, 
+                             levels = c("cooled_two_steps",
+                                        "cooled_one_step",
+                                        "warmed_one_step",
+                                        "warmed_two_steps"))
+
+#figure 
+pd_fig_site <- ggplot(pred_pd)+
+  geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
+                                ymax = conf.low, 
+                                color=originSite), position = position_dodge(width = 0.3))+
+  theme_classic()+
+  xlab("Treatment") +
+  ylab("Change in PD")+
+  scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
+  scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))+
+  labs(color='Origin site')+
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
+
+plot(pd_fig_site)
+
 #MPD--------------------
 #bring in data
 mpd_dat <- read.csv("Data/MPD_byPlot18-23.csv")
@@ -282,6 +326,33 @@ mpd_fig <- ggplot(pred4)+
 
 plot(mpd_fig)
 
+#reorder groups
+pred_mpd$originSite <- factor(pred_mpd$originSite,
+                             levels  = c("Upper Montane",
+                                         "Pfeiler",
+                                         "Monument"))
+
+pred_mpd$comparison2 <- factor(pred_mpd$comparison2, 
+                              levels = c("cooled_two_steps",
+                                         "cooled_one_step",
+                                         "warmed_one_step",
+                                         "warmed_two_steps"))
+
+#figure 
+mpd_fig_site <- ggplot(pred_mpd)+
+  geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
+                                ymax = conf.low, 
+                                color=originSite), position = position_dodge(width = 0.3))+
+  theme_classic()+
+  xlab("Treatment") +
+  ylab("Change in MPD")+
+  scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
+  scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))+
+  labs(color='Origin site')+
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
+
+plot(mpd_fig_site)
+
 #MNTD-----------------------------
 #bring in model results
 model5 <- readRDS("ModelOutput/MNTD_LMM.RDS")
@@ -328,8 +399,35 @@ mntd_fig <- ggplot(pred5)+
 
 plot(mntd_fig)
 
+#reorder groups
+pred_mntd$originSite <- factor(pred_mntd$originSite,
+                              levels  = c("Upper Montane",
+                                          "Pfeiler",
+                                          "Monument"))
+
+pred_mntd$comparison2 <- factor(pred_mntd$comparison2, 
+                               levels = c("cooled_two_steps",
+                                          "cooled_one_step",
+                                          "warmed_one_step",
+                                          "warmed_two_steps"))
+
+#figure 
+mntd_fig_site <- ggplot(pred_mntd)+
+  geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
+                                ymax = conf.low, 
+                                color=originSite), position = position_dodge(width = 0.3))+
+  theme_classic()+
+  xlab("Treatment") +
+  ylab("Change in MNTD")+
+  scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
+  scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))+
+  labs(color='Origin site')+
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
+
+plot(mntd_fig_site)
+
 #combine figs-------------------
-all_fig <- (shannon_fig + pd_fig) / (mpd_fig + mntd_fig)+
+all_fig <- (shannon_fig_site + pd_fig_site) / (mpd_fig_site + mntd_fig_site)+
   plot_annotation(tag_levels = 'A')+
   plot_layout(axis_titles = "collect")
 plot(all_fig)
