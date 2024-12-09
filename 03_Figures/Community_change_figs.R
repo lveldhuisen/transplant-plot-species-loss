@@ -127,9 +127,35 @@ richness_fig <- ggplot(pred_r)+
   xlab("Treatment") +
   ylab("Species richness")+
   scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))+
-  facet_wrap(.~group)
+  #facet_wrap(.~group)
 
 plot(richness_fig)
+
+#by origin site figure
+#reorder groups
+pred_R$originSite <- factor(pred_R$originSite,
+                       levels  = c("Upper Montane-Upper Montane",
+                                   "Pfeiler-Pfeiler",
+                                   "Monument-Monument"))
+pred_R$comparison2 <- factor(pred_R$comparison2, 
+                   levels = c("cooled_two_steps",
+                              "cooled_one_step",
+                              "within_site_transplant",
+                              "warmed_one_step",
+                              "warmed_two_steps"))
+
+#figure
+richness_fig_site <- ggplot(pred_R)+
+  geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.low,
+                                ymax = conf.high, 
+                                color=originSite), position = position_dodge(width = 0.3))+
+  theme_bw()+
+  xlab("Treatment") +
+  ylab("Change in species richness")+
+  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
+
+plot(richness_fig_site)
+
 
 #PD---------------
 ##change over time######
