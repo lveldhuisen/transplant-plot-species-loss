@@ -111,7 +111,7 @@ h_dat$originSite <- as.factor(h_dat$originSite)
 contrasts(h_dat$originSite) <- contr.sum(length(levels(h_dat$originSite)))
 
 #model
-model2 <- lmer(shannon_plots ~ year + originSite + treatment  + (1|replicates), data = h_dat)
+model2 <- lmer(shannon_plots ~ year + originSite/treatment  + (1|replicates), data = h_dat)
  
 check_model(model2)
 summary(model2)
