@@ -182,24 +182,17 @@ AIC(model_r1,model_r)
 ###compare nested and nonnested models####
 compare_performance(model_r,model_r1, rank = T) #nested looks better
 
+#save nested output
 pred_R <- test_predictions(model_r, terms = c("originSite","treatment"))
 
 #save as csv
 write_csv(pred_R, file = "ModelOutput/Prediction_richness_nested.csv")
 
-
-#try to ggeffects function 
-
-#tested for interaction between year and treatment, was not significant
-#cooled two steps had marginal significance in 2022 and 2023
-#anova showed interaction didnt significantly improve model performance
-
 #save model2 output 
 saveRDS(model_r, file = "ModelOutput/Richness_LMM.RDS")
 
 ##PD across treatment and years---------------------------------
-#bring in data
-
+###bring in and set up data####
 
 #set up sum to zero contrast
 pd_dat18to23$originSite <- as.factor(pd_dat18to23$originSite)
@@ -214,23 +207,35 @@ pd_dat18to23$year <- relevel(factor(pd_dat18to23$year),
                             ref = "2018")
 hist(pd_dat18to23$pd.obs.z)
 
-#model
-model3 <- lmer(pd.obs.z ~ year + treatment + originSite + (1|replicates),
+###model not nested####
+model3_a <- lmer(pd.obs.z ~ year + treatment + originSite + (1|replicates),
                data = pd_dat18to23)
 
-check_model(model3)
-summary(model3)
-Anova(model3)
+check_model(model3_a)
+summary(model3_a)
+anova(model3_a)
+
+###model nested####
+model3_n <- lmer(pd.obs.z ~ year + originSite/treatment + (1|replicates),
+                 data = pd_dat18to23)
+
+###compare models####
+AIC(model3_a)
+AIC(model3_n)
+compare_performance(model3_a, model3_n, rank = T) #equal performance, use nested
 
 #save model3 output 
-saveRDS(model3, file = "ModelOutput/PD_LMM.RDS")
+saveRDS(model3_n, file = "ModelOutput/PD_LMM.RDS")
 
 #test predictions
-test4 <- test_predictions(pd_output, terms = c("orginSite","treatment")) #need to fix
+predictions_pd_nested <- test_predictions(model3_n, terms = c("originSite","treatment"))
+
+#save as csv
+write_csv(predictions_pd_nested, file = "ModelOutput/Prediction_pd_nested.csv")
 
 ##MPD across treatment and years---------------------------------------
 
-#bring in data
+###bring in and set up data####
 mpd_dat <- read.csv("Data/MPD_byPlot18-23.csv")
 
 hist(mpd_dat$mpd.obs.z)
@@ -247,28 +252,34 @@ mpd_dat$treatment <- relevel(factor(mpd_dat$treatment),
 mpd_dat$year <- relevel(factor(mpd_dat$year),
                              ref = "2018")
 
-#model
-model4 <- lmer(mpd.obs.z ~ year + treatment + originSite + (1|replicates),
+###model additive####
+model4_a <- lmer(mpd.obs.z ~ year + treatment + originSite + (1|replicates),
                data = mpd_dat)
 
 #check model
-check_model(model4)
-summary(model4)
-Anova(model4)
+check_model(model4_a)
+summary(model4_a)
+anova(model4_a)
+
+###model nested####
+model4_n <- lmer(mpd.obs.z ~ year + originSite/treatment + (1|replicates),
+                 data = mpd_dat)
+
+#compare nested and additive
+compare_performance(model4_a, model4_n, rank = T) #equal performance, use nested
 
 #save model 4 output 
-saveRDS(model4, file = "ModelOutput/MPD_LMM.RDS")
+saveRDS(model4_n, file = "ModelOutput/MPD_LMM.RDS")
 
+#test predictions
+pred_mpd_nested <- test_predictions(model4_n, terms = c("originSite","treatment"))
 
-test_mpd <- test_predictions(mpd_output, terms = c("orginSite","treatment"))
-
-plot_model(model4,
-           show.values=TRUE, show.p=TRUE,
-           title="Effect of year and treatment on MPD")
+#save as csv
+write_csv(pred_mpd_nested, file = "ModelOutput/Prediction_mpd_nested.csv")
 
 ##MNTD across treatment and years---------------------------------------
 
-#bring in data
+###bring in and set up data####
 mntd_dat <- read.csv("Data/MNTD_byPlot18-23.csv")
 
 hist(mntd_dat$mntd.obs.z)
@@ -284,14 +295,28 @@ mntd_dat$treatment <- relevel(factor(mntd_dat$treatment),
 
 mntd_dat$year <- relevel(factor(mntd_dat$year),
                         ref = "2018")
-#model
-model5 <- lmer(mntd.obs.z ~ year + treatment + originSite + (1|replicates),
+###model additive####
+model5_a <- lmer(mntd.obs.z ~ year + treatment + originSite + (1|replicates),
                data = mntd_dat)
 
 #check model
-check_model(model5)
-summary(model5)
-Anova(model5)
+check_model(model5_a)
+summary(model5_a)
+anova(model5_a)
+
+###model nested####
+model5_n <- lmer(mntd.obs.z ~ year + originSite/treatment + (1|replicates),
+                 data = mntd_dat)
+
+###compare nested and non-nested####
+compare_performance(model5_a, model5_n, rank = T) #equal, use nested
 
 #save model output 
-saveRDS(model5, file = "ModelOutput/MNTD_LMM.RDS")
+saveRDS(model5_n, file = "ModelOutput/MNTD_LMM.RDS")
+
+#test predictions
+pred_mntd_nested <- test_predictions(model5_n, terms = c("originSite","treatment"))
+
+#save as csv
+write_csv(pred_mntd_nested, file = "ModelOutput/Prediction_mntd_nested.csv")
+
