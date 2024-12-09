@@ -131,28 +131,30 @@ richness_fig <- ggplot(pred_r)+
 
 plot(richness_fig)
 
-#by origin site figure
+#by origin site figure######
 #reorder groups
 pred_R$originSite <- factor(pred_R$originSite,
                        levels  = c("Upper Montane-Upper Montane",
                                    "Pfeiler-Pfeiler",
                                    "Monument-Monument"))
+
 pred_R$comparison2 <- factor(pred_R$comparison2, 
                    levels = c("cooled_two_steps",
                               "cooled_one_step",
-                              "within_site_transplant",
                               "warmed_one_step",
                               "warmed_two_steps"))
 
-#figure
+#figure (not with nested model)
 richness_fig_site <- ggplot(pred_R)+
-  geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.low,
-                                ymax = conf.high, 
+  geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
+                                ymax = conf.low, 
                                 color=originSite), position = position_dodge(width = 0.3))+
-  theme_bw()+
+  theme_classic()+
   xlab("Treatment") +
-  ylab("Change in species richness")+
-  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))
+  ylab("Change in species richness from within site transplant")+
+  scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
+  scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))+
+  labs(color='Origin site') 
 
 plot(richness_fig_site)
 

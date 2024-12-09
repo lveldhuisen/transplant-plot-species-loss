@@ -92,8 +92,14 @@ re.effects <- plot_model(model_aoo, type = "re", show.values = TRUE)
 plot(re.effects)
 
 #Community-level changes-----------------------
+
+#tested for interaction between year and treatment, was not significant
+#cooled two steps had marginal significance in 2022 and 2023
+#anova showed interaction didnt significantly improve model performance
+
 ##Shannon diversity across years & tx---------------------------------
-#bring in data
+
+###bring in and set up data###
 h_dat <- read.csv("Data/Shannon_fulldataset2018-2023.csv")
 
 #reorder treatments
@@ -110,34 +116,33 @@ h_dat = subset(h_dat, select = -c(X.1))
 h_dat$originSite <- as.factor(h_dat$originSite)
 contrasts(h_dat$originSite) <- contr.sum(length(levels(h_dat$originSite)))
 
-#model
-model2 <- lmer(shannon_plots ~ year + 
+###model nested#####
+model2_n <- lmer(shannon_plots ~ year + 
                  originSite/treatment  + (1|replicates), data = h_dat)
  
 check_model(model2)
 summary(model2)
 anova(model2)
 
-#tested for interaction between year and treatment, was not significant
-#cooled two steps had marginal significance in 2022 and 2023
-#anova showed interaction didnt significantly improve model performance
+###model additive only#####
+model2_a <- lmer(shannon_plots ~ year + 
+                   originSite + treatment  + (1|replicates), data = h_dat)
 
-#add model fits to dataframe to use in figure
-h_dat$fit <- predict(model2)
-write.csv(h_dat,"Data/h_dat.csv")
+###compare models####
+compare_performance(model2_a,model2_n, rank = T) #nested looks better
 
 #save model2 output 
-saveRDS(model2, file = "ModelOutput/Shannon_LMM.RDS")
+saveRDS(model2_n, file = "ModelOutput/Shannon_LMM.RDS")
 
-#test predictions, doesn't work
-test4 <- test_predictions(shannon_output, terms = c("year","treatment","originSite")) #need to fix
+#test predictions
+prediction_shannon_nested <- test_predictions(model2_n, terms = c("treatment","originSite"))
 
-plot_model(model2,
-           show.values=TRUE, show.p=TRUE,
-           title="Effect of year and treatment on Shannon diversity")
+#save as csv
+write_csv(prediction_shannon_nested, file = "ModelOutput/Prediction_Shannon_nested.csv")
 
 ##Richness across treatment and years--------------
-#bring in data
+
+###bring in data####
 h_dat <- read.csv("Data/Shannon_fulldataset2018-2023.csv")
 
 #use only within site transplant for control
@@ -159,7 +164,7 @@ h_dat = subset(h_dat, select = -c(X.1))
 h_dat$originSite <- as.factor(h_dat$originSite)
 contrasts(h_dat$originSite) <- contr.sum(length(levels(h_dat$originSite)))
 
-#model
+###model nested#####
 model_r <- lmer(richness_df ~ year + originSite/treatment + 
                  (1|replicates), data = h_dat)
 
@@ -167,20 +172,21 @@ check_model(model_r)
 summary(model_r)
 Anova(model_r)
 
+###model additive only#####
+model_r1 <- lmer(richness_df ~ year + originSite + treatment + 
+                   (1|replicates), data = h_dat)
+
+summary(model_r1)
+AIC(model_r1,model_r)
+
+###compare nested and nonnested models####
+compare_performance(model_r,model_r1, rank = T) #nested looks better
+
 pred_R <- test_predictions(model_r, terms = c("originSite","treatment"))
 
 #save as csv
 write_csv(pred_R, file = "ModelOutput/Prediction_richness_nested.csv")
 
-#model
-model_r1 <- lmer(richness_df ~ year + originSite + treatment + 
-                  (1|replicates), data = h_dat)
-
-summary(model_r1)
-Anova(model_r1)
-AIC(model_r1,model_r)
-
-compare_performance(model_r,model_r1, rank = T) #nested looks better
 
 #try to ggeffects function 
 

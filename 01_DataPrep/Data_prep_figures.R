@@ -25,6 +25,11 @@ pred_R$Contrast <- pred_R$Contrast*-1
 pred_R$conf.low <- pred_R$conf.low*-1
 pred_R$conf.high <- pred_R$conf.high*-1
 
+#redo site name values
+pred_R$originSite[pred_R$originSite=="Monument-Monument"]<-"Monument"
+pred_R$originSite[pred_R$originSite=="Pfeiler-Pfeiler"]<-"Pfeiler"
+pred_R$originSite[pred_R$originSite=="Upper Montane-Upper Montane"]<-"Upper Montane"
+
 #Shannon------------
 
 
