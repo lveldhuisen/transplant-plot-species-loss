@@ -71,7 +71,7 @@ abline(0,0, col="red")
 qqnorm(resid(model1))
 qqline(resid(model1), col = "red")
 
-##Species abundance changes based on range size
+##Species abundance changes based on range size#####
 #model
 model_aoo <- lmer(log1p(occurrenceCount) ~ year + treatment + originSite +
                log(AOO)  + (1|species), data = abundance_df1, REML = FALSE)

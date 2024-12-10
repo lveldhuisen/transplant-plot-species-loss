@@ -25,10 +25,9 @@ pred_R$comparison2 <- factor(pred_R$comparison2,
 richness_fig_site <- ggplot(pred_R)+
   geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
                                 ymax = conf.low, 
-                                color=originSite), position = position_dodge(width = 0.3))+
+                                color=originSite), position = position_dodge(width = 0.2))+
   theme_classic()+
-  xlab("Treatment") +
-  ylab("Change in species richness")+
+  labs(y = expression(Delta ~ "species richness"), x = "Treatment")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
@@ -56,8 +55,7 @@ shannon_fig_site <- ggplot(pred_s)+
                                 ymax = conf.low, 
                                 color=originSite), position = position_dodge(width = 0.2))+
   theme_classic()+
-  xlab("Treatment") +
-  ylab("Change in Shannon diversity")+
+  labs(y = expression(Delta ~ "Shannon diversity"), x = "Treatment")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
@@ -85,8 +83,7 @@ pd_fig_site <- ggplot(pred_pd)+
                                 ymax = conf.low, 
                                 color=originSite), position = position_dodge(width = 0.2))+
   theme_classic()+
-  xlab("Treatment") +
-  ylab("Change in PD")+
+  labs(y = expression(Delta ~ "PD"), x = "Treatment")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
@@ -114,8 +111,7 @@ mpd_fig_site <- ggplot(pred_mpd)+
                                 ymax = conf.low, 
                                 color=originSite), position = position_dodge(width = 0.2))+
   theme_classic()+
-  xlab("Treatment") +
-  ylab("Change in MPD")+
+  labs(y = expression(Delta ~ "MPD"), x = "Treatment")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
@@ -143,8 +139,7 @@ mntd_fig_site <- ggplot(pred_mntd)+
                                 ymax = conf.low, 
                                 color=originSite), position = position_dodge(width = 0.2))+
   theme_classic()+
-  xlab("Treatment") +
-  ylab("Change in MNTD")+
+  labs(y = expression(Delta ~ "MNTD"), x = "Treatment")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
@@ -154,8 +149,31 @@ plot(mntd_fig_site)
 
 #combine figs with Patchwork-------------------
 
-all_fig <- (shannon_fig_site + pd_fig_site) / (mpd_fig_site + mntd_fig_site)+
+#two panels with shannon and richness
+sr_fig <- (richness_fig_site + shannon_fig_site) + 
+  plot_annotation(tag_levels = 'A')+
+  plot_layout(axis_titles = "collect", guides = "collect")
+
+plot(sr_fig)
+
+#combine top two and bottom two to merge axis labels
+top <- (shannon_fig_site + pd_fig_site)+
+  plot_annotation(tag_levels = 'A')+
+  plot_layout(axis_titles = "collect", guides = "collect")
+
+plot(top)
+
+bottom <- (mpd_fig_site + mntd_fig_site)+
+  plot_annotation(tag_levels = 'A')+
+  plot_layout(axis_titles = "collect", guides = "collect")
+
+plot(bottom)
+
+#four panels with shannon, pd, mpd and mntd
+all_fig <- top / bottom +
   plot_annotation(tag_levels = 'A')+
   plot_layout(axis_titles = "collect", guides = "collect")
 
 plot(all_fig)
+
+
