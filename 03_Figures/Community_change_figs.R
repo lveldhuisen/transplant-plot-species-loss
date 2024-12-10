@@ -89,14 +89,15 @@ pred_s$comparison2 <- factor(pred_s$comparison2,
 shannon_fig_site <- ggplot(pred_s)+
   geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
                                 ymax = conf.low, 
-                                color=originSite), position = position_dodge(width = 0.3))+
+                                color=originSite), position = position_dodge(width = 0.2))+
   theme_classic()+
   xlab("Treatment") +
   ylab("Change in Shannon diversity")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
-  scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))+
+  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
+
 plot(shannon_fig_site)
 
 #Richness--------------------
@@ -162,12 +163,12 @@ pred_R$comparison2 <- factor(pred_R$comparison2,
 richness_fig_site <- ggplot(pred_R)+
   geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
                                 ymax = conf.low, 
-                                color=originSite), position = position_dodge(width = 0.3))+
+                                color=originSite), position = position_dodge(width = 0.2))+
   theme_classic()+
   xlab("Treatment") +
   ylab("Change in species richness")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
-  scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))+
+  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
 
@@ -255,12 +256,12 @@ pred_pd$comparison2 <- factor(pred_pd$comparison2,
 pd_fig_site <- ggplot(pred_pd)+
   geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
                                 ymax = conf.low, 
-                                color=originSite), position = position_dodge(width = 0.3))+
+                                color=originSite), position = position_dodge(width = 0.2))+
   theme_classic()+
   xlab("Treatment") +
   ylab("Change in PD")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
-  scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))+
+  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
 
@@ -341,12 +342,12 @@ pred_mpd$comparison2 <- factor(pred_mpd$comparison2,
 mpd_fig_site <- ggplot(pred_mpd)+
   geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
                                 ymax = conf.low, 
-                                color=originSite), position = position_dodge(width = 0.3))+
+                                color=originSite), position = position_dodge(width = 0.2))+
   theme_classic()+
   xlab("Treatment") +
   ylab("Change in MPD")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
-  scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))+
+  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
 
@@ -414,12 +415,12 @@ pred_mntd$comparison2 <- factor(pred_mntd$comparison2,
 mntd_fig_site <- ggplot(pred_mntd)+
   geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
                                 ymax = conf.low, 
-                                color=originSite), position = position_dodge(width = 0.3))+
+                                color=originSite), position = position_dodge(width = 0.2))+
   theme_classic()+
   xlab("Treatment") +
   ylab("Change in MNTD")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
-  scale_color_manual(values=c("#414487FF", "#22A884FF", "#FDE72FFF"))+
+  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
 
