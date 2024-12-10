@@ -57,6 +57,9 @@ pred_s$originSite[pred_s$originSite=="Monument-Monument"]<-"Monument"
 pred_s$originSite[pred_s$originSite=="Pfeiler-Pfeiler"]<-"Pfeiler"
 pred_s$originSite[pred_s$originSite=="Upper Montane-Upper Montane"]<-"Upper Montane"
 
+#save as csv
+write_csv(pred_s, file = "Data/Shannon_model_forfig.csv")
+
 #PD--------
 #bring in data
 pred_pd <- read.csv("ModelOutput/Prediction_pd_nested.csv")
