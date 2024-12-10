@@ -16,7 +16,8 @@ ins <- c("2018","2019","2021","2022","2023")
 outs <- c("untouched","netted_untouched")
 
 # remove non-species from species column
-gc.outs <- c("litter", "bare_soil", "rock")
+gc.outs <- c("litter", "bare_soil", "rock", "moss","unknown_seedling",
+             "unknown_forb","unknown_grass")
 
 #remove block 6 plots since they were transplanted in 2018
 block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
@@ -35,9 +36,16 @@ abundance_df1 = subset(abundance_df1, select = -c(X,X.1))
 #save clean vertically-formatted abundance data
 write.csv(abundance_df1, file = "abundance_clean2018-2023.csv")
 
-#count number of species
+##count species in each site (including all control treatments and 2017)####
+abundance_forcounts <- abundance_df %>% filter(!is.na(treatment),
+                                         !species %in% gc.outs,)
 
-abundance_df1 %>% distinct(originSite,species)
+abundance_forcounts %>%
+  group_by(originSite) %>%
+  summarise(UniqueCount = n_distinct(species))
+
+abundance_forcounts %>%
+  summarise(UniqueCount = n_distinct(species))
 
 ###reformat to matrix for Vegan########
 
