@@ -26,7 +26,7 @@ richness_fig_site <- ggplot(pred_R)+
   geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
                                 ymax = conf.low, 
                                 color=originSite), position = position_dodge(width = 0.2))+
-  theme_classic()+
+  theme_classic(base_size = 15)+
   labs(y = expression(Delta ~ "species richness"), x = "Treatment")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
@@ -54,7 +54,7 @@ shannon_fig_site <- ggplot(pred_s)+
   geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
                                 ymax = conf.low, 
                                 color=originSite), position = position_dodge(width = 0.2))+
-  theme_classic()+
+  theme_classic(base_size = 15)+
   labs(y = expression(Delta ~ "Shannon diversity"), x = "Treatment")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
@@ -82,7 +82,7 @@ pd_fig_site <- ggplot(pred_pd)+
   geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
                                 ymax = conf.low, 
                                 color=originSite), position = position_dodge(width = 0.2))+
-  theme_classic()+
+  theme_classic(base_size = 15)+
   labs(y = expression(Delta ~ "PD"), x = "Treatment")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
@@ -110,7 +110,7 @@ mpd_fig_site <- ggplot(pred_mpd)+
   geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
                                 ymax = conf.low, 
                                 color=originSite), position = position_dodge(width = 0.2))+
-  theme_classic()+
+  theme_classic(base_size = 15)+
   labs(y = expression(Delta ~ "MPD"), x = "Treatment")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
@@ -138,7 +138,7 @@ mntd_fig_site <- ggplot(pred_mntd)+
   geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
                                 ymax = conf.low, 
                                 color=originSite), position = position_dodge(width = 0.2))+
-  theme_classic()+
+  theme_classic(base_size = 15)+
   labs(y = expression(Delta ~ "MNTD"), x = "Treatment")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
