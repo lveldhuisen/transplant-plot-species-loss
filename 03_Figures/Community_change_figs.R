@@ -156,24 +156,12 @@ sr_fig <- (richness_fig_site + shannon_fig_site) +
 
 plot(sr_fig)
 
-#combine top two and bottom two to merge axis labels
-top <- (shannon_fig_site + pd_fig_site)+
+#combine all phylo metrics
+phylo_fig <- (pd_fig_site + mpd_fig_site + mntd_fig_site)+
   plot_annotation(tag_levels = 'A')+
   plot_layout(axis_titles = "collect", guides = "collect")
 
-plot(top)
+plot(phylo_fig)
 
-bottom <- (mpd_fig_site + mntd_fig_site)+
-  plot_annotation(tag_levels = 'A')+
-  plot_layout(axis_titles = "collect", guides = "collect")
-
-plot(bottom)
-
-#four panels with shannon, pd, mpd and mntd
-all_fig <- top / bottom +
-  plot_annotation(tag_levels = 'A')+
-  plot_layout(axis_titles = "collect", guides = "collect")
-
-plot(all_fig)
 
 
