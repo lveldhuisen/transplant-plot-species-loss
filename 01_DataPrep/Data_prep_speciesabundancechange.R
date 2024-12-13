@@ -46,7 +46,7 @@ pf_win <- abundance_df1 %>% filter(originSite == "Pfeiler",
 pf_w1 <- abundance_df1 %>% filter(originSite == "Pfeiler",
                                  treatment == "warmed_one_step")
   
-pf_c2 <- abundance_df1 %>% filter(originSite == "Pfeiler",
+pf_c1 <- abundance_df1 %>% filter(originSite == "Pfeiler",
                                   treatment == "cooled_one_step")
 
 ##Monument####
@@ -58,3 +58,28 @@ mo_w1 <- abundance_df1 %>% filter(originSite == "Monument",
   
 mo_w2 <- abundance_df1 %>% filter(originSite == "Monument",
                                   treatment == "warmed_two_steps")
+
+#Fill abundance columns with values------
+
+##Upper Montane####
+
+###within site transplant###
+#split into separate dataframes for each year
+um_win18 <- um_win %>% filter(year == "2018")
+um_win23 <- um_win %>% filter(year == "2023")
+
+#rename columns
+colnames(um_win18)[colnames(um_win18) == 'occurrenceCount'] <- 'Ab2018'
+colnames(um_win23)[colnames(um_win23) == 'occurrenceCount'] <- 'Ab2023'
+
+#rejoin dataframes
+um_win <- um_win18 %>% left_join(um_win23, 
+                             by=c('turfID','species'))
+#remove extra columns
+um_win = subset(um_win, select = -c(originSite.y,
+                                                  destinationSite.y,
+                                                  originPlotID.y,
+                                                  treatment.y,
+                                    treatmentOriginGroup.y,
+                                    year.y,
+                                    AOO.y))
