@@ -435,3 +435,12 @@ mo_w2_2$treatment <- "Warmed_two_steps"
 
 #save as csv
 write.csv(mo_w2_2, "Data/Species_change/Monument_warmed2.csv")
+
+#Merge all species change into one big dataframe---------
+
+df_all <- bind_rows(um_win2, um_c1_2, um_c2_2, pf_win2, pf_w1_2, pf_c1_2,
+                mo_win2, mo_w1_2, mo_w2_2)
+
+#save as csv
+write.csv(df_all, "Data/Species_change/species_change_all.csv")
+
