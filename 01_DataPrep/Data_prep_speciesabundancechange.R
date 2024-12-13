@@ -82,4 +82,11 @@ um_win = subset(um_win, select = -c(originSite.y,
                                                   treatment.y,
                                     treatmentOriginGroup.y,
                                     year.y,
-                                    AOO.y))
+                                    AOO.y, 
+                                    year.x))
+
+#replace NAs with 0
+um_win[is.na(um_win)] = 0 
+
+#add column for change for each plot
+um_win$delta <- (log(um_win$Ab2023+1)-log(um_win$Ab2018+1))
