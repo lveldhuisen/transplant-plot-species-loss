@@ -444,3 +444,12 @@ df_all <- bind_rows(um_win2, um_c1_2, um_c2_2, pf_win2, pf_w1_2, pf_c1_2,
 
 #save as csv
 write.csv(df_all, "Data/Species_change/species_change_all.csv")
+
+
+ggplot(data = df_all, aes(x = treatment, y= meandelta)) +
+  +   geom_boxplot()+
+  +   facet_wrap(~originSite)
+
+ggplot(data = df_all, aes(x = meandelta))+
+  geom_histogram()+
+  facet_wrap(~treatment)
