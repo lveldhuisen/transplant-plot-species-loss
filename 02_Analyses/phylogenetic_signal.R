@@ -23,38 +23,39 @@ specieslist <- as.data.frame(specieslist)
 #format trait data to match phylogeny-------
 change_df <- read.csv("Data/Species_change/species_change_all.csv")
 
-
-
 #Blomberg's K--------------
 
 ##Origin: Upper Montane-------
-
 ###within site#####
 
 #make trait dataframe
-
+um_win_sig <- read.csv("Data/Species_change/UM_withinsite.csv")
 
 #delete unnecessary columns
-um_win = subset(um_win, select = -c(X,originSite,treatment))
+um_win_sig = subset(um_win_sig, select = -c(X,originSite,treatment))
 
 #get rid of unidentified carex
-um_win <- um_win %>% filter(!species %in% "Carex_sp.")
+um_win_sig <- um_win_sig %>% filter(!species %in% "Carex_sp.")
 
 #match order of species in trait data with order in phylogeny
-abundance_df <- abundance_df[ order(match(abundance_df$Species, 
+um_win_sig <- um_win_sig[ order(match(um_win_sig$species, 
                                           specieslist$specieslist)), ]
 
 #reformat
-abundance_df <- abundance_df %>% remove_rownames %>% column_to_rownames(var="Species")
-abundance_df <- df2vec(abundance_df, colID=1)
+um_win_sig <- um_win_sig %>% remove_rownames %>% column_to_rownames(var="species")
+
+#rename species to match phylogeny
+row.names(um_win_sig)[26] <- "Helianthella_uniflora" 
+row.names(um_win_sig)[28] <- "Poa_pratensis_subsp._pratensis" 
+
+#convert to vector
+um_win_sig <- df2vec(um_win_sig, colID=1)
 
 #save as csv
-write.csv(abundance_df, file = "comm_phylo_analyses/Phylogenetic_signal/abundance_trait_data_new.csv")
+write.csv(um_win_sig, file = "Data/Species_change/UM_within_forsignal.csv")
 
 #calculate signal
-phylosignal(abundance_df, pruned.tree, reps = 5000, checkdata = TRUE) #with picante
-phylosig(pruned.tree, abundance_df, method="K", test=TRUE, nsim=5000,
-         se=NULL, start=NULL, control=list(), niter=10) #with phytools, gives same answer
+phylosignal(um_win_sig, pruned.tree, reps = 5000, checkdata = TRUE) #with picante
 
 ###cooled 1#####
 
