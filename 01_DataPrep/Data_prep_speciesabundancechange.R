@@ -1,6 +1,7 @@
 library(dplyr)
 library(tidyverse)
 library(ggplot2)
+library(broom)
 
 #Data formatting--------------
 
@@ -14,11 +15,11 @@ abundance_df1$year <- as.factor(abundance_df1$year)
 control.outs <- c("netted_untouched","untouched")
 gc.outs <- c("litter", "bare_soil", "rock", "moss","unknown_seedling",
              "unknown_forb","unknown_grass")
-year.outs <- c("2019","2021","2022")
+#year.outs <- c("2019","2021","2022")
 abundance_df1 <- abundance_df1 %>% filter(!is.na(treatment),
                                           !treatment %in% control.outs,
-                                          !species %in% gc.outs,
-                                          !year %in% year.outs)
+                                          !species %in% gc.outs)
+                                          #!year %in% year.outs)
 #remove extra columns
 abundance_df1 = subset(abundance_df1, select = -c(X,
                                                   date_yyyymmdd,
@@ -28,8 +29,8 @@ abundance_df1 = subset(abundance_df1, select = -c(X,
                                                   GBIF_citation,
                                                   functionalGroup))
 
-
-#Make separate data frames for each origin/tx combo-------
+#Change from 2018 to 2023 abundance---------------
+##Make separate data frames for each origin/tx combo-------
 ##Origin: Upper Montane####
 um_win <- abundance_df1 %>% filter(originSite == "Upper Montane",
                                    treatment == "within_site_transplant")
@@ -60,7 +61,7 @@ mo_w1 <- abundance_df1 %>% filter(originSite == "Monument",
 mo_w2 <- abundance_df1 %>% filter(originSite == "Monument",
                                   treatment == "warmed_two_steps")
 
-#Fill abundance columns and calculate change across plots------
+##Fill abundance columns and calculate change across plots------
 
 ##Origin: Upper Montane####
 
@@ -437,7 +438,7 @@ mo_w2_2$treatment <- "Warmed_two_steps"
 #save as csv
 write.csv(mo_w2_2, "Data/Species_change/Monument_warmed2.csv")
 
-#Merge all species change into one big dataframe---------
+##Merge all species change into one big dataframe---------
 
 df_all <- bind_rows(um_win2, um_c1_2, um_c2_2, pf_win2, pf_w1_2, pf_c1_2,
                 mo_win2, mo_w1_2, mo_w2_2)
@@ -453,3 +454,39 @@ ggplot(data = df_all, aes(x = treatment, y= meandelta)) +
 ggplot(data = df_all, aes(x = meandelta))+
   geom_histogram()+
   facet_wrap(~treatment)
+
+#Regression to get slope as metric of change-----------------
+
+##Upper Montane#######
+um_win_reg <- um_win %>% 
+  group_by(species,year) %>% 
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = TRUE
+  )
+
+um_win_reg$year <- as.numeric(um_win_reg$year)
+
+models <- um_win_reg %>%
+  group_by(species) %>%
+  do(model = lm(occurrenceCount ~ year, data = um_win_reg))
+
+# Print the models
+
+coefficients_summary <- models %>%
+  summarise(
+    intercept = coef(model)[1],
+    slope = coef(model)[2]
+  )
+
+# Print the summary
+print(coefficients_summary)
+
+ggplot(um_win_reg,
+       aes(x = year, y = occurrenceCount, colour = species)) +
+  geom_point() +
+  # add regression lines
+  geom_smooth(method = "lm", se = FALSE)+
+  facet_wrap(~species)+
+  stat_poly_eq(use_label(c("eq")))

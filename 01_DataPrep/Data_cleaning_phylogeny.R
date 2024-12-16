@@ -119,3 +119,12 @@ matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(moss, unknown_forb
 #prune tree
 pruned.tree <- treedata(SBtree, unlist(matrix_forphylogeny[378,matrix_forphylogeny[378,]>0]), warnings = F)$phy
 plot(pruned.tree)
+
+#format abundance change data for phylogenetic signal---------
+
+#bring in data
+change_df <- read.csv("Data/Species_change/species_change_all.csv")
+
+#get rid of unidentified species
+species.outs <- c("Senecio_crassulus", "Agoseris_sp.")
+
