@@ -484,7 +484,7 @@ coefficients_summary <- models %>%
 print(coefficients_summary)
 
 ggplot(um_win_reg,
-       aes(x = year, y = occurrenceCount, colour = species)) +
+       aes(x = year, y = occurrenceCount)) +
   geom_point() +
   # add regression lines
   geom_smooth(method = "lm", se = FALSE)+
