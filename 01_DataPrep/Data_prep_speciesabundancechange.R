@@ -48,12 +48,15 @@ write.csv(um_c2, "Data/Species_change/UM_cooled2.csv")
 ##Origin: Pfeiler#####
 pf_win <- abundance_df1 %>% filter(originSite == "Pfeiler",
                                    treatment == "within_site_transplant")
+write.csv(pf_win, "Data/Species_change/Pfeiler_withinsite_raw.csv")
 
 pf_w1 <- abundance_df1 %>% filter(originSite == "Pfeiler",
                                  treatment == "warmed_one_step")
+write.csv(pf_w1, "Data/Species_change/Pfeiler_w1_raw.csv")
   
 pf_c1 <- abundance_df1 %>% filter(originSite == "Pfeiler",
                                   treatment == "cooled_one_step")
+write.csv(pf_c1, "Data/Species_change/Pfeiler_c1_raw.csv")
 
 ##Origin: Monument####
 mo_win <- abundance_df1 %>% filter(originSite == "Monument",
@@ -128,6 +131,112 @@ ggplot(um_c1_reg,
   facet_wrap(~species)+
   stat_poly_eq(use_label(c("eq")))
 
+###cooled 2####
+um_c2_reg <- read.csv("Data/Species_change/UM_cooled2.csv")
+
+#total across plots
+um_c2_reg <- um_c2_reg %>% 
+  group_by(species,year) %>% 
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = TRUE
+  )
+
+um_c2_reg$year <- as.numeric(um_c2_reg$year) #make year numeric
+
+#do regression 
+um_c2_model <- dlply(um_c2_reg,"species",function(um_c2_reg) lm(occurrenceCount ~ year, 
+                                                                data = um_c2_reg))
+um_c2_values <- ldply(um_c2_model,coef)
+
+##Pfeiler######
+
+###within site transplant####
+pf_win_reg <- read.csv("Data/Species_change/Pfeiler_withinsite_raw.csv")
+
+#total across plots
+pf_win_reg <- pf_win_reg %>% 
+  group_by(species,year) %>% 
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = TRUE
+  )
+
+pf_win_reg$year <- as.numeric(pf_win_reg$year) #make year numeric
+
+#do regression 
+pf_win_model <- dlply(pf_win_reg,"species",function(pf_win_reg) lm(occurrenceCount ~ year, 
+                                                                   data = pf_win_reg))
+pf_win_values <- ldply(pf_win_model,coef)
+
+###cooled one####
+
+###warmed one###
+
 #Format each table to include treatment, origin site, remove NAs-----------
 
+##Upper Montane####
+###within site####
 
+#rename columns 
+colnames(um_win_values)[colnames(um_win_values) == '(Intercept)'] <- 'intercept'
+colnames(um_win_values)[colnames(um_win_values) == 'year'] <- 'slope'
+
+#get rid of intercept column
+um_win_values = subset(um_win_values, select = -c(intercept))
+
+#add columns for treatment and origin site
+um_win_values$originSite = "Upper Montane"
+um_win_values$treatment = "within_site_transplant"
+
+#save as csv
+write_csv(um_win_values, "Data/Species_change/UM_win_slopes.csv")
+
+###cooled 1####
+#rename columns 
+colnames(um_c1_values)[colnames(um_c1_values) == '(Intercept)'] <- 'intercept'
+colnames(um_c1_values)[colnames(um_c1_values) == 'year'] <- 'slope'
+
+#get rid of intercept column
+um_c1_values = subset(um_c1_values, select = -c(intercept))
+
+#add columns for treatment and origin site
+um_c1_values$originSite = "Upper Montane"
+um_c1_values$treatment = "cooled_one"
+
+#save as csv
+write_csv(um_c1_values, "Data/Species_change/UM_c1_slopes.csv")
+
+###cooled 2#####
+#rename columns 
+colnames(um_c2_values)[colnames(um_c2_values) == '(Intercept)'] <- 'intercept'
+colnames(um_c2_values)[colnames(um_c2_values) == 'year'] <- 'slope'
+
+#get rid of intercept column
+um_c2_values = subset(um_c2_values, select = -c(intercept))
+
+#add columns for treatment and origin site
+um_c2_values$originSite = "Upper Montane"
+um_c2_values$treatment = "cooled_one"
+
+#save as csv
+write_csv(um_c2_values, "Data/Species_change/UM_c2_slopes.csv")
+
+##Pfeiler###
+
+###within site transplant###
+#rename columns 
+colnames(pf_win_values)[colnames(pf_win_values) == '(Intercept)'] <- 'intercept'
+colnames(pf_win_values)[colnames(pf_win_values) == 'year'] <- 'slope'
+
+#get rid of intercept column
+pf_win_values = subset(pf_win_values, select = -c(intercept))
+
+#add columns for treatment and origin site
+pf_win_values$originSite = "Pfeiler"
+pf_win_values$treatment = "within_site_transplant"
+
+#save as csv
+write_csv(pf_win_values, "Data/Species_change/Pfeiler_win_slopes.csv")
