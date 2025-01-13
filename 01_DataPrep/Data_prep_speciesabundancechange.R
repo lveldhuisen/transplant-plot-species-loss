@@ -3,12 +3,13 @@ library(tidyverse)
 library(ggplot2)
 library(broom)
 library(ggpmisc)
-
-#Data formatting--------------
+library(plyr)
 
 #bring in data
 abundance_df1 <- read.csv("Data/abundance_clean2018-2023.csv")
 abundance_df1$year <- as.factor(abundance_df1$year)
+
+#Format big combined dataset--------
 
 #use only within site transplant for control, get rid of unknowns and remove
 #extra years
@@ -30,6 +31,7 @@ abundance_df1 = subset(abundance_df1, select = -c(X,
                                                   functionalGroup))
 
 ##Make separate data frames for each origin/tx combo-------
+
 ##Origin: Upper Montane####
 um_win <- abundance_df1 %>% filter(originSite == "Upper Montane",
                                    treatment == "within_site_transplant")
@@ -66,11 +68,14 @@ mo_w2 <- abundance_df1 %>% filter(originSite == "Monument",
 
 #Regression to get slope as metric of change-----------------
 
+#added all zeroes for years where species were not observed in Excel#
+
 ##Upper Montane#######
 
 ###within site transplant#####
 um_win_reg <- read.csv("Data/Species_change/UM_withinsite.csv")
 
+#total across plots
 um_win_reg <- um_win_reg %>% 
   group_by(species,year) %>% 
   summarise_if(
@@ -79,23 +84,14 @@ um_win_reg <- um_win_reg %>%
     na.rm = TRUE
   )
 
-um_win_reg$year <- as.numeric(um_win_reg$year)
+um_win_reg$year <- as.numeric(um_win_reg$year) #make year numeric
 
-models <- um_win_reg %>%
-  group_by(species) %>%
-  do(model = lm(occurrenceCount ~ year, data = um_win_reg))
+#do regression 
+um_win_model <- dlply(um_win_reg,"species",function(um_win_reg) lm(occurrenceCount ~ year, 
+                                                           data = um_win_reg))
+um_win_values <- ldply(um_win_model,coef)
 
-# Print the models
-
-coefficients_summary <- models %>%
-  summarise(
-    intercept = coef(model)[1],
-    slope = coef(model)[2]
-  )
-
-# Print the summary
-print(coefficients_summary)
-
+#make plot for visual
 ggplot(um_win_reg,
        aes(x = year, y = occurrenceCount)) +
   geom_point() +
@@ -105,7 +101,10 @@ ggplot(um_win_reg,
   stat_poly_eq(use_label(c("eq")))
 
 ###cooled 1#####
-um_c1_reg <- um_c1 %>% 
+um_c1_reg <- read.csv("Data/Species_change/UM_cooled1.csv")
+
+#total across plots
+um_c1_reg <- um_c1_reg %>% 
   group_by(species,year) %>% 
   summarise_if(
     is.numeric,
@@ -113,24 +112,14 @@ um_c1_reg <- um_c1 %>%
     na.rm = TRUE
   )
 
-um_c1_reg$year <- as.numeric(um_c1_reg$year)
+um_c1_reg$year <- as.numeric(um_c1_reg$year) #make year numeric
 
-models <- um_c1_reg %>%
-  group_by(species) %>%
-  do(model = lm(occurrenceCount ~ year, data = um_c1_reg))
+#do regression 
+um_c1_model <- dlply(um_c1_reg,"species",function(um_c1_reg) lm(occurrenceCount ~ year, 
+                                                                   data = um_c1_reg))
+um_c1_values <- ldply(um_c1_model,coef)
 
-
-# Print the models
-
-coefficients_summary <- models %>%
-  summarise(
-    intercept = coef(model)[1],
-    slope = coef(model)[2]
-  )
-
-# Print the summary
-print(coefficients_summary)
-
+#plot to check 
 ggplot(um_c1_reg,
        aes(x = year, y = occurrenceCount)) +
   geom_point() +
@@ -138,3 +127,7 @@ ggplot(um_c1_reg,
   geom_smooth(method = "lm", se = FALSE)+
   facet_wrap(~species)+
   stat_poly_eq(use_label(c("eq")))
+
+#Format each table to include treatment, origin site, remove NAs-----------
+
+
