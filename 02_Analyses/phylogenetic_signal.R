@@ -20,15 +20,12 @@ is.rooted(SBtree)
 specieslist <- pruned.tree$tip.label
 specieslist <- as.data.frame(specieslist)
 
-#format trait data to match phylogeny-------
-change_df <- read.csv("Data/Species_change/species_change_all.csv")
-
 #Blomberg's K--------------
 
 ##Origin: Upper Montane-------
 ###within site#####
 #make trait dataframe
-um_win_sig <- read.csv("Data/Species_change/UM_win_changes.csv")
+um_win_sig <- read.csv("Data/Species_change/UM_win_slopes.csv")
 
 #delete unnecessary columns
 um_win_sig = subset(um_win_sig, select = -c(originSite,treatment))

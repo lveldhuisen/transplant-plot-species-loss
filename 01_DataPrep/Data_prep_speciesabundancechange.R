@@ -172,6 +172,23 @@ pf_win_model <- dlply(pf_win_reg,"species",function(pf_win_reg) lm(occurrenceCou
 pf_win_values <- ldply(pf_win_model,coef)
 
 ###cooled one####
+pf_c1_reg <- read.csv("Data/Species_change/Pfeiler_c1_raw.csv")
+
+#total across plots
+pf_c1_reg <- pf_c1_reg %>% 
+  group_by(species,year) %>% 
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = TRUE
+  )
+
+pf_c1_reg$year <- as.numeric(pf_c1_reg$year) #make year numeric
+
+#do regression 
+pf_c1_model <- dlply(pf_c1_reg,"species",function(pf_c1_reg) lm(occurrenceCount ~ year, 
+                                                                   data = pf_c1_reg))
+pf_c1_values <- ldply(pf_c1_model,coef)
 
 ###warmed one###
 
@@ -224,9 +241,9 @@ um_c2_values$treatment = "cooled_one"
 #save as csv
 write_csv(um_c2_values, "Data/Species_change/UM_c2_slopes.csv")
 
-##Pfeiler###
+##Pfeiler#####
 
-###within site transplant###
+###within site transplant#####
 #rename columns 
 colnames(pf_win_values)[colnames(pf_win_values) == '(Intercept)'] <- 'intercept'
 colnames(pf_win_values)[colnames(pf_win_values) == 'year'] <- 'slope'
@@ -240,3 +257,18 @@ pf_win_values$treatment = "within_site_transplant"
 
 #save as csv
 write_csv(pf_win_values, "Data/Species_change/Pfeiler_win_slopes.csv")
+
+###cooled 1#####
+#rename columns 
+colnames(pf_c1_values)[colnames(pf_c1_values) == '(Intercept)'] <- 'intercept'
+colnames(pf_c1_values)[colnames(pf_c1_values) == 'year'] <- 'slope'
+
+#get rid of intercept column
+pf_c1_values = subset(pf_c1_values, select = -c(intercept))
+
+#add columns for treatment and origin site
+pf_c1_values$originSite = "Pfeiler"
+pf_c1_values$treatment = "cooled_one"
+
+#save as csv
+write_csv(pf_c1_values, "Data/Species_change/Pfeiler_c1_slopes.csv")
