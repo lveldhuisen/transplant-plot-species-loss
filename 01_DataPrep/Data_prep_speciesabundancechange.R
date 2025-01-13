@@ -16,11 +16,10 @@ abundance_df1$year <- as.factor(abundance_df1$year)
 control.outs <- c("netted_untouched","untouched")
 gc.outs <- c("litter", "bare_soil", "rock", "moss","unknown_seedling",
              "unknown_forb","unknown_grass")
-#year.outs <- c("2019","2021","2022")
+
 abundance_df1 <- abundance_df1 %>% filter(!is.na(treatment),
                                           !treatment %in% control.outs,
                                           !species %in% gc.outs)
-                                          #!year %in% year.outs)
 #remove extra columns
 abundance_df1 = subset(abundance_df1, select = -c(X,
                                                   date_yyyymmdd,
@@ -30,17 +29,19 @@ abundance_df1 = subset(abundance_df1, select = -c(X,
                                                   GBIF_citation,
                                                   functionalGroup))
 
-#Change from 2018 to 2023 abundance---------------
 ##Make separate data frames for each origin/tx combo-------
 ##Origin: Upper Montane####
 um_win <- abundance_df1 %>% filter(originSite == "Upper Montane",
                                    treatment == "within_site_transplant")
+write.csv(um_win, "Data/Species_change/UM_withinsite.csv")
 
 um_c1 <- abundance_df1 %>% filter(originSite == "Upper Montane",
                                   treatment == "cooled_one_step")
+write.csv(um_c1, "Data/Species_change/UM_cooled1.csv")
   
 um_c2 <- abundance_df1 %>% filter(originSite == "Upper Montane",
                                   treatment == "cooled_two_steps")
+write.csv(um_c2, "Data/Species_change/UM_cooled2.csv")
    
 ##Origin: Pfeiler#####
 pf_win <- abundance_df1 %>% filter(originSite == "Pfeiler",
@@ -68,7 +69,9 @@ mo_w2 <- abundance_df1 %>% filter(originSite == "Monument",
 ##Upper Montane#######
 
 ###within site transplant#####
-um_win_reg <- um_win %>% 
+um_win_reg <- read.csv("Data/Species_change/UM_withinsite.csv")
+
+um_win_reg <- um_win_reg %>% 
   group_by(species,year) %>% 
   summarise_if(
     is.numeric,

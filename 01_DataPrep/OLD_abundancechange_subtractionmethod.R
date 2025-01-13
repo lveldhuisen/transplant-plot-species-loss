@@ -16,11 +16,10 @@ abundance_df1$year <- as.factor(abundance_df1$year)
 control.outs <- c("netted_untouched","untouched")
 gc.outs <- c("litter", "bare_soil", "rock", "moss","unknown_seedling",
              "unknown_forb","unknown_grass")
-#year.outs <- c("2019","2021","2022")
+
 abundance_df1 <- abundance_df1 %>% filter(!is.na(treatment),
                                           !treatment %in% control.outs,
                                           !species %in% gc.outs)
-#!year %in% year.outs)
 #remove extra columns
 abundance_df1 = subset(abundance_df1, select = -c(X,
                                                   date_yyyymmdd,
@@ -30,7 +29,6 @@ abundance_df1 = subset(abundance_df1, select = -c(X,
                                                   GBIF_citation,
                                                   functionalGroup))
 
-#Change from 2018 to 2023 abundance---------------
 ##Make separate data frames for each origin/tx combo-------
 ##Origin: Upper Montane####
 um_win <- abundance_df1 %>% filter(originSite == "Upper Montane",
