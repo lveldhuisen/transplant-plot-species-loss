@@ -22,10 +22,4 @@ rs_model <- dlply(aoo_slopes,"group",function(aoo_slopes) lm(slope ~ AOO,
                                                                    data = aoo_slopes))
 rs_values <- ldply(rs_model,coef)
 
-#plot
-ggplot(aoo_slopes, aes(x=log(AOO), y=slope, color = treatment))+
-  geom_point()+
-  theme_bw()+
-  facet_wrap(.~originSite)+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#8FD744FF","#FDE725FF"))
 
