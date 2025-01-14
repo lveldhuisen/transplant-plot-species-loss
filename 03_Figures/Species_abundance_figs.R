@@ -59,9 +59,10 @@ ggplot(aoo_slopes, aes(x=log(AOO), y=slope, color = treatment))+
   theme_bw()+
   labs(y = expression(Delta ~ "abundance (by species)"), x= "log(range size)")+
   facet_wrap(.~originSite)+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#8FD744FF","#FDE725FF"))+
+  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF",
+                              "#FDE725FF"))+
   geom_smooth(method = "lm", se = FALSE)+
-  stat_cor(label.y = c(11,13,17,19,21)) +
-  stat_regline_equation(label.y = c(10,12,16,18,20))
+  stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
+  stat_regline_equation(label.y = c(8.5,11,13.5,16,11), size = 4)
 
   
