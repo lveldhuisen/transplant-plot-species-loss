@@ -4,6 +4,8 @@ library(viridis)
 
 #data cleaning--------------
 #bring in data
+slopes_df <- read.csv("Data/Species_change/Abundance_slopes_all.csv")
+
 abundance_df1 <- read.csv("Data/abundance_clean2018-2023.csv")
 
 #remove years other than 2018 and 2023
@@ -68,11 +70,31 @@ test$treatment <- factor(test$treatment,
                              "warmed_one_step",
                              "warmed_two_steps"))
 
+slopes_df$treatment <- factor(slopes_df$treatment, 
+                         levels = c("cooled_two",
+                                    "cooled_one",
+                                    "within_site_transplant",
+                                    "warmed_one",
+                                    "warmed_two"))
+
 #figure
-ggplot(test, aes(treatment, species, fill= change)) + 
+ggplot(slopes_df, aes(treatment, species, fill= slope)) + 
   geom_tile()+
   scale_fill_viridis(discrete = FALSE)+
   scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))+
   theme_bw()+
   theme(axis.text.y = element_text(face = "italic"))
 
+#histograms
+ggplot(slopes_df, aes(x=slope)) + 
+  geom_histogram()+
+  theme_bw()+
+  facet_wrap(originSite ~ treatment)
+
+#violin plots
+ggplot(slopes_df, aes(x=treatment, y=slope))+
+  geom_violin()+
+  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))+
+  theme_bw()+
+  facet_wrap(.~originSite)
+  

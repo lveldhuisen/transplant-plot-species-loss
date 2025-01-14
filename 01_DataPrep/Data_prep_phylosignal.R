@@ -54,6 +54,8 @@ species.outs <- c("Erigeron_sp.","Erigeron_coulteri",
              "Senecio_crassulus")
 slopes_df <- slopes_df %>% filter(!species %in% species.outs)
 
+write.csv(slopes_df, "Data/Species_change/Abundance_slopes_all.csv")
+
 #break back out into 9 treatment x origin site groups---------
 
 um_win_sig <- slopes_df %>% filter(originSite == "Upper Montane",
