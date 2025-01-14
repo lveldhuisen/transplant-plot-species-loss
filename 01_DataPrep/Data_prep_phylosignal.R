@@ -56,31 +56,191 @@ slopes_df <- slopes_df %>% filter(!species %in% species.outs)
 
 #break back out into 9 treatment x origin site groups---------
 
-um_win_signal <- slopes_df %>% filter(originSite == "Upper Montane",
+um_win_sig <- slopes_df %>% filter(originSite == "Upper Montane",
                                    treatment == "within_site_transplant")
 
-um_c1_signal <- slopes_df %>% filter(originSite == "Upper Montane",
+um_c1_sig <- slopes_df %>% filter(originSite == "Upper Montane",
                                   treatment == "cooled_one")
 
-um_c2_signal <- slopes_df %>% filter(originSite == "Upper Montane",
+um_c2_sig <- slopes_df %>% filter(originSite == "Upper Montane",
                                   treatment == "cooled_two")
 
-pf_win_signal <- slopes_df %>% filter(originSite == "Pfeiler",
+pf_win_sig<- slopes_df %>% filter(originSite == "Pfeiler",
                                    treatment == "within_site_transplant")
 
-pf_w1_signal <- slopes_df %>% filter(originSite == "Pfeiler",
+pf_w1_sig <- slopes_df %>% filter(originSite == "Pfeiler",
                                   treatment == "warmed_one")
 
-pf_c1_signal <- slopes_df %>% filter(originSite == "Pfeiler",
+pf_c1_sig<- slopes_df %>% filter(originSite == "Pfeiler",
                                   treatment == "cooled_one")
 
-mo_win_signal <- slopes_df %>% filter(originSite == "Monument",
+mo_win_sig <- slopes_df %>% filter(originSite == "Monument",
                                    treatment == "within_site_transplant")
 
-mo_w1_signal <- slopes_df %>% filter(originSite == "Monument",
+mo_w1_sig <- slopes_df %>% filter(originSite == "Monument",
                                   treatment == "warmed_one")
 
-mo_w2_signal <- slopes_df %>% filter(originSite == "Monument",
+mo_w2_sig <- slopes_df %>% filter(originSite == "Monument",
                                   treatment == "warmed_two")
 
 #format each slope dataframe for phylogenetic signal calculation-------------
+
+##Upper Montane#####
+###within#####
+#delete unnecessary columns
+um_win_sig = subset(um_win_sig, select = -c(originSite,treatment))
+
+#match order of species in trait data with order in phylogeny
+um_win_sig <- um_win_sig[ order(match(um_win_sig$species, 
+                                      specieslist$specieslist)), ]
+
+#reformat
+um_win_sig <- um_win_sig %>% remove_rownames %>% column_to_rownames(var="species")
+
+#convert to vector
+um_win_sig <- df2vec(um_win_sig, colID=1)
+
+#save as csv
+write.csv(um_win_sig, file = "Data/Species_change/UM_within_forsignal.csv")
+
+###cooled one####
+#delete unnecessary columns
+um_c1_sig = subset(um_c1_sig, select = -c(originSite,treatment))
+
+#match order of species in trait data with order in phylogeny
+um_c1_sig <- um_c1_sig[ order(match(um_c1_sig$species, 
+                                    specieslist$specieslist)), ]
+
+#reformat
+um_c1_sig <- um_c1_sig %>% remove_rownames %>% column_to_rownames(var="species")
+
+#convert to vector
+um_c1_sig <- df2vec(um_c1_sig, colID=1)
+
+#save as csv
+write.csv(um_c1_sig, file = "Data/Species_change/UM_c1_forsignal.csv")
+
+###cooled two#####
+
+#delete unnecessary columns
+um_c2_sig = subset(um_c2_sig, select = -c(originSite,treatment))
+
+#match order of species in trait data with order in phylogeny
+um_c2_sig <- um_c2_sig[ order(match(um_c2_sig$species, 
+                                    specieslist$specieslist)), ]
+
+#reformat
+um_c2_sig <- um_c2_sig %>% remove_rownames %>% column_to_rownames(var="species")
+
+#convert to vector
+um_c2_sig <- df2vec(um_c2_sig, colID=1)
+
+#save as csv
+write.csv(um_c2_sig, file = "Data/Species_change/UM_c2_forsignal.csv")
+
+##Pfeiler#####
+
+###within#####
+#delete unnecessary columns
+pf_win_sig = subset(pf_win_sig, select = -c(originSite,treatment))
+
+#match order of species in trait data with order in phylogeny
+pf_win_sig <- pf_win_sig[ order(match(pf_win_sig$species, 
+                                      specieslist$specieslist)), ]
+
+#reformat
+pf_win_sig <- pf_win_sig %>% remove_rownames %>% column_to_rownames(var="species")
+
+#convert to vector
+pf_win_sig <- df2vec(pf_win_sig, colID=1)
+
+#save as csv
+write.csv(pf_win_sig, file = "Data/Species_change/Pfeiler_win_forsignal.csv")
+
+###cooled one####
+
+#delete unnecessary columns
+pf_c1_sig = subset(pf_c1_sig, select = -c(originSite,treatment))
+
+#match order of species in trait data with order in phylogeny
+pf_c1_sig <- pf_c1_sig[ order(match(pf_c1_sig$species, 
+                                      specieslist$specieslist)), ]
+
+#reformat
+pf_c1_sig <- pf_c1_sig %>% remove_rownames %>% column_to_rownames(var="species")
+
+#convert to vector
+pf_c1_sig <- df2vec(pf_c1_sig, colID=1)
+
+#save as csv
+write.csv(pf_c1_sig, file = "Data/Species_change/Pfeiler_c1_forsignal.csv")
+
+###warmed one####
+#delete unnecessary columns
+pf_w1_sig = subset(pf_w1_sig, select = -c(originSite,treatment))
+
+#match order of species in trait data with order in phylogeny
+pf_w1_sig <- pf_w1_sig[ order(match(pf_w1_sig$species, 
+                                    specieslist$specieslist)), ]
+
+#reformat
+pf_w1_sig <- pf_w1_sig %>% remove_rownames %>% column_to_rownames(var="species")
+
+#convert to vector
+pf_w1_sig <- df2vec(pf_w1_sig, colID=1)
+
+#save as csv
+write.csv(pf_w1_sig, file = "Data/Species_change/Pfeiler_w1_forsignal.csv")
+
+##Monument####
+
+###within####
+#delete unnecessary columns
+mo_win_sig = subset(mo_win_sig, select = -c(originSite,treatment))
+
+#match order of species in trait data with order in phylogeny
+mo_win_sig <- mo_win_sig[ order(match(mo_win_sig$species, 
+                                    specieslist$specieslist)), ]
+
+#reformat
+mo_win_sig <- mo_win_sig %>% remove_rownames %>% column_to_rownames(var="species")
+
+#convert to vector
+mo_win_sig <- df2vec(mo_win_sig, colID=1)
+
+#save as csv
+write.csv(mo_win_sig, file = "Data/Species_change/Monument_win_forsignal.csv")
+
+###warmed one#####
+#delete unnecessary columns
+mo_w1_sig = subset(mo_w1_sig, select = -c(originSite,treatment))
+
+#match order of species in trait data with order in phylogeny
+mo_w1_sig <- mo_w1_sig[ order(match(mo_w1_sig$species, 
+                                      specieslist$specieslist)), ]
+
+#reformat
+mo_w1_sig <- mo_w1_sig %>% remove_rownames %>% column_to_rownames(var="species")
+
+#convert to vector
+mo_w1_sig <- df2vec(mo_w1_sig, colID=1)
+
+#save as csv
+write.csv(mo_w1_sig, file = "Data/Species_change/Monument_w1_forsignal.csv")
+
+###warmed two######
+#delete unnecessary columns
+mo_w2_sig = subset(mo_w2_sig, select = -c(originSite,treatment))
+
+#match order of species in trait data with order in phylogeny
+mo_w2_sig <- mo_w2_sig[ order(match(mo_w2_sig$species, 
+                                    specieslist$specieslist)), ]
+
+#reformat
+mo_w2_sig <- mo_w2_sig %>% remove_rownames %>% column_to_rownames(var="species")
+
+#convert to vector
+mo_w2_sig <- df2vec(mo_w2_sig, colID=1)
+
+#save as csv
+write.csv(mo_w2_sig, file = "Data/Species_change/Monument_w2_forsignal.csv")
