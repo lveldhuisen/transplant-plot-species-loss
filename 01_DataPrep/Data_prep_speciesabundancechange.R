@@ -191,6 +191,23 @@ pf_c1_model <- dlply(pf_c1_reg,"species",function(pf_c1_reg) lm(occurrenceCount 
 pf_c1_values <- ldply(pf_c1_model,coef)
 
 ###warmed one###
+pf_w1_reg <- read.csv("Data/Species_change/Pfeiler_w1_raw.csv")
+
+#total across plots
+pf_w1_reg <- pf_w1_reg %>% 
+  group_by(species,year) %>% 
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = TRUE
+  )
+
+pf_w1_reg$year <- as.numeric(pf_w1_reg$year) #make year numeric
+
+#do regression 
+pf_w1_model <- dlply(pf_w1_reg,"species",function(pf_w1_reg) lm(occurrenceCount ~ year, 
+                                                                data = pf_w1_reg))
+pf_w1_values <- ldply(pf_w1_model,coef)
 
 #Format each table to include treatment, origin site, remove NAs-----------
 
@@ -272,3 +289,18 @@ pf_c1_values$treatment = "cooled_one"
 
 #save as csv
 write_csv(pf_c1_values, "Data/Species_change/Pfeiler_c1_slopes.csv")
+
+###warmed one####
+#rename columns 
+colnames(pf_w1_values)[colnames(pf_w1_values) == '(Intercept)'] <- 'intercept'
+colnames(pf_w1_values)[colnames(pf_w1_values) == 'year'] <- 'slope'
+
+#get rid of intercept column
+pf_w1_values = subset(pf_w1_values, select = -c(intercept))
+
+#add columns for treatment and origin site
+pf_w1_values$originSite = "Pfeiler"
+pf_w1_values$treatment = "warmed_one"
+
+#save as csv
+write_csv(pf_w1_values, "Data/Species_change/Pfeiler_w1_slopes.csv")
