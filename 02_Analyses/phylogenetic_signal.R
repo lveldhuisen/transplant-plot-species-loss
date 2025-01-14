@@ -30,22 +30,12 @@ um_win_sig <- read.csv("Data/Species_change/UM_win_slopes.csv")
 #delete unnecessary columns
 um_win_sig = subset(um_win_sig, select = -c(originSite,treatment))
 
-#get rid of unidentified carex
-um_win_sig <- um_win_sig %>% filter(!species %in% "Carex_sp.")
-
 #match order of species in trait data with order in phylogeny
 um_win_sig <- um_win_sig[ order(match(um_win_sig$species, 
                                           specieslist$specieslist)), ]
 
 #reformat
 um_win_sig <- um_win_sig %>% remove_rownames %>% column_to_rownames(var="species")
-
-#rename species to match phylogeny
-row.names(um_win_sig)[26] <- "Helianthella_uniflora" 
-row.names(um_win_sig)[28] <- "Poa_pratensis_subsp._pratensis" 
-
-#remove NAs
-um_win_sig <- na.omit(um_win_sig)
 
 #convert to vector
 um_win_sig <- df2vec(um_win_sig, colID=1)

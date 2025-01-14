@@ -314,7 +314,7 @@ um_c2_values = subset(um_c2_values, select = -c(intercept))
 
 #add columns for treatment and origin site
 um_c2_values$originSite = "Upper Montane"
-um_c2_values$treatment = "cooled_one"
+um_c2_values$treatment = "cooled_two"
 
 #save as csv
 write_csv(um_c2_values, "Data/Species_change/UM_c2_slopes.csv")
