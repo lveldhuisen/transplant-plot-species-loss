@@ -61,13 +61,15 @@ write.csv(pf_c1, "Data/Species_change/Pfeiler_c1_raw.csv")
 ##Origin: Monument####
 mo_win <- abundance_df1 %>% filter(originSite == "Monument",
                                   treatment == "within_site_transplant")
+write.csv(mo_win, "Data/Species_change/Monument_within_raw.csv")
   
 mo_w1 <- abundance_df1 %>% filter(originSite == "Monument",
                                  treatment == "warmed_one_step")
+write.csv(mo_w1, "Data/Species_change/Monument_w1_raw.csv")
   
 mo_w2 <- abundance_df1 %>% filter(originSite == "Monument",
                                   treatment == "warmed_two_steps")
-
+write.csv(mo_w2, "Data/Species_change/Monument_w2_raw.csv")
 
 #Regression to get slope as metric of change-----------------
 
@@ -190,7 +192,7 @@ pf_c1_model <- dlply(pf_c1_reg,"species",function(pf_c1_reg) lm(occurrenceCount 
                                                                    data = pf_c1_reg))
 pf_c1_values <- ldply(pf_c1_model,coef)
 
-###warmed one###
+###warmed one#####
 pf_w1_reg <- read.csv("Data/Species_change/Pfeiler_w1_raw.csv")
 
 #total across plots
@@ -208,6 +210,65 @@ pf_w1_reg$year <- as.numeric(pf_w1_reg$year) #make year numeric
 pf_w1_model <- dlply(pf_w1_reg,"species",function(pf_w1_reg) lm(occurrenceCount ~ year, 
                                                                 data = pf_w1_reg))
 pf_w1_values <- ldply(pf_w1_model,coef)
+
+##Monument######
+
+###within site transplant#####
+mo_win_reg <- read.csv("Data/Species_change/Monument_within_raw.csv")
+
+#total across plots
+mo_win_reg <- mo_win_reg %>% 
+  group_by(species,year) %>% 
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = TRUE
+  )
+
+mo_win_reg$year <- as.numeric(mo_win_reg$year) #make year numeric
+
+#do regression 
+mo_win_model <- dlply(mo_win_reg,"species",function(mo_win_reg) lm(occurrenceCount ~ year, 
+                                                                data = mo_win_reg))
+mo_win_values <- ldply(mo_win_model,coef)
+
+###warmed one#####
+mo_w1_reg <- read.csv("Data/Species_change/Monument_w1_raw.csv")
+
+#total across plots
+mo_w1_reg <- mo_w1_reg %>% 
+  group_by(species,year) %>% 
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = TRUE
+  )
+
+mo_w1_reg$year <- as.numeric(mo_w1_reg$year) #make year numeric
+
+#do regression 
+mo_w1_model <- dlply(mo_w1_reg,"species",function(mo_w1_reg) lm(occurrenceCount ~ year, 
+                                                                   data = mo_w1_reg))
+mo_w1_values <- ldply(mo_w1_model,coef)
+
+###warmed two#####
+mo_w2_reg <- read.csv("Data/Species_change/Monument_w2_raw.csv")
+
+#total across plots
+mo_w2_reg <- mo_w2_reg %>% 
+  group_by(species,year) %>% 
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = TRUE
+  )
+
+mo_w2_reg$year <- as.numeric(mo_w2_reg$year) #make year numeric
+
+#do regression 
+mo_w2_model <- dlply(mo_w2_reg,"species",function(mo_w2_reg) lm(occurrenceCount ~ year, 
+                                                                data = mo_w2_reg))
+mo_w2_values <- ldply(mo_w2_model,coef)
 
 #Format each table to include treatment, origin site, remove NAs-----------
 
@@ -304,3 +365,53 @@ pf_w1_values$treatment = "warmed_one"
 
 #save as csv
 write_csv(pf_w1_values, "Data/Species_change/Pfeiler_w1_slopes.csv")
+
+##Monument#######
+
+###within site transplant#####
+#rename columns 
+colnames(mo_win_values)[colnames(mo_win_values) == '(Intercept)'] <- 'intercept'
+colnames(mo_win_values)[colnames(mo_win_values) == 'year'] <- 'slope'
+
+#get rid of intercept column
+mo_win_values = subset(mo_win_values, select = -c(intercept))
+
+#add columns for treatment and origin site
+mo_win_values$originSite = "Monument"
+mo_win_values$treatment = "within_site_transplant"
+
+#save as csv
+write_csv(mo_win_values, "Data/Species_change/Monument_within_slopes.csv")
+
+###warmed one#####
+
+#rename columns 
+colnames(mo_w1_values)[colnames(mo_w1_values) == '(Intercept)'] <- 'intercept'
+colnames(mo_w1_values)[colnames(mo_w1_values) == 'year'] <- 'slope'
+
+#get rid of intercept column
+mo_w1_values = subset(mo_w1_values, select = -c(intercept))
+
+#add columns for treatment and origin site
+mo_w1_values$originSite = "Monument"
+mo_w1_values$treatment = "warmed_one"
+
+#save as csv
+write_csv(mo_w1_values, "Data/Species_change/Monument_w1_slopes.csv")
+
+###warmed two#####
+
+#rename columns 
+colnames(mo_w2_values)[colnames(mo_w2_values) == '(Intercept)'] <- 'intercept'
+colnames(mo_w2_values)[colnames(mo_w2_values) == 'year'] <- 'slope'
+
+#get rid of intercept column
+mo_w2_values = subset(mo_w2_values, select = -c(intercept))
+
+#add columns for treatment and origin site
+mo_w2_values$originSite = "Monument"
+mo_w2_values$treatment = "warmed_two"
+
+#save as csv
+write_csv(mo_w2_values, "Data/Species_change/Monument_w2_slopes.csv")
+
