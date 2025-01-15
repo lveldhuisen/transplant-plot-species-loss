@@ -451,5 +451,6 @@ raw_2017 = subset(raw_2017, select = -c(X,
 raw_2017$group <- paste(raw_2017$originSite,raw_2017$treatment)
 
 #merge two datasets
-test <- left_join(aoo_slopes, raw_2017)
+test <- full_join(aoo_slopes, raw_2017)
+test <- test[!is.na(test$slope),]
 
