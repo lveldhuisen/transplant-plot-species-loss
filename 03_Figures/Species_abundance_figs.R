@@ -57,7 +57,7 @@ aoo_slopes$treatment <- factor(aoo_slopes$treatment,
 ggplot(aoo_slopes, aes(x=log(AOO), y=slope, color = treatment))+
   geom_point()+
   theme_bw()+
-  labs(y = expression(Delta ~ "abundance (by species)"), x= "log(range size)")+
+  labs(y = expression(Delta ~ "abundance"), x= "log(range size)")+
   facet_wrap(.~originSite)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF",
                               "#FDE725FF"))+
