@@ -38,6 +38,16 @@ ggplot(slopes_df, aes(x=treatment, y=slope))+
   theme_bw()+
   facet_wrap(.~originSite)
 
+#niche breadth: slopes depending if species in destination site pre-transplant----
+
+ggplot(aoo_slopes, aes(x=originally_at_destination., y= slope))+
+  geom_boxplot()+
+  facet_wrap(.~group)+
+  theme_bw()+
+  xlab("Existed at destination site pre-transplant?")+
+  stat_pvalue_manual(stat.test, label = "p.adj.signif")
+
+
 #correlation between range size and slope--------
 aoo_slopes <- read.csv("Data/Species_change/Abundance_slopes_all.csv")
 
