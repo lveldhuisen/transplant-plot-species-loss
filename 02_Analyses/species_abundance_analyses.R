@@ -19,13 +19,13 @@ aoo_slopes %>%
   adjust_pvalue(method = "BH") %>%
   add_significance()
 
-
 #figure
 ggplot(aoo_slopes, aes(x=slope))+
   geom_histogram()+
   facet_wrap(.~group)
 
 #does original abundance predict abundance change?------------------------
+
 
 
 #relationship between abundance change and range size------------

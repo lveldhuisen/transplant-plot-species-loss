@@ -415,3 +415,41 @@ mo_w2_values$treatment = "warmed_two"
 #save as csv
 write_csv(mo_w2_values, "Data/Species_change/Monument_w2_slopes.csv")
 
+#Total abundance by plot to test relationship with change--------------
+
+#bring in slopes data
+aoo_slopes <- read.csv("Data/Species_change/Abundance_slopes_all.csv")
+
+#add column to have origin site and tx in same column 
+aoo_slopes$group <- paste(aoo_slopes$originSite,"_",aoo_slopes$treatment)
+aoo_slopes$occurrenceCount <- NA
+
+#bring in raw abundance data
+raw_2017 <- read.csv("Data/occurance2017-2023.csv")
+
+#filter to only 2017
+raw_2017 <- raw_2017 %>% filter(year %in% "2017")
+
+#get rid of extra controls
+raw_2017 <- raw_2017 %>% filter(!treatment %in% "netted_untouched",
+                                !treatment %in% "untouched")
+
+#get rid of extra columns
+raw_2017 = subset(raw_2017, select = -c(X,
+                                        X.1,
+                                        percentCover,
+                                        unknownMorpho,
+                                        functionalGroup,
+                                        date_yyyymmdd,
+                                        treatmentOriginGroup,
+                                        turfID,
+                                        originPlotID,
+                                        year
+))
+
+#add column to have origin site and tx in same column 
+raw_2017$group <- paste(raw_2017$originSite,raw_2017$treatment)
+
+#merge two datasets
+test <- left_join(aoo_slopes, raw_2017)
+
