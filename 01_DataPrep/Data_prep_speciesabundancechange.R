@@ -421,7 +421,8 @@ write_csv(mo_w2_values, "Data/Species_change/Monument_w2_slopes.csv")
 aoo_slopes <- read.csv("Data/Species_change/Abundance_slopes_all.csv")
 
 #add column to have origin site and tx in same column 
-aoo_slopes$group <- paste(aoo_slopes$originSite,"_",aoo_slopes$treatment)
+aoo_slopes$group <- paste(aoo_slopes$originSite,"_",aoo_slopes$treatment,
+                          "_",aoo_slopes$species)
 aoo_slopes$occurrenceCount <- NA
 
 #bring in raw abundance data
@@ -433,6 +434,25 @@ raw_2017 <- raw_2017 %>% filter(year %in% "2017")
 #get rid of extra controls
 raw_2017 <- raw_2017 %>% filter(!treatment %in% "netted_untouched",
                                 !treatment %in% "untouched")
+
+raw_2017 <- raw_2017 %>% filter(!species %in% "Unknown_round_leaves")
+
+#update species names to match phylogeny replacements
+
+raw_2017$species[raw_2017$species == 'Agoseris_glauca'] <- 'Agoseris_glauca_var._dasycephala'
+raw_2017$species[raw_2017$species == 'Aquilegia_caerulea'] <- 'Aquilegia_coerulea'
+raw_2017$species[raw_2017$species == 'Epilobium_sp.'] <- 'Epilobium_ciliatum'
+raw_2017$species[raw_2017$species == 'Erigeron_elatior'] <- 'Erigeron_grandiflorus'
+raw_2017$species[raw_2017$species == 'Festuca_rubra'] <- 'Festuca_rubra_subsp._rubra'
+raw_2017$species[raw_2017$species == 'Helianthella_quinquenervis'] <- 'Helianthella_uniflora'
+raw_2017$species[raw_2017$species == 'Heterotheca_pumila'] <- 'Heterotheca_villosa'
+raw_2017$species[raw_2017$species == 'Hydrophyllum_capitatum'] <- 'Hydrophyllum_capitatum_var._capitatum'
+raw_2017$species[raw_2017$species == 'Lupinus_sp.'] <- 'Lupinus_argenteus'
+raw_2017$species[raw_2017$species == 'Poa_pratensis'] <- 'Poa_pratensis_subsp._pratensis'
+raw_2017$species[raw_2017$species == 'Polygonum_douglasii'] <- 'Polygonum_douglasii_subsp._douglasii'
+raw_2017$species[raw_2017$species == 'Senecio_integerrimus'] <- 'Senecio_triangularis'
+raw_2017$species[raw_2017$species == 'Symphyotrichum_ascendens'] <- 'Symphyotrichum_foliaceum'
+raw_2017$species[raw_2017$species == 'Carex_sp.'] <- 'Carex_nelsonii'
 
 #get rid of extra columns
 raw_2017 = subset(raw_2017, select = -c(X,
@@ -448,9 +468,14 @@ raw_2017 = subset(raw_2017, select = -c(X,
 ))
 
 #add column to have origin site and tx in same column 
-raw_2017$group <- paste(raw_2017$originSite,raw_2017$treatment)
+raw_2017$group <- paste(raw_2017$originSite,"_",raw_2017$treatment,"_",raw_2017$species)
+
+#collapse values based on groups column and add all occurrences 
+raw_2017 <- aggregate(occurrenceCount ~ group, data = raw_2017, FUN = sum)
 
 #merge two datasets
-test <- full_join(aoo_slopes, raw_2017)
+
+test <- full_join(aoo_slopes, raw_2017, by=c("group"))
 test <- test[!is.na(test$slope),]
 
+write.csv(test, "Data/Species_change/complete_species.csv")
