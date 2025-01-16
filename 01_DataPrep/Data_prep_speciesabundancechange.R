@@ -454,6 +454,12 @@ raw_2017$species[raw_2017$species == 'Senecio_integerrimus'] <- 'Senecio_triangu
 raw_2017$species[raw_2017$species == 'Symphyotrichum_ascendens'] <- 'Symphyotrichum_foliaceum'
 raw_2017$species[raw_2017$species == 'Carex_sp.'] <- 'Carex_nelsonii'
 
+#update treatment names
+raw_2017$treatment[raw_2017$treatment == 'warmed_one_step'] <- 'warmed_one'
+raw_2017$treatment[raw_2017$treatment == 'warmed_two_steps'] <- 'warmed_two'
+raw_2017$treatment[raw_2017$treatment == 'cooled_one_step'] <- 'cooled_one'
+raw_2017$treatment[raw_2017$treatment == 'cooled_two_steps'] <- 'cooled_two'
+
 #get rid of extra columns
 raw_2017 = subset(raw_2017, select = -c(X,
                                         X.1,
