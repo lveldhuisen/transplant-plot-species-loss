@@ -25,10 +25,13 @@ ggplot(aoo_slopes, aes(x=slope))+
   facet_wrap(.~group)
 
 #does original abundance predict abundance change?------------------------
-lm(test$slope ~ test$occurrenceCount, data = test)
+model2 <- lm(test$slope ~ test$occurrenceCount, data = test)
+summary(model2)
 
-ggplot(test, aes(x = log(occurrenceCount), y = slope))+
-  geom_point()
+ggplot(test, aes(x = log(occurrenceCount), y = slope, color = treatment))+
+  geom_point()+
+  theme_bw()+
+  facet_wrap(.~originSite)
 
 #relationship between abundance change and range size------------
 

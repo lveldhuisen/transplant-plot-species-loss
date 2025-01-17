@@ -484,4 +484,7 @@ raw_2017 <- aggregate(occurrenceCount ~ group, data = raw_2017, FUN = sum)
 test <- full_join(aoo_slopes, raw_2017, by=c("group"))
 test <- test[!is.na(test$slope),]
 
+#split origin site and treatment back in their own columns 
+test <- test %>% separate(group, c('First Name', 'Last Name'))
+
 write.csv(test, "Data/Species_change/complete_species.csv")
