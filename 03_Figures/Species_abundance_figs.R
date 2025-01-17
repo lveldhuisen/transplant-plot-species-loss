@@ -47,22 +47,38 @@ ggplot(aoo_slopes, aes(x=originally_at_destination., y= slope))+
   xlab("Existed at destination site pre-transplant?")+
   stat_pvalue_manual(stat.test, label = "p.adj.signif")
 
+#correlation between 2017 abundance and slope------
+aoo_slopes <- read.csv("Data/Species_change/complete_species.csv")
+
+#reorder treatments
+aoo_slopes$originSite <- factor(aoo_slopes$originSite, 
+                                levels = c("Upper Montane",
+                                           "Pfeiler",
+                                           "Monument"))
+
+aoo_slopes$treatment <- factor(aoo_slopes$treatment, 
+                               levels = c("cooled_two",
+                                          "cooled_one",
+                                          "within_site_transplant",
+                                          "warmed_one",
+                                          "warmed_two"))
+
+#figure                     
+ggplot(aoo_slopes, aes(x = log(occurrenceCount), y = slope, color = treatment))+
+  geom_point()+
+  theme_bw()+
+  facet_wrap(.~originSite)+
+  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF",
+                              "#FDE725FF"))+
+  geom_smooth(method = "lm", se = FALSE)+
+  stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
+  stat_regline_equation(label.y = c(8.5,11,13.5,16,11), size = 4)+
+  xlab("2017 pre-transplant abundance")
+
 
 #correlation between range size and slope--------
 aoo_slopes <- read.csv("Data/Species_change/Abundance_slopes_all.csv")
 
-#reorder treatments
-aoo_slopes$originSite <- factor(aoo_slopes$originSite, 
-                               levels = c("Upper Montane",
-                                          "Pfeiler",
-                                          "Monument"))
-
-aoo_slopes$treatment <- factor(aoo_slopes$treatment, 
-                              levels = c("cooled_two",
-                                         "cooled_one",
-                                         "within_site_transplant",
-                                         "warmed_one",
-                                         "warmed_two"))
 #plot
 ggplot(aoo_slopes, aes(x=log(AOO), y=slope, color = treatment))+
   geom_point()+
