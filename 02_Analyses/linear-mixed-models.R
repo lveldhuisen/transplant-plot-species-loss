@@ -152,6 +152,8 @@ saveRDS(model_r, file = "ModelOutput/Richness_LMM.RDS")
 
 ###bring in and set up data###
 h_dat <- read.csv("Data/Shannon_fulldataset2018-2023.csv")
+tx_outs <- c("netted_untouched","untouched")
+h_dat <- h_dat %>% filter(!treatment %in% tx_outs)
 
 #reorder treatments
 h_dat$treatment <- relevel(factor(h_dat$treatment),
@@ -171,13 +173,14 @@ contrasts(h_dat$originSite) <- contr.sum(length(levels(h_dat$originSite)))
 model2_n <- lmer(shannon_plots ~ year + 
                  originSite/treatment  + (1|replicates), data = h_dat)
  
-check_model(model2)
-summary(model2)
-anova(model2)
+check_model(model2_n)
+summary(model2_n)
+anova(model2_n)
 
 ###model additive only#####
 model2_a <- lmer(shannon_plots ~ year + 
                    originSite + treatment  + (1|replicates), data = h_dat)
+check_model(model2_a)
 
 ###compare models####
 compare_performance(model2_a,model2_n, rank = T) #nested looks better

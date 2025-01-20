@@ -3,7 +3,7 @@ library(tidyverse)
 
 #Data cleaning and formatting---------------------------------------------------
 
-##all abundance data reformatting############
+##all cover data reformatting############
 
 #bring in data
 abundance_df <- read.csv("Data/occurance2017-2023.csv")
@@ -33,10 +33,12 @@ abundance_df1 <- abundance_df %>% filter(!is.na(treatment),
 #get rid of extra X columns
 abundance_df1 = subset(abundance_df1, select = -c(X,X.1))
 
-abundance_df1$percentCover <- as.numeric(abundance_df1$percentCover)
+abundance_df1$percentCover <- as.numeric(abundance_df1$percentCover)/100
+
+cover_df <- abundance_df1
 
 #save clean vertically-formatted abundance data
-write.csv(abundance_df1, file = "abundance_clean2018-2023.csv")
+write.csv(cover_df, file = "cover_clean2018-2023.csv")
 
 ##count species in each site (including all control treatments and 2017)####
 abundance_forcounts <- abundance_df %>% filter(!is.na(treatment),
@@ -52,20 +54,21 @@ abundance_forcounts %>%
 ###reformat to matrix for Vegan########
 
 #reformat data
-comm_matrix <- pivot_wider(abundance_df1, names_from = species, 
+comm_matrix <- pivot_wider(cover_df, names_from = species, 
                            values_from = percentCover)
 
 #make matrix with plot IDs
 comm_matrix$ID = NA
-comm_matrix$ID <- paste(comm_matrix$turfID, "_",comm_matrix$year)
+comm_matrix$ID <- paste(comm_matrix$turfID,"_", comm_matrix$originSite,"_",
+                        comm_matrix$destinationSite,
+                        "_",comm_matrix$treatment,
+                        "_",comm_matrix$year)
 comm_matrixID <- comm_matrix %>% relocate(ID)
 comm_matrixID = subset(comm_matrixID, select = -c(turfID,originSite, destinationSite,
                                                   originPlotID, 
                                                   treatment,treatmentOriginGroup,year,
                                                   date_yyyymmdd, functionalGroup,
                                                   unknownMorpho, occurrenceCount) )
-
-#switch plot IDs to row names for the matrix including plot IDs
 
 #replace NAs with 0s
 comm_matrixID[is.na(comm_matrixID)] <- 0

@@ -4,12 +4,13 @@ library(dplyr)
 #Make dataframe with Shannon values for linear models---------------------------
 
 #bring in data
-shannon_df_plotID <- read.csv("Data/Shannon_fulldataset2018-2023.csv")
+shannon_df_plotID <- read.csv("Data/Shannon_ByPlot2018-2023.csv")
+h_dat <- shannon_df_plotID
 abundance_df1 <- read.csv("Data/abundance_clean2018-2023.csv")
 
 #get rid of extra columns
 abundance_df1 = subset(abundance_df1, select = -c(X))
-shannon_df_plotID = subset(shannon_df_plotID, select = -c(X.1,X))
+shannon_df_plotID = subset(shannon_df_plotID, select = -c(X))
 
 #get rid of extra control plots
 outs <- c("untouched","netted_untouched")
@@ -18,13 +19,15 @@ abundance_df1 <- abundance_df1 %>% filter(!treatment %in% outs)
 shannon_df_plotID <- shannon_df_plotID %>% filter(!treatment %in% outs)
 
 #get rid of multiple rows per plot
-join_dat <- abundance_df1 %>% select(!8:13) %>% 
-  group_by(originPlotID, treatmentOriginGroup, year) %>%
-  slice(1)
+#join_dat <- abundance_df1 %>% 
+ # group_by(originPlotID, treatmentOriginGroup, year) %>%
+  #slice(1)
 
 #merge dataframes
-h_dat <- left_join(shannon_df_plotID, join_dat, by = c("turfID",
-                                                       "year","treatmentOriginGroup"))
+#h_dat <- left_join(shannon_df_plotID, join_dat, by = c("originSite",
+                                                      "destinationSite",
+                                                      "originPlotID",
+                                                      "year"))
 
 #add column to ID replication
 h_dat$replicates <- paste(h_dat$originSite,"_", h_dat$destinationSite,"_",
