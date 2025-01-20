@@ -55,7 +55,8 @@ pred_s$comparison2 <- factor(pred_s$comparison2,
 shannon_fig_site <- ggplot(pred_s)+
   geom_pointrange(mapping = aes(x = comparison2, y= Contrast, ymin = conf.high,
                                 ymax = conf.low, 
-                                color=originSite), position = position_dodge(width = 0.2))+
+                                color=originSite), 
+                  position = position_dodge(width = 0.2))+
   theme_classic(base_size = 15)+
   labs(y = expression(Delta ~ "Shannon diversity"), x = "Treatment")+
   scale_x_discrete(labels = c("-2", "-1","+1","+2"))+

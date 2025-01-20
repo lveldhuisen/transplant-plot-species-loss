@@ -128,6 +128,7 @@ model_r <- lmer(richness_df ~ year + originSite/treatment +
 check_model(model_r)
 summary(model_r)
 Anova(model_r)
+AIC(model_r)
 
 ###model additive only#####
 model_r1 <- lmer(richness_df ~ year + originSite + treatment + 
@@ -151,9 +152,7 @@ saveRDS(model_r, file = "ModelOutput/Richness_LMM.RDS")
 ##Shannon diversity across years & tx---------------------------------
 
 ###bring in and set up data###
-h_dat <- read.csv("Data/Shannon_fulldataset2018-2023.csv")
-tx_outs <- c("netted_untouched","untouched")
-h_dat <- h_dat %>% filter(!treatment %in% tx_outs)
+h_dat <- shannon_df_plotID
 
 #reorder treatments
 h_dat$treatment <- relevel(factor(h_dat$treatment),
@@ -176,11 +175,13 @@ model2_n <- lmer(shannon_plots ~ year +
 check_model(model2_n)
 summary(model2_n)
 anova(model2_n)
+AIC(model2_n)
 
 ###model additive only#####
 model2_a <- lmer(shannon_plots ~ year + 
                    originSite + treatment  + (1|replicates), data = h_dat)
 check_model(model2_a)
+AIC(model2_a)
 
 ###compare models####
 compare_performance(model2_a,model2_n, rank = T) #nested looks better
@@ -189,7 +190,7 @@ compare_performance(model2_a,model2_n, rank = T) #nested looks better
 saveRDS(model2_n, file = "ModelOutput/Shannon_LMM.RDS")
 
 #test predictions
-prediction_shannon_nested <- test_predictions(model2_n, terms = c("treatment","originSite"))
+pred_s <- test_predictions(model2_n, terms = c("originSite","treatment"))
 
 #save as csv
 write_csv(prediction_shannon_nested, file = "ModelOutput/Prediction_Shannon_nested.csv")
