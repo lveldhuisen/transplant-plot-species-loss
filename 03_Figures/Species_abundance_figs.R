@@ -83,7 +83,7 @@ aoo_slopes <- read.csv("Data/Species_change/Abundance_slopes_all.csv")
 ggplot(aoo_slopes, aes(x=log(AOO), y=slope, color = treatment))+
   geom_point()+
   theme_bw()+
-  labs(y = expression(Delta ~ "abundance"), x= "log(range size)")+
+  labs(x= "log(range size)")+
   facet_wrap(.~originSite)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF",
                               "#FDE725FF"))+

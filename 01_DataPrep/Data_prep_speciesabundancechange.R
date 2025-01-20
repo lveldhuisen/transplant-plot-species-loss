@@ -25,10 +25,10 @@ abundance_df1 <- abundance_df1 %>% filter(!is.na(treatment),
 abundance_df1 = subset(abundance_df1, select = -c(X,
                                                   date_yyyymmdd,
                                                   unknownMorpho,
-                                                  percentCover,
                                                   Origin,
                                                   GBIF_citation,
-                                                  functionalGroup))
+                                                  functionalGroup,
+                                                  occurrenceCount))
 
 ##Make separate data frames for each origin/tx combo-------
 

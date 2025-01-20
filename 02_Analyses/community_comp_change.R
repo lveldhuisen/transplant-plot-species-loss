@@ -11,6 +11,7 @@ library(dplyr) #data cleaning
 #Shannon diversity calculations------------------------------------------------
 
 ##Shannon for three different controls only, no transplant data#######
+#*****has not been updated for percentCover, occurrenceCount is wrong***##
 
 #calculate shannon diversity
 comm_matrix_controls <- read.csv("Data/Community_matrix_controlsonly.csv")
@@ -46,8 +47,7 @@ shannon_df_plotID <- as.data.frame(shannon_plots)
 shannon_df_plotID$ID <- row.names(shannon_df_plotID)
 
 shannon_df_plotID <- shannon_df_plotID %>%
-  separate(col = ID, into = c("originturfID","treatment","destinationturfID",
-                              "year","destinationsite"), sep = "_")
+  separate(col = ID, into = c("originSite","treatment","destinationSite","year"), sep = "_")
 
 ###figure including variation between plots of same tx#######
 shannon_fig_plots <- ggplot(data = shannon_df_plotID, aes(x=year, y=shannon_plots))+

@@ -17,7 +17,7 @@ outs <- c("untouched","netted_untouched")
 
 # remove non-species from species column
 gc.outs <- c("litter", "bare_soil", "rock", "moss","unknown_seedling",
-             "unknown_forb","unknown_grass")
+             "unknown_forb","unknown_grass", "unknown_round_leaves")
 
 #remove block 6 plots since they were transplanted in 2018
 block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
@@ -32,6 +32,8 @@ abundance_df1 <- abundance_df %>% filter(!is.na(treatment),
                                          year %in% ins)
 #get rid of extra X columns
 abundance_df1 = subset(abundance_df1, select = -c(X,X.1))
+
+abundance_df1$percentCover <- as.numeric(abundance_df1$percentCover)
 
 #save clean vertically-formatted abundance data
 write.csv(abundance_df1, file = "abundance_clean2018-2023.csv")
@@ -51,23 +53,24 @@ abundance_forcounts %>%
 
 #reformat data
 comm_matrix <- pivot_wider(abundance_df1, names_from = species, 
-                           values_from = occurrenceCount)
+                           values_from = percentCover)
 
 #make matrix with plot IDs
 comm_matrix$ID = NA
-comm_matrix$ID <- paste(comm_matrix$treatmentOriginGroup, "_",comm_matrix$year,
-                        "_", comm_matrix$originPlotID)
+comm_matrix$ID <- paste(comm_matrix$turfID, "_",comm_matrix$year)
 comm_matrixID <- comm_matrix %>% relocate(ID)
 comm_matrixID = subset(comm_matrixID, select = -c(turfID,originSite, destinationSite,
                                                   originPlotID, 
                                                   treatment,treatmentOriginGroup,year,
                                                   date_yyyymmdd, functionalGroup,
-                                                  unknownMorpho, percentCover) )
+                                                  unknownMorpho, occurrenceCount) )
+
+#switch plot IDs to row names for the matrix including plot IDs
 
 #replace NAs with 0s
 comm_matrixID[is.na(comm_matrixID)] <- 0
 
-#switch plot IDs to row names for the matrix including plot IDs
+#sum to put all sites in same row
 comm_matrixID <- comm_matrixID %>%
   group_by(ID) %>%
   summarise_if(
@@ -75,6 +78,7 @@ comm_matrixID <- comm_matrixID %>%
     sum,
     na.rm = FALSE
   )
+
 comm_matrixID <- comm_matrixID %>% column_to_rownames(var = "ID")
 
 #save as csv 
