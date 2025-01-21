@@ -25,7 +25,7 @@ slopes_df$originSite <- factor(slopes_df$originSite,
 ggplot(slopes_df, aes(treatment, species, fill= slope)) + 
   geom_tile()+
   scale_fill_viridis(discrete = FALSE)+
-  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))+
+  scale_x_discrete(labels = c("C2", "C1", "Within site transplant", "W1","W2"))+
   theme_bw()+
   theme(axis.text.y = element_text(face = "italic"))+
   facet_wrap(.~originSite)
@@ -39,13 +39,13 @@ ggplot(slopes_df, aes(x=slope)) +
 ##violin plots-----
 ggplot(slopes_df, aes(x=treatment, y=slope))+
   geom_violin()+
-  scale_x_discrete(labels = c("-2", "-1", "0", "+1","+2"))+
+  scale_x_discrete(labels = c("C2", "C1", "Within site transplant", "W1","W2"))+
   theme_bw()+
   facet_wrap(.~originSite)
 
 #niche breadth: slopes depending if species in destination site pre-transplant----
 
-ggplot(slopes_df, aes(x=slopes_df$originally_at_destination., y= slope))+
+ggplot(slopes_df, aes(x=originally_at_destination., y= slope))+
   geom_boxplot()+
   facet_wrap(.~originSite)+
   theme_bw()+

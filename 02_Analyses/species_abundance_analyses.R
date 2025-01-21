@@ -13,13 +13,14 @@ aoo_slopes <- read.csv("Data/Species_change/Cover_slopes_all.csv")
 aoo_slopes$group <- paste(aoo_slopes$originSite,"_",aoo_slopes$treatment)
 
 #niche breadth (y/n at destination site pre-transplant)--------------
-niche_breadth_results <- aoo_slopes %>%
+
+stat.test <- aoo_slopes %>%
   group_by(group) %>%
   t_test(slope ~ originally_at_destination.) %>%
   adjust_pvalue(method = "BH") %>%
   add_significance()
 
-view(niche_breadth_results)
+view(stat.test)
 
 #figure
 ggplot(aoo_slopes, aes(x=slope))+
