@@ -92,13 +92,13 @@ um_win_reg <- um_win_reg %>%
 um_win_reg$year <- as.numeric(um_win_reg$year) #make year numeric
 
 #do regression 
-um_win_model <- dlply(um_win_reg,"species",function(um_win_reg) lm(occurrenceCount ~ year, 
+um_win_model <- dlply(um_win_reg,"species",function(um_win_reg) lm(percentCover ~ year, 
                                                            data = um_win_reg))
 um_win_values <- ldply(um_win_model,coef)
 
 #make plot for visual
 ggplot(um_win_reg,
-       aes(x = year, y = occurrenceCount)) +
+       aes(x = year, y = percentCover)) +
   geom_point() +
   # add regression lines
   geom_smooth(method = "lm", se = FALSE)+
@@ -120,13 +120,13 @@ um_c1_reg <- um_c1_reg %>%
 um_c1_reg$year <- as.numeric(um_c1_reg$year) #make year numeric
 
 #do regression 
-um_c1_model <- dlply(um_c1_reg,"species",function(um_c1_reg) lm(occurrenceCount ~ year, 
-                                                                   data = um_c1_reg))
+um_c1_model <- dlply(um_c1_reg,"species",function(um_c1_reg) lm(
+  percentCover ~ year, data = um_c1_reg))
 um_c1_values <- ldply(um_c1_model,coef)
 
 #plot to check 
 ggplot(um_c1_reg,
-       aes(x = year, y = occurrenceCount)) +
+       aes(x = year, y = percentCover)) +
   geom_point() +
   # add regression lines
   geom_smooth(method = "lm", se = FALSE)+
@@ -148,8 +148,8 @@ um_c2_reg <- um_c2_reg %>%
 um_c2_reg$year <- as.numeric(um_c2_reg$year) #make year numeric
 
 #do regression 
-um_c2_model <- dlply(um_c2_reg,"species",function(um_c2_reg) lm(occurrenceCount ~ year, 
-                                                                data = um_c2_reg))
+um_c2_model <- dlply(um_c2_reg,"species",function(um_c2_reg)
+  lm(percentCover ~ year,  data = um_c2_reg))
 um_c2_values <- ldply(um_c2_model,coef)
 
 ##Pfeiler######
@@ -169,8 +169,7 @@ pf_win_reg <- pf_win_reg %>%
 pf_win_reg$year <- as.numeric(pf_win_reg$year) #make year numeric
 
 #do regression 
-pf_win_model <- dlply(pf_win_reg,"species",function(pf_win_reg) lm(occurrenceCount ~ year, 
-                                                                   data = pf_win_reg))
+pf_win_model <- dlply(pf_win_reg,"species",function(pf_win_reg) lm(percentCover ~ year,  data = pf_win_reg))
 pf_win_values <- ldply(pf_win_model,coef)
 
 ###cooled one####
@@ -188,8 +187,7 @@ pf_c1_reg <- pf_c1_reg %>%
 pf_c1_reg$year <- as.numeric(pf_c1_reg$year) #make year numeric
 
 #do regression 
-pf_c1_model <- dlply(pf_c1_reg,"species",function(pf_c1_reg) lm(occurrenceCount ~ year, 
-                                                                   data = pf_c1_reg))
+pf_c1_model <- dlply(pf_c1_reg,"species",function(pf_c1_reg) lm(percentCover ~ year, data = pf_c1_reg))
 pf_c1_values <- ldply(pf_c1_model,coef)
 
 ###warmed one#####
@@ -207,8 +205,8 @@ pf_w1_reg <- pf_w1_reg %>%
 pf_w1_reg$year <- as.numeric(pf_w1_reg$year) #make year numeric
 
 #do regression 
-pf_w1_model <- dlply(pf_w1_reg,"species",function(pf_w1_reg) lm(occurrenceCount ~ year, 
-                                                                data = pf_w1_reg))
+pf_w1_model <- dlply(pf_w1_reg,"species",function(pf_w1_reg)
+  lm(percentCover ~ year, data = pf_w1_reg))
 pf_w1_values <- ldply(pf_w1_model,coef)
 
 ##Monument######
@@ -228,8 +226,7 @@ mo_win_reg <- mo_win_reg %>%
 mo_win_reg$year <- as.numeric(mo_win_reg$year) #make year numeric
 
 #do regression 
-mo_win_model <- dlply(mo_win_reg,"species",function(mo_win_reg) lm(occurrenceCount ~ year, 
-                                                                data = mo_win_reg))
+mo_win_model <- dlply(mo_win_reg,"species",function(mo_win_reg) lm(percentCover ~ year,  data = mo_win_reg))
 mo_win_values <- ldply(mo_win_model,coef)
 
 ###warmed one#####
@@ -247,8 +244,7 @@ mo_w1_reg <- mo_w1_reg %>%
 mo_w1_reg$year <- as.numeric(mo_w1_reg$year) #make year numeric
 
 #do regression 
-mo_w1_model <- dlply(mo_w1_reg,"species",function(mo_w1_reg) lm(occurrenceCount ~ year, 
-                                                                   data = mo_w1_reg))
+mo_w1_model <- dlply(mo_w1_reg,"species",function(mo_w1_reg) lm(percentCover ~ year, data = mo_w1_reg))
 mo_w1_values <- ldply(mo_w1_model,coef)
 
 ###warmed two#####
@@ -266,8 +262,7 @@ mo_w2_reg <- mo_w2_reg %>%
 mo_w2_reg$year <- as.numeric(mo_w2_reg$year) #make year numeric
 
 #do regression 
-mo_w2_model <- dlply(mo_w2_reg,"species",function(mo_w2_reg) lm(occurrenceCount ~ year, 
-                                                                data = mo_w2_reg))
+mo_w2_model <- dlply(mo_w2_reg,"species",function(mo_w2_reg) lm(percentCover ~ year,  data = mo_w2_reg))
 mo_w2_values <- ldply(mo_w2_model,coef)
 
 #Format each table to include treatment, origin site, remove NAs-----------

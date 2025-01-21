@@ -161,9 +161,6 @@ h_dat$treatment <- relevel(factor(h_dat$treatment),
 h_dat$year <- relevel(factor(h_dat$year),
                            ref = "2018")
 
-#remove extra column
-h_dat = subset(h_dat, select = -c(X.1))
-
 #set up sum to zero contrast
 h_dat$originSite <- as.factor(h_dat$originSite)
 contrasts(h_dat$originSite) <- contr.sum(length(levels(h_dat$originSite)))
