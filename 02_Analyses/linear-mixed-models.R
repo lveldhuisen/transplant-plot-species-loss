@@ -150,6 +150,7 @@ write_csv(pred_R, file = "ModelOutput/Prediction_richness_nested.csv")
 saveRDS(model_r, file = "ModelOutput/Richness_LMM.RDS")
 
 ##Shannon diversity across years & tx---------------------------------
+shannon_df_plot_ID <- read.csv("Data/Shannon_cover_forLMM.csv")
 
 ###bring in and set up data###
 h_dat <- shannon_df_plotID

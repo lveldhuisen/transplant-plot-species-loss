@@ -28,7 +28,7 @@ richness_fig_site <- ggplot(pred_R)+
                                 color=originSite), position = position_dodge(width = 0.2))+
   theme_classic(base_size = 15)+
   labs(y = expression(Delta ~ "species richness"), x = "Treatment")+
-  scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
+  scale_x_discrete(labels = c("C2", "C1","W1","W2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
@@ -59,7 +59,7 @@ shannon_fig_site <- ggplot(pred_s)+
                   position = position_dodge(width = 0.2))+
   theme_classic(base_size = 15)+
   labs(y = expression(Delta ~ "Shannon diversity"), x = "Treatment")+
-  scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
+  scale_x_discrete(labels = c("C2", "C1","W1","W2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
@@ -87,7 +87,7 @@ pd_fig_site <- ggplot(pred_pd)+
                                 color=originSite), position = position_dodge(width = 0.2))+
   theme_classic(base_size = 15)+
   labs(y = expression(Delta ~ "PD"), x = "Treatment")+
-  scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
+  scale_x_discrete(labels = c("C2", "C1","W1","W2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
@@ -115,7 +115,7 @@ mpd_fig_site <- ggplot(pred_mpd)+
                                 color=originSite), position = position_dodge(width = 0.2))+
   theme_classic(base_size = 15)+
   labs(y = expression(Delta ~ "MPD"), x = "Treatment")+
-  scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
+  scale_x_discrete(labels = c("C2", "C1","W1","W2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
@@ -143,7 +143,7 @@ mntd_fig_site <- ggplot(pred_mntd)+
                                 color=originSite), position = position_dodge(width = 0.2))+
   theme_classic(base_size = 15)+
   labs(y = expression(Delta ~ "MNTD"), x = "Treatment")+
-  scale_x_discrete(labels = c("-2", "-1","+1","+2"))+
+  scale_x_discrete(labels = c("C2", "C1","W1","W2"))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey")

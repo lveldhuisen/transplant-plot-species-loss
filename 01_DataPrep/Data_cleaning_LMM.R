@@ -5,42 +5,22 @@ library(dplyr)
 
 #bring in data
 shannon_df_plotID <- read.csv("Data/Shannon_ByPlot2018-2023.csv")
-h_dat <- shannon_df_plotID
-abundance_df1 <- read.csv("Data/abundance_clean2018-2023.csv")
 
 #get rid of extra columns
-abundance_df1 = subset(abundance_df1, select = -c(X))
 shannon_df_plotID = subset(shannon_df_plotID, select = -c(X))
 
 #get rid of extra control plots
 outs <- c("untouched","netted_untouched")
 
-abundance_df1 <- abundance_df1 %>% filter(!treatment %in% outs)
 shannon_df_plotID <- shannon_df_plotID %>% filter(!treatment %in% outs)
 
-#get rid of multiple rows per plot
-#join_dat <- abundance_df1 %>% 
- # group_by(originPlotID, treatmentOriginGroup, year) %>%
-  #slice(1)
-
-#merge dataframes
-#h_dat <- left_join(shannon_df_plotID, join_dat, by = c("originSite",
-                                                      "destinationSite",
-                                                      "originPlotID",
-                                                      "year"))
+h_dat <- shannon_df_plotID
 
 #add column to ID replication
 h_dat$replicates <- paste(h_dat$originSite,"_", h_dat$destinationSite,"_",
                           h_dat$treatment,"_", h_dat$year)
 
-##add richness data into dataframe with shannon######
-richness_df <- read.csv("Data/richness_data.csv")
-
-#merge dataframes
-h_dat <- left_join(h_dat, richness_df, by = c("X"))
-
-#save dataset
-write.csv(h_dat, file = "Data/Shannon_fulldataset2018-2023.csv")
+write.csv(h_dat, "Data/Shannon_cover_forLMM.csv")
 
 #Make dataframe with phylogenetic metrics for linear models---------------------
 
