@@ -73,8 +73,7 @@ ggplot(aoo_slopes, aes(x = log(occurrenceCount.y), y = slope, color = treatment)
   geom_point()+
   theme_bw()+
   facet_wrap(.~originSite)+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF",
-                              "#FDE725FF"))+
+  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"))+
   geom_smooth(method = "lm", se = FALSE)+
   stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
   stat_regline_equation(label.y = c(8.5,11,13.5,16,11), size = 4)+

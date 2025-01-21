@@ -32,7 +32,7 @@ pred_R$originSite[pred_R$originSite=="Upper Montane-Upper Montane"]<-"Upper Mont
 
 #Shannon------------
 #bring in data
-pred_s <- read.csv("ModelOutput/Prediction_shannon_nested.csv")
+pred_s <- read.csv("ModelOutput/Prediction_Shannon_nested.csv")
 
 #remove weird site comparisons
 site_ins <- c("Monument-Monument","Pfeiler-Pfeiler","Upper Montane-Upper Montane")

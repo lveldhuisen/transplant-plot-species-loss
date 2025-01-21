@@ -153,6 +153,7 @@ saveRDS(model_r, file = "ModelOutput/Richness_LMM.RDS")
 
 ###bring in and set up data###
 h_dat <- shannon_df_plotID
+h_dat$shannon_plots <- as.numeric(h_dat$shannon_plots)
 
 #reorder treatments
 h_dat$treatment <- relevel(factor(h_dat$treatment),
@@ -164,6 +165,10 @@ h_dat$year <- relevel(factor(h_dat$year),
 #set up sum to zero contrast
 h_dat$originSite <- as.factor(h_dat$originSite)
 contrasts(h_dat$originSite) <- contr.sum(length(levels(h_dat$originSite)))
+
+#add column to ID replication
+h_dat$replicates <- paste(h_dat$originSite,"_", h_dat$destinationSite,"_",
+                          h_dat$treatment,"_", h_dat$year)
 
 ###model nested#####
 model2_n <- lmer(shannon_plots ~ year + 
@@ -187,7 +192,7 @@ compare_performance(model2_a,model2_n, rank = T) #nested looks better
 saveRDS(model2_n, file = "ModelOutput/Shannon_LMM.RDS")
 
 #test predictions
-pred_s <- test_predictions(model2_n, terms = c("originSite","treatment"))
+prediction_shannon_nested <- test_predictions(model2_n, terms = c("originSite","treatment"))
 
 #save as csv
 write_csv(prediction_shannon_nested, file = "ModelOutput/Prediction_Shannon_nested.csv")

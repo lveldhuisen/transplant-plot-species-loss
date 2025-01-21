@@ -38,7 +38,7 @@ plot(richness_fig_site)
 #Shannon diversity------------------------
 
 #reorder groups
-pred_s <- read.csv("ModelOutput/Prediction_Shannon_nested.csv")
+pred_s <- read.csv("Data/Shannon_model_forfig.csv")
 
 pred_s$originSite <- factor(pred_s$originSite,
                             levels  = c("Upper Montane",
