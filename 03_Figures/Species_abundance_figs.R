@@ -45,11 +45,12 @@ ggplot(slopes_df, aes(x=treatment, y=slope))+
 
 #niche breadth: slopes depending if species in destination site pre-transplant----
 
-ggplot(slopes_df, aes(x=originally_at_destination., y= slope))+
+ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour = treatment))+
   geom_boxplot()+
   facet_wrap(.~originSite)+
   theme_bw()+
   xlab("Existed at destination site pre-transplant?")+
+  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"))
   stat_pvalue_manual(stat.test, label = "p.adj.signif")
 
 #correlation between 2017 abundance and slope------

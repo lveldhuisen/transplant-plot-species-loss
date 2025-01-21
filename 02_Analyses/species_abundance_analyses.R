@@ -18,7 +18,8 @@ stat.test <- aoo_slopes %>%
   group_by(group) %>%
   t_test(slope ~ originally_at_destination.) %>%
   adjust_pvalue(method = "BH") %>%
-  add_significance()
+  add_significance() %>%
+  add_y_position()
 
 view(stat.test)
 
