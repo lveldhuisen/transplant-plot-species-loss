@@ -4,17 +4,22 @@ library(viridis)
 library(ggpubr)
 
 #bring in data
-slopes_df <- read.csv("Data/Species_change/Abundance_slopes_all.csv")
+slopes_df <- read.csv("Data/Species_change/Cover_slopes_all.csv")
 
 #figures to display raw slope values----------
 
-#reorder treatments
+#reorder treatments and origin site
 slopes_df$treatment <- factor(slopes_df$treatment, 
                          levels = c("cooled_two",
                                     "cooled_one",
                                     "within_site_transplant",
                                     "warmed_one",
                                     "warmed_two"))
+
+slopes_df$originSite <- factor(slopes_df$originSite, 
+                              levels = c("Upper Montane",
+                                         "Pfeiler",
+                                         "Monument"))
 
 ##heatmap-----
 ggplot(slopes_df, aes(treatment, species, fill= slope)) + 
@@ -40,9 +45,9 @@ ggplot(slopes_df, aes(x=treatment, y=slope))+
 
 #niche breadth: slopes depending if species in destination site pre-transplant----
 
-ggplot(aoo_slopes, aes(x=originally_at_destination., y= slope))+
+ggplot(slopes_df, aes(x=slopes_df$originally_at_destination., y= slope))+
   geom_boxplot()+
-  facet_wrap(.~group)+
+  facet_wrap(.~originSite)+
   theme_bw()+
   xlab("Existed at destination site pre-transplant?")+
   stat_pvalue_manual(stat.test, label = "p.adj.signif")
@@ -64,7 +69,7 @@ aoo_slopes$treatment <- factor(aoo_slopes$treatment,
                                           "warmed_two"))
 
 #figure                     
-ggplot(aoo_slopes, aes(x = log(occurrenceCount), y = slope, color = treatment))+
+ggplot(aoo_slopes, aes(x = log(occurrenceCount.y), y = slope, color = treatment))+
   geom_point()+
   theme_bw()+
   facet_wrap(.~originSite)+
@@ -77,10 +82,10 @@ ggplot(aoo_slopes, aes(x = log(occurrenceCount), y = slope, color = treatment))+
 
 
 #correlation between range size and slope--------
-aoo_slopes <- read.csv("Data/Species_change/Abundance_slopes_all.csv")
+aoo_slopes <- read.csv("Data/Species_change/Cover_slopes_all.csv")
 
 #plot
-ggplot(aoo_slopes, aes(x=log(AOO), y=slope, color = treatment))+
+ggplot(slopes_df, aes(x=log(AOO), y=slope, color = treatment))+
   geom_point()+
   theme_bw()+
   labs(x= "log(range size)")+

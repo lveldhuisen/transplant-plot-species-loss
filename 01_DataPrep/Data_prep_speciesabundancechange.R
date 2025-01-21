@@ -413,7 +413,7 @@ write_csv(mo_w2_values, "Data/Species_change/Monument_w2_slopes.csv")
 #Total abundance by plot to test relationship with change--------------
 
 #bring in slopes data
-aoo_slopes <- read.csv("Data/Species_change/Abundance_slopes_all.csv")
+aoo_slopes <- read.csv("Data/Species_change/Cover_slopes_all.csv")
 
 #add column to have origin site and tx in same column 
 aoo_slopes$group <- paste(aoo_slopes$originSite,"_",aoo_slopes$treatment,
@@ -458,7 +458,6 @@ raw_2017$treatment[raw_2017$treatment == 'cooled_two_steps'] <- 'cooled_two'
 #get rid of extra columns
 raw_2017 = subset(raw_2017, select = -c(X,
                                         X.1,
-                                        percentCover,
                                         unknownMorpho,
                                         functionalGroup,
                                         date_yyyymmdd,
@@ -479,7 +478,11 @@ raw_2017 <- aggregate(occurrenceCount ~ group, data = raw_2017, FUN = sum)
 test <- full_join(aoo_slopes, raw_2017, by=c("group"))
 test <- test[!is.na(test$slope),]
 
-#split origin site and treatment back in their own columns 
-test <- test %>% separate(group, c('First Name', 'Last Name'))
+#add AOO and 2017 abundance 
+
+#delete extra columns 
+test = subset(test, select = -c(X,
+                                occurrenceCount.x
+                                ))
 
 write.csv(test, "Data/Species_change/complete_species.csv")
