@@ -50,8 +50,9 @@ ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour = treatment
   facet_wrap(.~originSite)+
   theme_bw()+
   xlab("Existed at destination site pre-transplant?")+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"))
-  stat_pvalue_manual(stat.test, label = "p.adj.signif")
+  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"))+
+  stat_pvalue_manual(stat.test, label = "p.adj.signif",
+                     vjust = -1, bracket.nudge.y = 1)
 
 #correlation between 2017 abundance and slope------
 aoo_slopes <- read.csv("Data/Species_change/complete_species.csv")
