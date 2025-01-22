@@ -2,9 +2,16 @@ library(dplyr)
 library(tidyverse)
 library(viridis)
 library(ggpubr)
+library(patchwork)
 
 #bring in data
 slopes_df <- read.csv("Data/Species_change/Cover_slopes_all.csv")
+
+#replace site names with elevations
+
+slopes_df$originSite[slopes_df$originSite == 'Upper Montane'] <- 'Low elevation (2900 m)'
+slopes_df$originSite[slopes_df$originSite == 'Pfeiler'] <- 'Middle elevation (3200 m)'
+slopes_df$originSite[slopes_df$originSite == 'Monument'] <- 'High elevation (3300 m)'
 
 #figures to display raw slope values----------
 
@@ -17,18 +24,20 @@ slopes_df$treatment <- factor(slopes_df$treatment,
                                     "warmed_two"))
 
 slopes_df$originSite <- factor(slopes_df$originSite, 
-                              levels = c("Upper Montane",
-                                         "Pfeiler",
-                                         "Monument"))
+                              levels = c("Low elevation (2900 m)",
+                                         "Middle elevation (3200 m)",
+                                         "High elevation (3300 m)"))
 
 ##heatmap-----
-ggplot(slopes_df, aes(treatment, species, fill= slope)) + 
+heatmap <- ggplot(slopes_df, aes(treatment, species, fill= slope)) + 
   geom_tile()+
   scale_fill_viridis(discrete = FALSE)+
-  scale_x_discrete(labels = c("C2", "C1", "Within site transplant", "W1","W2"))+
-  theme_bw()+
+  scale_x_discrete(labels = c("C2", "C1", "Within site", "W1","W2"))+
+  theme_bw(base_size = 17)+
   theme(axis.text.y = element_text(face = "italic"))+
   facet_wrap(.~originSite)
+
+plot(heatmap)
 
 ##histograms------
 ggplot(slopes_df, aes(x=slope)) + 
@@ -45,23 +54,34 @@ ggplot(slopes_df, aes(x=treatment, y=slope))+
 
 #niche breadth: slopes depending if species in destination site pre-transplant----
 
-ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour = treatment))+
+
+
+nb_fig <- ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour = treatment))+
   geom_boxplot()+
   facet_wrap(.~originSite)+
-  theme_bw()+
+  theme_bw(base_size = 15)+
   xlab("Existed at destination site pre-transplant?")+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"))+
-  stat_pvalue_manual(stat.test, label = "p.adj.signif",
-                     vjust = -1, bracket.nudge.y = 1)
+  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"))
+  stat_pvalue_manual(stat.test, label = "p.adj.signif")
+
+plot(nb_fig)
 
 #correlation between 2017 abundance and slope------
 aoo_slopes <- read.csv("Data/Species_change/complete_species.csv")
+aoo_slopes$slope <- as.numeric(aoo_slopes$slope)
+aoo_slopes$occurrenceCount.y <- as.numeric(aoo_slopes$occurrenceCount.y)
+
+#replace site names with elevations
+
+aoo_slopes$originSite[aoo_slopes$originSite == 'Upper Montane'] <- 'Low elevation (2900 m)'
+aoo_slopes$originSite[aoo_slopes$originSite == 'Pfeiler'] <- 'Middle elevation (3200 m)'
+aoo_slopes$originSite[aoo_slopes$originSite == 'Monument'] <- 'High elevation (3300 m)'
 
 #reorder treatments
 aoo_slopes$originSite <- factor(aoo_slopes$originSite, 
-                                levels = c("Upper Montane",
-                                           "Pfeiler",
-                                           "Monument"))
+                                levels = c("Low elevation (2900 m)",
+                                           "Middle elevation (3200 m)",
+                                           "High elevation (3300 m)"))
 
 aoo_slopes$treatment <- factor(aoo_slopes$treatment, 
                                levels = c("cooled_two",
@@ -71,24 +91,25 @@ aoo_slopes$treatment <- factor(aoo_slopes$treatment,
                                           "warmed_two"))
 
 #figure                     
-ggplot(aoo_slopes, aes(x = log(occurrenceCount.y), y = slope, color = treatment))+
-  geom_point()+
-  theme_bw()+
+abundance17_fig <-  ggplot(aoo_slopes, aes(x = log(occurrenceCount.y), y = slope, color = treatment))+
+  geom_jitter(height =0.5, width = 0.5)+
+  theme_bw(base_size = 15)+
   facet_wrap(.~originSite)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"))+
   geom_smooth(method = "lm", se = FALSE)+
   stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
   stat_regline_equation(label.y = c(8.5,11,13.5,16,11), size = 4)+
-  xlab("2017 pre-transplant abundance")
+  xlab("Log of 2017 pre-transplant abundance")
 
+plot(abundance17_fig)
 
 #correlation between range size and slope--------
 aoo_slopes <- read.csv("Data/Species_change/Cover_slopes_all.csv")
 
 #plot
-ggplot(slopes_df, aes(x=log(AOO), y=slope, color = treatment))+
+rs_fig <- ggplot(slopes_df, aes(x=log(AOO), y=slope, color = treatment))+
   geom_point()+
-  theme_bw()+
+  theme_bw(base_size = 15)+
   labs(x= "log(range size)")+
   facet_wrap(.~originSite)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF",
@@ -97,4 +118,12 @@ ggplot(slopes_df, aes(x=log(AOO), y=slope, color = treatment))+
   stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
   stat_regline_equation(label.y = c(8.5,11,13.5,16,11), size = 4)
 
-  
+plot(rs_fig)
+
+#combine regression figures
+regression_fig <- abundance17_fig / rs_fig + 
+  plot_annotation(tag_levels = c('A'), tag_suffix = ')')+
+  plot_layout(guides = 'collect')
+
+plot(regression_fig)
+

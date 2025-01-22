@@ -96,6 +96,10 @@ um_win_sig = subset(um_win_sig, select = -c(originSite,treatment))
 um_win_sig <- um_win_sig[ order(match(um_win_sig$species, 
                                       specieslist$specieslist)), ]
 
+#make extra to turn into phylogeny
+um_win_forphylo <- um_win_sig
+um_win_forphylo$slope <- 1
+
 #reformat
 um_win_sig <- um_win_sig %>% remove_rownames %>% column_to_rownames(var="species")
 
@@ -246,3 +250,26 @@ mo_w2_sig <- df2vec(mo_w2_sig, colID=1)
 
 #save as csv
 write.csv(mo_w2_sig, file = "Data/Species_change/Monument_w2_forsignal.csv")
+
+#Prep data for phylogeny visualization-----------
+
+#make community data matrix for pruned phylogeny
+um_win_matrix <- pivot_wider(um_win_forphylo, names_from = species, 
+                           values_from = slope)
+
+row.names(um_win_matrix)[1] <- "UM_WIN_all" 
+
+#prune tree
+tree.umwin <- prune.sample(um_win_matrix, SBtree)
+
+plot(tree.umwin)
+is.rooted(tree.umwin)
+
+#reformat dataframe
+um_win_sig <- um_win_sig %>% remove_rownames %>% column_to_rownames(var="species")
+um_win_forfig <- df2vec(um_win_sig, colID=1)
+
+#make figure
+phylo_um_win <- contMap(tree.umwin, um_win_forfig, res=100, plot=FALSE)
+phylo_um_win <- setMap(phylo_um_win, viridisLite::viridis(n=8))
+plot(phylo_um_win)

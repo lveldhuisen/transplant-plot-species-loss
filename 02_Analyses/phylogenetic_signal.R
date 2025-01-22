@@ -80,3 +80,8 @@ phylosig(pruned.tree, mo_w1_sig, method="lambda", test=TRUE, nsim=5000,
 phylosig(pruned.tree, mo_w2_sig, method="lambda", test=TRUE, nsim=5000,
          se=NULL, start=NULL, control=list(), niter=10)
 
+#make phylogeny figures---------------
+phylo_um_win <- contMap(pruned.tree, um_win_sig, res=100, plot=FALSE)
+contMap_log_rs <- setMap(contMap_log_rs, viridisLite::viridis(n=8))
+plot(contMap_log_rs)
+
