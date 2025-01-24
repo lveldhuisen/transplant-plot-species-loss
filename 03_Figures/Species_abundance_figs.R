@@ -90,6 +90,9 @@ ab2017_df$treatment <- factor(ab2017_df$treatment,
                                           "warmed_one",
                                           "warmed_two"))
 
+#add 1 to all abundance averages for log
+ab2017_df$count.y <- ab2017_df$count.y + 1
+
 #figure                     
 abundance17_fig <-  ggplot(ab2017_df, aes(x = log(count.y), y = slope, color = treatment))+
   geom_jitter(height =0.5, width = 0.5)+

@@ -430,8 +430,7 @@ colnames(raw_2017)[10] <- "species"
 
 #add underscores to species names and site names to match AOO data
 raw_2017$species <-gsub(" ", "_", raw_2017$species)
-raw_2017$originSite <- gsub(" ","_",raw_2017$originSite)
-
+raw_2017$treatment <- gsub(" ","_",raw_2017$treatment)
 
 #update species names to match phylogeny replacements
 
@@ -475,10 +474,12 @@ raw_2017 <- aggregate(count ~ group, data = raw_2017, FUN = mean)
 
 #merge two datasets
 test <- left_join(aoo_slopes, raw_2017, by=c("group"))
-test <- test[!is.na(test$slope),]
 
-#delete extra columns 
+#rename
 ab2017_df <- test 
+
+#delete extra columns
+ab2017_df = subset(ab2017_df, select = -count.x)
 
 #add 0s for NAs 
 ab2017_df <- ab2017_df %>% mutate(count.y = ifelse(is.na(count.y), 0, count.y))
