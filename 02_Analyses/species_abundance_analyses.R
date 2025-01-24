@@ -29,10 +29,12 @@ ggplot(aoo_slopes, aes(x=slope))+
   facet_wrap(.~group)
 
 #does original abundance predict abundance change?------------------------
-model2 <- lm(test$slope ~ test$occurrenceCount.y, data = test)
+ab2017_df <- read.csv("Data/Species_change/2017abundance_slopes.csv")
+
+model2 <- lm(ab2017_df$slope ~ ab2017_df$count.y, data = ab2017_df)
 summary(model2)
 
-ggplot(test, aes(x = log(occurrenceCount.y), y = slope, color = treatment))+
+ggplot(ab2017_df, aes(x = log(count.y), y = slope, color = treatment))+
   geom_point()+
   theme_bw()+
   facet_wrap(.~originSite)

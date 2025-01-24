@@ -67,23 +67,23 @@ nb_fig <- ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour =
 plot(nb_fig)
 
 #correlation between 2017 abundance and slope------
-aoo_slopes <- read.csv("Data/Species_change/complete_species.csv")
-aoo_slopes$slope <- as.numeric(aoo_slopes$slope)
-aoo_slopes$occurrenceCount.y <- as.numeric(aoo_slopes$occurrenceCount.y)
+ab2017_df <- read.csv("Data/Species_change/2017abundance_slopes.csv")
+ab2017_df$slope <- as.numeric(ab2017_df$slope)
+ab2017_df$count.y <- as.numeric(ab2017_df$count.y)
 
 #replace site names with elevations
 
-aoo_slopes$originSite[aoo_slopes$originSite == 'Upper Montane'] <- 'Low elevation (2900 m)'
-aoo_slopes$originSite[aoo_slopes$originSite == 'Pfeiler'] <- 'Middle elevation (3200 m)'
-aoo_slopes$originSite[aoo_slopes$originSite == 'Monument'] <- 'High elevation (3300 m)'
+ab2017_df$originSite[ab2017_df$originSite == 'Upper Montane'] <- 'Low elevation (2900 m)'
+ab2017_df$originSite[ab2017_df$originSite == 'Pfeiler'] <- 'Middle elevation (3200 m)'
+ab2017_df$originSite[ab2017_df$originSite == 'Monument'] <- 'High elevation (3300 m)'
 
 #reorder treatments
-aoo_slopes$originSite <- factor(aoo_slopes$originSite, 
+ab2017_df$originSite <- factor(ab2017_df$originSite, 
                                 levels = c("Low elevation (2900 m)",
                                            "Middle elevation (3200 m)",
                                            "High elevation (3300 m)"))
 
-aoo_slopes$treatment <- factor(aoo_slopes$treatment, 
+ab2017_df$treatment <- factor(ab2017_df$treatment, 
                                levels = c("cooled_two",
                                           "cooled_one",
                                           "within_site_transplant",
@@ -91,7 +91,7 @@ aoo_slopes$treatment <- factor(aoo_slopes$treatment,
                                           "warmed_two"))
 
 #figure                     
-abundance17_fig <-  ggplot(aoo_slopes, aes(x = log(occurrenceCount.y), y = slope, color = treatment))+
+abundance17_fig <-  ggplot(ab2017_df, aes(x = log(count.y), y = slope, color = treatment))+
   geom_jitter(height =0.5, width = 0.5)+
   theme_bw(base_size = 15)+
   facet_wrap(.~originSite)+

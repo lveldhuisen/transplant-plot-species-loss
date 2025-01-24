@@ -416,21 +416,22 @@ write_csv(mo_w2_values, "Data/Species_change/Monument_w2_slopes.csv")
 aoo_slopes <- read.csv("Data/Species_change/Cover_slopes_all.csv")
 
 #add column to have origin site and tx in same column 
-aoo_slopes$group <- paste(aoo_slopes$originSite,"_",aoo_slopes$treatment,
-                          "_",aoo_slopes$species)
-aoo_slopes$occurrenceCount <- NA
+aoo_slopes$group <- paste(aoo_slopes$originSite,"_",aoo_slopes$species)
+aoo_slopes$count <- NA
 
 #bring in raw abundance data
-raw_2017 <- read.csv("Data/occurance2017-2023.csv")
+raw_2017 <- read.csv("Data/Abundance_2017_RMBLTransplant.csv")
 
-#filter to only 2017
-raw_2017 <- raw_2017 %>% filter(year %in% "2017")
+#get rid of unknown
+raw_2017 <- raw_2017 %>% filter(!taxon %in% "Unknown round leaves")
 
-#get rid of extra controls
-raw_2017 <- raw_2017 %>% filter(!treatment %in% "netted_untouched",
-                                !treatment %in% "untouched")
+#rename column
+colnames(raw_2017)[10] <- "species"
 
-raw_2017 <- raw_2017 %>% filter(!species %in% "Unknown_round_leaves")
+#add underscores to species names and site names to match AOO data
+raw_2017$species <-gsub(" ", "_", raw_2017$species)
+raw_2017$originSite <- gsub(" ","_",raw_2017$originSite)
+
 
 #update species names to match phylogeny replacements
 
@@ -456,33 +457,30 @@ raw_2017$treatment[raw_2017$treatment == 'cooled_one_step'] <- 'cooled_one'
 raw_2017$treatment[raw_2017$treatment == 'cooled_two_steps'] <- 'cooled_two'
 
 #get rid of extra columns
-raw_2017 = subset(raw_2017, select = -c(X,
-                                        X.1,
+raw_2017 = subset(raw_2017, select = -c(
                                         unknownMorpho,
-                                        functionalGroup,
                                         date_yyyymmdd,
-                                        treatmentOriginGroup,
                                         turfID,
                                         originPlotID,
-                                        year
+                                        originSiteBlock,
+                                        block,
+                                        comments
 ))
 
 #add column to have origin site and tx in same column 
-raw_2017$group <- paste(raw_2017$originSite,"_",raw_2017$treatment,"_",raw_2017$species)
+raw_2017$group <- paste(raw_2017$originSite,"_",raw_2017$species)
 
 #collapse values based on groups column and add all occurrences 
-raw_2017 <- aggregate(occurrenceCount ~ group, data = raw_2017, FUN = sum)
+raw_2017 <- aggregate(count ~ group, data = raw_2017, FUN = mean)
 
 #merge two datasets
-
-test <- full_join(aoo_slopes, raw_2017, by=c("group"))
+test <- left_join(aoo_slopes, raw_2017, by=c("group"))
 test <- test[!is.na(test$slope),]
 
-#add AOO and 2017 abundance 
-
 #delete extra columns 
-test = subset(test, select = -c(X,
-                                occurrenceCount.x
-                                ))
+ab2017_df <- test 
 
-write.csv(test, "Data/Species_change/complete_species.csv")
+#add 0s for NAs 
+ab2017_df <- ab2017_df %>% mutate(count.y = ifelse(is.na(count.y), 0, count.y))
+
+write.csv(ab2017_df, "Data/Species_change/2017abundance_slopes.csv")
