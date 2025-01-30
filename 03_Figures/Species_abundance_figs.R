@@ -54,8 +54,6 @@ ggplot(slopes_df, aes(x=treatment, y=slope))+
 
 #niche breadth: slopes depending if species in destination site pre-transplant----
 
-
-
 nb_fig <- ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour = treatment))+
   geom_boxplot()+
   facet_wrap(.~originSite)+
