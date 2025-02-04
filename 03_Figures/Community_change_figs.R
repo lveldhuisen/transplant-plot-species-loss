@@ -11,9 +11,9 @@ library(patchwork) #combine plots
 
 #reorder groups
 pred_R$originSite <- factor(pred_R$originSite,
-                            levels  = c("Upper Montane",
-                                        "Pfeiler",
-                                        "Monument"))
+                            levels  = c("Low elevation",
+                                        "Middle elevation",
+                                        "High elevation"))
 
 pred_R$comparison2 <- factor(pred_R$comparison2, 
                              levels = c("cooled_two_steps",
@@ -41,9 +41,9 @@ plot(richness_fig_site)
 pred_s <- read.csv("Data/Shannon_model_forfig.csv")
 
 pred_s$originSite <- factor(pred_s$originSite,
-                            levels  = c("Upper Montane",
-                                        "Pfeiler",
-                                        "Monument"))
+                            levels  = c("Low elevation",
+                                        "Middle elevation",
+                                        "High elevation"))
 
 pred_s$comparison2 <- factor(pred_s$comparison2, 
                              levels = c("cooled_two_steps",
@@ -70,9 +70,9 @@ plot(shannon_fig_site)
 
 #reorder groups
 pred_pd$originSite <- factor(pred_pd$originSite,
-                            levels  = c("Upper Montane",
-                                        "Pfeiler",
-                                        "Monument"))
+                            levels  = c("Low elevation",
+                                        "Middle elevation",
+                                        "High elevation"))
 
 pred_pd$comparison2 <- factor(pred_pd$comparison2, 
                              levels = c("cooled_two_steps",
@@ -98,9 +98,9 @@ plot(pd_fig_site)
 
 #reorder groups
 pred_mpd$originSite <- factor(pred_mpd$originSite,
-                             levels  = c("Upper Montane",
-                                         "Pfeiler",
-                                         "Monument"))
+                             levels  = c("Low elevation",
+                                         "Middle elevation",
+                                         "High elevation"))
 
 pred_mpd$comparison2 <- factor(pred_mpd$comparison2, 
                               levels = c("cooled_two_steps",
@@ -126,9 +126,9 @@ plot(mpd_fig_site)
 
 #reorder groups
 pred_mntd$originSite <- factor(pred_mntd$originSite,
-                              levels  = c("Upper Montane",
-                                          "Pfeiler",
-                                          "Monument"))
+                              levels  = c("Low elevation",
+                                          "Middle elevation",
+                                          "High elevation"))
 
 pred_mntd$comparison2 <- factor(pred_mntd$comparison2, 
                                levels = c("cooled_two_steps",

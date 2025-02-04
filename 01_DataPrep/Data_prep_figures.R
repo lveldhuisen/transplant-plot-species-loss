@@ -26,9 +26,9 @@ pred_R$conf.low <- pred_R$conf.low*-1
 pred_R$conf.high <- pred_R$conf.high*-1
 
 #redo site name values
-pred_R$originSite[pred_R$originSite=="Monument-Monument"]<-"Monument"
-pred_R$originSite[pred_R$originSite=="Pfeiler-Pfeiler"]<-"Pfeiler"
-pred_R$originSite[pred_R$originSite=="Upper Montane-Upper Montane"]<-"Upper Montane"
+pred_R$originSite[pred_R$originSite=="Monument-Monument"]<-"High elevation"
+pred_R$originSite[pred_R$originSite=="Pfeiler-Pfeiler"]<-"Middle elevation"
+pred_R$originSite[pred_R$originSite=="Upper Montane-Upper Montane"]<-"Low elevation"
 
 #Shannon------------
 #bring in data
@@ -53,9 +53,9 @@ pred_s$conf.low <- pred_s$conf.low*-1
 pred_s$conf.high <- pred_s$conf.high*-1
 
 #redo site name values
-pred_s$originSite[pred_s$originSite=="Monument-Monument"]<-"Monument"
-pred_s$originSite[pred_s$originSite=="Pfeiler-Pfeiler"]<-"Pfeiler"
-pred_s$originSite[pred_s$originSite=="Upper Montane-Upper Montane"]<-"Upper Montane"
+pred_s$originSite[pred_s$originSite=="Monument-Monument"]<-"High elevation"
+pred_s$originSite[pred_s$originSite=="Pfeiler-Pfeiler"]<-"Middle elevation"
+pred_s$originSite[pred_s$originSite=="Upper Montane-Upper Montane"]<-"Low elevation"
 
 #save as csv
 write_csv(pred_s, file = "Data/Shannon_model_forfig.csv")
@@ -83,9 +83,9 @@ pred_pd$conf.low <- pred_pd$conf.low*-1
 pred_pd$conf.high <- pred_pd$conf.high*-1
 
 #redo site name values
-pred_pd$originSite[pred_pd$originSite=="Monument-Monument"]<-"Monument"
-pred_pd$originSite[pred_pd$originSite=="Pfeiler-Pfeiler"]<-"Pfeiler"
-pred_pd$originSite[pred_pd$originSite=="Upper Montane-Upper Montane"]<-"Upper Montane"
+pred_pd$originSite[pred_pd$originSite=="Monument-Monument"]<-"High elevation"
+pred_pd$originSite[pred_pd$originSite=="Pfeiler-Pfeiler"]<-"Middle elevation"
+pred_pd$originSite[pred_pd$originSite=="Upper Montane-Upper Montane"]<-"Low elevation"
 
 #MPD----------
 #bring in data
@@ -110,9 +110,9 @@ pred_mpd$conf.low <- pred_mpd$conf.low*-1
 pred_mpd$conf.high <- pred_mpd$conf.high*-1
 
 #redo site name values
-pred_mpd$originSite[pred_mpd$originSite=="Monument-Monument"]<-"Monument"
-pred_mpd$originSite[pred_mpd$originSite=="Pfeiler-Pfeiler"]<-"Pfeiler"
-pred_mpd$originSite[pred_mpd$originSite=="Upper Montane-Upper Montane"]<-"Upper Montane"
+pred_mpd$originSite[pred_mpd$originSite=="Monument-Monument"]<-"High elevation"
+pred_mpd$originSite[pred_mpd$originSite=="Pfeiler-Pfeiler"]<-"Middle elevation"
+pred_mpd$originSite[pred_mpd$originSite=="Upper Montane-Upper Montane"]<-"Low elevation"
 
 #MNTD---------
 #bring in data
@@ -137,7 +137,7 @@ pred_mntd$conf.low <- pred_mntd$conf.low*-1
 pred_mntd$conf.high <- pred_mntd$conf.high*-1
 
 #redo site name values
-pred_mntd$originSite[pred_mntd$originSite=="Monument-Monument"]<-"Monument"
-pred_mntd$originSite[pred_mntd$originSite=="Pfeiler-Pfeiler"]<-"Pfeiler"
-pred_mntd$originSite[pred_mntd$originSite=="Upper Montane-Upper Montane"]<-"Upper Montane"
+pred_mntd$originSite[pred_mntd$originSite=="Monument-Monument"]<-"High elevation"
+pred_mntd$originSite[pred_mntd$originSite=="Pfeiler-Pfeiler"]<-"Middle elevation"
+pred_mntd$originSite[pred_mntd$originSite=="Upper Montane-Upper Montane"]<-"Low elevation"
 
