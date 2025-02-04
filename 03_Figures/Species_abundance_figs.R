@@ -60,6 +60,7 @@ nb_fig <- ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour =
   theme_bw(base_size = 15)+
   xlab("Existed at destination site pre-transplant?")+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"))
+
   stat_pvalue_manual(stat.test, label = "p.adj.signif")
 
 plot(nb_fig)
