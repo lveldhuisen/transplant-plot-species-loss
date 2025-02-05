@@ -94,7 +94,7 @@ ab2017_df$count.y <- ab2017_df$count.y + 1
 
 #figure                     
 abundance17_fig <-  ggplot(ab2017_df, aes(x = log(count.y), y = slope, color = treatment))+
-  geom_jitter(height =0.5, width = 0.5)+
+  geom_jitter(height =0, width = 0.1)+
   theme_bw(base_size = 15)+
   facet_wrap(.~originSite)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"))+
