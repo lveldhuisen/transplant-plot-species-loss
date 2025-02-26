@@ -132,3 +132,6 @@ comm_matrix_controls <- comm_matrix_controls %>% column_to_rownames(var = "ID")
 
 write.csv(comm_matrix_controls, file = "Data/Community_matrix_controlsonly.csv")
 
+#Calculate how species lost and gained from 2017-2023 for each plot-------------
+
+
