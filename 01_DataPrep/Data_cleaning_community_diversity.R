@@ -134,4 +134,36 @@ write.csv(comm_matrix_controls, file = "Data/Community_matrix_controlsonly.csv")
 
 #Calculate how species lost and gained from 2017-2023 for each plot-------------
 
+#look at only 2017 and 2023 for beginning and end
+years <- c("2018","2023")
 
+richness_df <- abundance_df %>% filter(year %in% years,
+                                       !treatment %in% outs,
+                                       !species %in% gc.outs,
+                                       !turfID %in% block.outs,
+                                       !is.na(treatment))
+#get rid of extra columns
+richness_df = subset(richness_df, select = -c(X,
+                                              X.1, 
+                                              date_yyyymmdd, 
+                                              unknownMorpho,
+                                              functionalGroup, 
+                                              percentCover, 
+                                              occurrenceCount))
+#count species
+plot_richness <- richness_df %>%
+  group_by(turfID, year) %>%
+  summarise(UniqueCount = n_distinct(species))
+
+#separate into 2018 and 2023 datasets 
+richness_df_2018 <- richness_df %>% filter(year %in% 2018)
+richness_df_2023 <- richness_df %>% filter(year %in% 2023)
+
+#see which species do not occur in both 
+species_only_2018 <- richness_df_2018 %>% 
+  group_by(turfID) %>%
+  filter(!species %in% richness_df_2023$species)
+
+species_only_2023 <- richness_df_2023 %>% 
+  group_by(turfID) %>%
+  filter(!species %in% richness_df_2018$species)
