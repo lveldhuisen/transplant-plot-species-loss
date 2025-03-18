@@ -14,7 +14,7 @@ library(patchwork)
 setwd("~/Library/CloudStorage/OneDrive-UniversityofArizona/Arizona PhD/Research/RMBL phylogeny/Smith&Brown18")
 SBtree <- read.tree(file = "ALLMB.tre")
 is.rooted(SBtree)
-
+is.binary(SBtree)
 
 #check for correct species in pruned tree
 specieslist <- pruned.tree$tip.label
