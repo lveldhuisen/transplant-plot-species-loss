@@ -59,8 +59,10 @@ nb_fig <- ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour =
   facet_wrap(.~originSite)+
   theme_bw(base_size = 15)+
   xlab("Existed at destination site pre-transplant?")+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"))
-
+  labs(colour = "Treatment")+
+  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"),
+                     labels = c("Cooled two steps", "Cooled one step", "Within site transplant",
+                                "Warmed one step", "Warmed two steps"))+
   stat_pvalue_manual(stat.test, label = "p.adj.signif")
 
 plot(nb_fig)
@@ -97,11 +99,14 @@ abundance17_fig <-  ggplot(ab2017_df, aes(x = log(count.y), y = slope, color = t
   geom_jitter(height =0, width = 0.1)+
   theme_bw(base_size = 15)+
   facet_wrap(.~originSite)+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"))+
+  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"), 
+                     labels = c("Cooled two steps", "Cooled one step", "Within site transplant",
+                     "Warmed one step", "Warmed two steps"))+
   geom_smooth(method = "lm", se = FALSE)+
   stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
   stat_regline_equation(label.y = c(8.5,11,13.5,16,11), size = 4)+
-  xlab("Log of 2017 pre-transplant abundance")
+  xlab("Log of 2017 pre-transplant abundance")+
+  labs(color = "Treatment")
 
 plot(abundance17_fig)
 
@@ -112,13 +117,16 @@ aoo_slopes <- read.csv("Data/Species_change/Cover_slopes_all.csv")
 rs_fig <- ggplot(slopes_df, aes(x=log(AOO), y=slope, color = treatment))+
   geom_point()+
   theme_bw(base_size = 15)+
-  labs(x= "log(range size)")+
+  labs(x= "Log of range size")+
   facet_wrap(.~originSite)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF",
-                              "#FDE725FF"))+
+                              "#FDE725FF"), 
+                     labels = c("Cooled two steps", "Cooled one step", "Within site transplant",
+                                "Warmed one step", "Warmed two steps"))+
   geom_smooth(method = "lm", se = FALSE)+
   stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
-  stat_regline_equation(label.y = c(8.5,11,13.5,16,11), size = 4)
+  stat_regline_equation(label.y = c(8.5,11,13.5,16,11), size = 4)+
+  labs(color = "Treatment")
 
 plot(rs_fig)
 

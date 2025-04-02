@@ -62,7 +62,7 @@ matrix_forphylogeny <- matrix_forphylogeny %>%
     Poa_pratensis_subsp._pratensis = Poa_pratensis,
     Polygonum_douglasii_subsp._douglasii = Polygonum_douglasii,
     Rhodiola_integrifolia = Sedum_integrifolium,
-    Senecio_triangularis = Senecio_integerrimus, 
+    Senecio_integerrimus_var.exaltatus = Senecio_integerrimus, 
     Achnatherum_nelsonii = Stipa_nelsonii, 
     Symphyotrichum_foliaceum = Symphyotrichum_ascendens,
     Veratrum_virginicum = Veratrum_californicum
@@ -112,12 +112,15 @@ rownames(sum_row) <- c("all")
 matrix_forphylogeny <- rbind(matrix_forphylogeny, sum_row)
 
 #get rid of unknowns 
-matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(moss, unknown_forb,Unknown_round_leaves, unknown_seedling, unknown_grass))
+matrix_forphylogeny = subset(matrix_forphylogeny, select = -c(moss, unknown_forb,
+                                                              Unknown_round_leaves, 
+                                                              unknown_seedling, unknown_grass))
 
 
 
 #prune tree
-pruned.tree <- treedata(SBtree, unlist(matrix_forphylogeny[378,matrix_forphylogeny[378,]>0]), warnings = F)$phy
+pruned.tree <- treedata(SBtree, unlist(matrix_forphylogeny[378,matrix_forphylogeny[378,]>0]), 
+                        warnings = F)$phy
 plot(pruned.tree)
 
 #format abundance change data for phylogenetic signal---------

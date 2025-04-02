@@ -45,7 +45,7 @@ slopes_df$species[slopes_df$species == 'Hydrophyllum_capitatum'] <- 'Hydrophyllu
 slopes_df$species[slopes_df$species == 'Lupinus_sp.'] <- 'Lupinus_argenteus'
 slopes_df$species[slopes_df$species == 'Poa_pratensis'] <- 'Poa_pratensis_subsp._pratensis'
 slopes_df$species[slopes_df$species == 'Polygonum_douglasii'] <- 'Polygonum_douglasii_subsp._douglasii'
-slopes_df$species[slopes_df$species == 'Senecio_integerrimus'] <- 'Senecio_triangularis'
+slopes_df$species[slopes_df$species == 'Senecio_integerrimus'] <- 'Senecio_integerrimus_var._exaltatus'
 slopes_df$species[slopes_df$species == 'Symphyotrichum_ascendens'] <- 'Symphyotrichum_foliaceum'
 slopes_df$species[slopes_df$species == 'Carex_sp.'] <- 'Carex_nelsonii'
 
@@ -266,6 +266,7 @@ plot(tree.umwin)
 is.rooted(tree.umwin)
 
 #reformat dataframe
+um_win_sig <- as.data.frame(um_win_sig)
 um_win_sig <- um_win_sig %>% remove_rownames %>% column_to_rownames(var="species")
 um_win_forfig <- df2vec(um_win_sig, colID=1)
 
