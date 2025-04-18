@@ -57,13 +57,12 @@ ggplot(slopes_df, aes(x=treatment, y=slope))+
 nb_fig <- ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour = treatment))+
   geom_boxplot()+
   facet_wrap(.~originSite)+
-  theme_bw(base_size = 15)+
-  xlab("Existed at destination site pre-transplant?")+
+  theme_bw(base_size = 20)+
+  xlab("Observed at destination site pre-transplant?")+
   labs(colour = "Treatment")+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"),
                      labels = c("Cooled two steps", "Cooled one step", "Within site transplant",
-                                "Warmed one step", "Warmed two steps"))+
-  stat_pvalue_manual(stat.test, label = "p.adj.signif")
+                                "Warmed one step", "Warmed two steps"))
 
 plot(nb_fig)
 

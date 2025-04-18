@@ -254,23 +254,26 @@ write.csv(mo_w2_sig, file = "Data/Species_change/Monument_w2_forsignal.csv")
 #Prep data for phylogeny visualization-----------
 
 #make community data matrix for pruned phylogeny
-um_win_matrix <- pivot_wider(um_win_forphylo, names_from = species, 
-                           values_from = slope)
+um_c2_matrix <- pivot_wider(um_c2_sig, names_from = species, 
+                           values_from = um_c2_sig)
 
-row.names(um_win_matrix)[1] <- "UM_WIN_all" 
+row.names(um_c2_matrix)[1] <- "UM_C2_all" 
 
 #prune tree
-tree.umwin <- prune.sample(um_win_matrix, SBtree)
+tree.umc2 <- prune.sample(um_c2_matrix, SBtree)
 
-plot(tree.umwin)
-is.rooted(tree.umwin)
+plot(tree.umc2)
+is.rooted(tree.umc2)
+
+Ntip(tree.umc2)
+nrow(um_c2_sig)
 
 #reformat dataframe
-um_win_sig <- as.data.frame(um_win_sig)
-um_win_sig <- um_win_sig %>% remove_rownames %>% column_to_rownames(var="species")
-um_win_forfig <- df2vec(um_win_sig, colID=1)
+um_c2_sig <- as.data.frame(um_c2_sig)
+um_c2_sig$species <- rownames(um_c2_sig)
+um_c2_forfig <- df2vec(um_c2_sig, colID=1)
 
 #make figure
-phylo_um_win <- contMap(tree.umwin, um_win_forfig, res=100, plot=FALSE)
-phylo_um_win <- setMap(phylo_um_win, viridisLite::viridis(n=8))
-plot(phylo_um_win)
+phylo_um_c2<- contMap(tree.umc2, um_c2_forfig, res=100, plot=FALSE)
+phylo_um_c2 <- setMap(phylo_um_c2, viridisLite::viridis(n=8))
+plot(phylo_um_c2)
