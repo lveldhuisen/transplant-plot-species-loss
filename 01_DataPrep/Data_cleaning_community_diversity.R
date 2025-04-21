@@ -1,5 +1,6 @@
 library(dplyr)
 library(tidyverse)
+library(data.table)
 
 #Data cleaning and formatting---------------------------------------------------
 
@@ -172,3 +173,12 @@ species_only_2018 <- richness_df_2018 %>%
 species_only_2023 <- richness_df_2023 %>% 
   group_by(turfID) %>%
   filter(!species %in% richness_df_2018$species)
+
+#number of species per site and total in 2023
+count_df <- read.csv("Data/cover_clean2018-2023.csv")
+count_df <- count_df %>% 
+  filter(year %in% 2023)
+
+count_df %>%
+  filter(originSite == "Monument") %>%
+  summarize(n = n_distinct(species))
