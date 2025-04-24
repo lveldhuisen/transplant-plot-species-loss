@@ -29,15 +29,23 @@ slopes_df$originSite <- factor(slopes_df$originSite,
                                          "High elevation (3300 m)"))
 
 ##heatmap-----
+heat_labels <- c(
+  expression(C[2]),
+  expression(C[1]),
+  "W/in",
+  expression(W[1]), 
+  expression(W[2]))
+
 heatmap <- ggplot(slopes_df, aes(treatment, species, fill= slope)) + 
   geom_tile()+
   scale_fill_viridis(discrete = FALSE)+
-  scale_x_discrete(labels = c("C2", "C1", "Within site", "W1","W2"))+
-  theme_bw(base_size = 17)+
+  scale_x_discrete(labels = heat_labels)+
+  theme_bw(base_size = 20)+
   theme(axis.text.y = element_text(face = "italic"))+
   facet_wrap(.~originSite)
 
 plot(heatmap)
+ggsave("Figures/Heatmap_supplement.png", dpi = 600, width = 14.5, height = 14.5)
 
 ##histograms------
 ggplot(slopes_df, aes(x=slope)) + 
