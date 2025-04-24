@@ -21,6 +21,12 @@ pred_R$comparison2 <- factor(pred_R$comparison2,
                                         "cooled_one_step",
                                         "warmed_one_step",
                                         "warmed_two_steps"))
+#subscripts in axis labels
+tx_labels <- c(
+  expression(C[2]),
+  expression(C[1]),
+  expression(W[1]), 
+  expression(W[2]))
 
 #figure 
 richness_fig_site <- ggplot(pred_R)+
@@ -99,12 +105,13 @@ pd_fig_site <- ggplot(pred_pd)+
                   linewidth = 1.3)+
   theme_classic(base_size = 22)+
   labs(y = expression(Delta ~ "PD"), x = "Treatment")+
-  scale_x_discrete(labels = c("C2", "C1","W1","W2"))+
+  scale_x_discrete(labels = tx_labels)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey", linewidth = 1.3)
 
 plot(pd_fig_site)
+
 
 #MPD--------------------
 
@@ -131,7 +138,7 @@ mpd_fig_site <- ggplot(pred_mpd)+
                   linewidth = 1.3)+
   theme_classic(base_size = 22)+
   labs(y = expression(Delta ~ "MPD"), x = "Treatment")+
-  scale_x_discrete(labels = c("C2", "C1","W1","W2"))+
+  scale_x_discrete(labels = tx_labels)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey", linewidth = 1.3)
@@ -163,7 +170,7 @@ mntd_fig_site <- ggplot(pred_mntd)+
                   linewidth = 1.3)+
   theme_classic(base_size = 22)+
   labs(y = expression(Delta ~ "MNTD"), x = "Treatment")+
-  scale_x_discrete(labels = c("C2", "C1","W1","W2"))+
+  scale_x_discrete(labels = tx_labels)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
   labs(color='Origin site')+
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey", linewidth = 1.3)
@@ -181,10 +188,10 @@ plot(sr_fig)
 
 #combine all phylo metrics
 phylo_fig <- (pd_fig_site + mpd_fig_site + mntd_fig_site)+
-  plot_annotation(tag_levels = 'A')+
+  plot_annotation(tag_levels = c('A'), tag_suffix = ')')+
   plot_layout(axis_titles = "collect", guides = "collect")
 
 plot(phylo_fig)
-
+ggsave("Figures/Fig3.png", dpi = 600, width = 14.5, height = 5)
 
 

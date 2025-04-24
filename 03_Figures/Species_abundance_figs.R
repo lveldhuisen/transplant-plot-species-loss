@@ -65,6 +65,7 @@ nb_fig <- ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour =
                                 "Warmed one step", "Warmed two steps"))
 
 plot(nb_fig)
+ggsave("Figures/Fig5.png", dpi = 600, width = 14.5, height = 6)
 
 #correlation between 2017 abundance and slope------
 ab2017_df <- read.csv("Data/Species_change/2017abundance_slopes.csv")
@@ -96,7 +97,7 @@ ab2017_df$count.y <- ab2017_df$count.y + 1
 #figure                     
 abundance17_fig <-  ggplot(ab2017_df, aes(x = log(count.y), y = slope, color = treatment))+
   geom_jitter(height =0, width = 0.1)+
-  theme_bw(base_size = 15)+
+  theme_bw(base_size = 20)+
   facet_wrap(.~originSite)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"), 
                      labels = c("Cooled two steps", "Cooled one step", "Within site transplant",
@@ -115,7 +116,7 @@ aoo_slopes <- read.csv("Data/Species_change/Cover_slopes_all.csv")
 #plot
 rs_fig <- ggplot(slopes_df, aes(x=log(AOO), y=slope, color = treatment))+
   geom_point()+
-  theme_bw(base_size = 15)+
+  theme_bw(base_size = 20)+
   labs(x= "Log of range size")+
   facet_wrap(.~originSite)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF",
@@ -135,4 +136,4 @@ regression_fig <- abundance17_fig / rs_fig +
   plot_layout(guides = 'collect')
 
 plot(regression_fig)
-
+ggsave("Figures/Fig6.png", dpi = 600, height = 10.5, width = 14.5)
