@@ -182,3 +182,12 @@ count_df <- count_df %>%
 count_df %>%
   filter(originSite == "Monument") %>%
   summarize(n = n_distinct(species))
+
+# check if any species are in CO rare plant guide --------------------
+rareplantguide <- read.csv("Data/COrareplantguide.csv")
+
+rareplantguide$StateScientificName <- sub(" ", "_", rareplantguide$StateScientificName)
+
+rarelist <- rareplantguide$StateScientificName
+
+rare <- subset(abundance_df, species %in% rarelist)
