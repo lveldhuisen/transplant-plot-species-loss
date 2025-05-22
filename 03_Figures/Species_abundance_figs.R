@@ -69,7 +69,7 @@ nb_fig <- ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour =
   xlab("Observed at destination site pre-transplant?")+
   labs(colour = "Treatment")+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"),
-                     labels = c("Cooled two steps", "Cooled one step", "Within site transplant",
+                     labels = c("Cooled two steps", "Cooled one step", "Local within-site transplant",
                                 "Warmed one step", "Warmed two steps"))
 
 plot(nb_fig)
@@ -108,7 +108,7 @@ abundance17_fig <-  ggplot(ab2017_df, aes(x = log(count.y), y = slope, color = t
   theme_bw(base_size = 20)+
   facet_wrap(.~originSite)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"), 
-                     labels = c("Cooled two steps", "Cooled one step", "Within site transplant",
+                     labels = c("Cooled two steps", "Cooled one step", "Local within-site transplant",
                      "Warmed one step", "Warmed two steps"))+
   geom_smooth(method = "lm", se = FALSE)+
   stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
@@ -129,7 +129,7 @@ rs_fig <- ggplot(slopes_df, aes(x=log(AOO), y=slope, color = treatment))+
   facet_wrap(.~originSite)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF",
                               "#FDE725FF"), 
-                     labels = c("Cooled two steps", "Cooled one step", "Within site transplant",
+                     labels = c("Cooled two steps", "Cooled one step", "Local within-site transplant",
                                 "Warmed one step", "Warmed two steps"))+
   geom_smooth(method = "lm", se = FALSE)+
   stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
