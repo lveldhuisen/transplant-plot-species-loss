@@ -73,7 +73,7 @@ nb_fig <- ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour =
                                 "Warmed one step", "Warmed two steps"))
 
 plot(nb_fig)
-ggsave("Figures/Fig5.png", dpi = 600, width = 14.5, height = 6)
+ggsave("Figures/Fig5.pdf", width = 14.5, height = 6)
 
 #correlation between 2017 abundance and slope------
 ab2017_df <- read.csv("Data/Species_change/2017abundance_slopes.csv")
@@ -144,4 +144,4 @@ regression_fig <- abundance17_fig / rs_fig +
   plot_layout(guides = 'collect')
 
 plot(regression_fig)
-ggsave("Figures/Fig6.png", dpi = 600, height = 10.5, width = 14.5)
+ggsave("Figures/Fig6.pdf", height = 10.5, width = 14.5)

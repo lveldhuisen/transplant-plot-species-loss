@@ -192,6 +192,6 @@ phylo_fig <- (pd_fig_site + mpd_fig_site + mntd_fig_site)+
   plot_layout(axis_titles = "collect", guides = "collect")
 
 plot(phylo_fig)
-ggsave("Figures/Fig3.png", dpi = 600, width = 14.5, height = 5)
+ggsave("Figures/Fig3.pdf", dpi = 600, width = 14.5, height = 5)
 
 
