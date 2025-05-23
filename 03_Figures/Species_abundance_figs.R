@@ -5,12 +5,12 @@ library(ggpubr)
 library(patchwork)
 
 #bring in data
-slopes_df <- read.csv("Data/Species_change/Cover_slopes_all.csv")
+slopes_df <- read.csv("Data/Species_change/Cover_slopes_all_2.csv")
 
 #replace site names with elevations
 
 slopes_df$originSite[slopes_df$originSite == 'Upper Montane'] <- 'Low elevation (2900 m)'
-slopes_df$originSite[slopes_df$originSite == 'Pfeiler'] <- 'Middle elevation (3200 m)'
+slopes_df$originSite[slopes_df$originSite == 'Pfeiler'] <- 'Mid elevation (3200 m)'
 slopes_df$originSite[slopes_df$originSite == 'Monument'] <- 'High elevation (3300 m)'
 
 #figures to display raw slope values----------
@@ -25,7 +25,7 @@ slopes_df$treatment <- factor(slopes_df$treatment,
 
 slopes_df$originSite <- factor(slopes_df$originSite, 
                               levels = c("Low elevation (2900 m)",
-                                         "Middle elevation (3200 m)",
+                                         "Mid elevation (3200 m)",
                                          "High elevation (3300 m)"))
 
 ##heatmap-----
@@ -69,11 +69,11 @@ nb_fig <- ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour =
   xlab("Observed at destination site pre-transplant?")+
   labs(colour = "Treatment")+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"),
-                     labels = c("Cooled two steps", "Cooled one step", "Local within-site transplant",
+                     labels = c("Cooled two steps", "Cooled one step", "Local transplant",
                                 "Warmed one step", "Warmed two steps"))
 
 plot(nb_fig)
-ggsave("Figures/Fig5.pdf", width = 14.5, height = 6)
+ggsave("Figures/Fig5.png", dpi = 600, width = 14.5, height = 6)
 
 #correlation between 2017 abundance and slope------
 ab2017_df <- read.csv("Data/Species_change/2017abundance_slopes.csv")
@@ -83,13 +83,13 @@ ab2017_df$count.y <- as.numeric(ab2017_df$count.y)
 #replace site names with elevations
 
 ab2017_df$originSite[ab2017_df$originSite == 'Upper Montane'] <- 'Low elevation (2900 m)'
-ab2017_df$originSite[ab2017_df$originSite == 'Pfeiler'] <- 'Middle elevation (3200 m)'
+ab2017_df$originSite[ab2017_df$originSite == 'Pfeiler'] <- 'Mid elevation (3200 m)'
 ab2017_df$originSite[ab2017_df$originSite == 'Monument'] <- 'High elevation (3300 m)'
 
 #reorder treatments
 ab2017_df$originSite <- factor(ab2017_df$originSite, 
                                 levels = c("Low elevation (2900 m)",
-                                           "Middle elevation (3200 m)",
+                                           "Mid elevation (3200 m)",
                                            "High elevation (3300 m)"))
 
 ab2017_df$treatment <- factor(ab2017_df$treatment, 
@@ -108,7 +108,7 @@ abundance17_fig <-  ggplot(ab2017_df, aes(x = log(count.y), y = slope, color = t
   theme_bw(base_size = 20)+
   facet_wrap(.~originSite)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"), 
-                     labels = c("Cooled two steps", "Cooled one step", "Local within-site transplant",
+                     labels = c("Cooled two steps", "Cooled one step", "Local transplant",
                      "Warmed one step", "Warmed two steps"))+
   geom_smooth(method = "lm", se = FALSE)+
   stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
@@ -117,19 +117,20 @@ abundance17_fig <-  ggplot(ab2017_df, aes(x = log(count.y), y = slope, color = t
   labs(color = "Treatment")
 
 plot(abundance17_fig)
+ggsave("Figures/fig6a.pdf", height = 7, width = 15)
 
-#correlation between range size and slope--------
-aoo_slopes <- read.csv("Data/Species_change/Cover_slopes_all.csv")
+#correlation between range size and slope-------
+test <- slopes_df %>% drop_na(AOO)
 
 #plot
-rs_fig <- ggplot(slopes_df, aes(x=log(AOO), y=slope, color = treatment))+
+rs_fig <- ggplot(test, aes(x=log(AOO), y=slope, color = treatment))+
   geom_point()+
   theme_bw(base_size = 20)+
   labs(x= "Log of range size")+
   facet_wrap(.~originSite)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF",
                               "#FDE725FF"), 
-                     labels = c("Cooled two steps", "Cooled one step", "Local within-site transplant",
+                     labels = c("Cooled two steps", "Cooled one step", "Local transplant",
                                 "Warmed one step", "Warmed two steps"))+
   geom_smooth(method = "lm", se = FALSE)+
   stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
@@ -144,4 +145,4 @@ regression_fig <- abundance17_fig / rs_fig +
   plot_layout(guides = 'collect')
 
 plot(regression_fig)
-ggsave("Figures/Fig6.pdf", height = 10.5, width = 14.5)
+ggsave("Figures/Fig6.png", height = 10.5, width = 14.5, dpi = 600)

@@ -7,7 +7,7 @@ library(plyr)
 library(rstatix)
 
 #bring in data
-aoo_slopes <- read.csv("Data/Species_change/Cover_slopes_all.csv")
+aoo_slopes <- read.csv("Data/Species_change/Cover_slopes_all_2.csv")
 
 #add column to have origin site and tx in same column 
 aoo_slopes$group <- paste(aoo_slopes$originSite,"_",aoo_slopes$treatment)
@@ -50,4 +50,5 @@ rs_model <- dlply(aoo_slopes,"group",function(aoo_slopes) lm(slope ~ AOO,
                                                                    data = aoo_slopes))
 rs_values <- ldply(rs_model,coef)
 
+mean(aoo_slopes$slope)
 
