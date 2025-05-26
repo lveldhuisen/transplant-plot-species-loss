@@ -191,3 +191,49 @@ rareplantguide$StateScientificName <- sub(" ", "_", rareplantguide$StateScientif
 rarelist <- rareplantguide$StateScientificName
 
 rare <- subset(abundance_df, species %in% rarelist)
+
+# subset data to calculate baseline metrics by origin site in 2017 ----------
+
+#bring in data
+abundance_df <- read.csv("Data/occurance2017-2023.csv")
+abundance_df$year <- as.factor(abundance_df$year)
+
+#get rid of extra control plots
+outs <- c("untouched","netted_untouched")
+
+# remove non-species from species column
+gc.outs <- c("litter", "bare_soil", "rock", "moss","unknown_seedling",
+             "unknown_forb","unknown_grass", "Unknown_round_leaves")
+
+#remove block 6 plots since they were transplanted in 2018
+block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
+                "pf6-2", "pf6-3","pf6-4", "um6-1", "um6-2","um6-3","um6-4",
+                "um6-5","um6-6")
+
+#filter data for things you never want
+abundance_df_baseline <- abundance_df %>% filter(!is.na(treatment),
+                                         !species %in% gc.outs,
+                                         !originPlotID %in% block.outs,
+                                         !treatment %in% outs,
+                                         year %in% "2017")
+
+#get rid of extra X columns
+abundance_df_baseline = subset(abundance_df_baseline, select = -c(X,X.1))
+
+# reformat data for vegan and pd -------
+comm_matrix_base <- pivot_wider(abundance_df_baseline, names_from = species, 
+                           values_from = occurrenceCount)
+
+#replace NAs with 0s
+comm_matrix_base[is.na(comm_matrix_base)] <- 0
+
+#sum to put all sites in same row
+comm_matrixID <- comm_matrixID %>%
+  group_by(ID) %>%
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = FALSE
+  )
+
+comm_matrixID <- comm_matrixID %>% column_to_rownames(var = "ID")
