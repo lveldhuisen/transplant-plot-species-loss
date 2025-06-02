@@ -61,3 +61,4 @@ rsconnect/
 *.png
 *.pptx
 *.tiff
+*.DS_Store
