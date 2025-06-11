@@ -4,26 +4,24 @@ Citation to the preprint:
 
 Author names, contact details: 
 
-This code is for a study about how phylogenetic diversity changes across experimental transplant treatments. LS is repsonsible for data collection and LNV is responsible for data analyses and code. 
+This code is for the manuscript "Phylogenetic diversity and species diversity are decoupled under experimental warming and cooling in Rocky Mountain plant communities 
+". X is repsonsible for data collection and X is responsible for data analyses and code. Data is available at:  https://doi.org/10.5281/zenodo.15643145. 
 
 
 ACCESS INFORMATION
 1. MIT License
-
+ 
 
 DATA & CODE FILE OVERVIEW
 
-This data repository consists of 3 folders (Data Prep, Analyses & Figure), x code scripts, and this README document, with the following data and code filenames and variables:
+This data repository consists of 3 folders (Data Prep, Analyses & Figure), 16 code scripts, and this README document, with the following folders:
 
 
-Data files 
+Data folders: 
 
-    1. DOI for published dataset and metadata
-
-
-Code scripts and workflow - code should be run in order listed here. 
-
-    1. 
+    1. 01_DataPrep: 9 scripts for data cleaning and reformatting for all analyses. Run all these files first. 
+    2. 02_Anayses: 5 scripts for all analyses. Run all these analyses after the DataPrep files.
+    3. 03_Figures: 2 scripts for all figuers. Run these last with the analysis results. 
 
 
 
