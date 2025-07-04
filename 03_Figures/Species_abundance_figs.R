@@ -132,12 +132,15 @@ rs_fig <- ggplot(test, aes(x=log(AOO), y=slope, color = treatment))+
                               "#FDE725FF"), 
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
                                 "Warmed one step", "Warmed two steps"))+
-  geom_smooth(method = "lm", se = FALSE)+
-  stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
-  stat_regline_equation(label.y = c(8.5,11,13.5,16,11), size = 4)+
-  labs(color = "Treatment")
+  geom_smooth(method = "lm", se = FALSE)
+ 
+ #labs(color = "Treatment")
+  #stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
+  #stat_regline_equation(label.y = c(8.5,11,13.5,16,11), size = 4)+
+  
 
 plot(rs_fig)
+ggsave("Figures/rangesize_noequations.png", dpi = 600, width = 16, height = 5)
 
 #combine regression figures
 regression_fig <- abundance17_fig / rs_fig + 
