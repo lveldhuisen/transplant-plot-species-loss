@@ -68,12 +68,13 @@ nb_fig <- ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour =
   theme_bw(base_size = 20)+
   xlab("Observed at destination site pre-transplant?")+
   labs(colour = "Treatment")+
+  annotate("text", label = "All~italic(p)~'>'~0.05", size = 5.5, y = 9.5, x = 1.3, parse = TRUE) +
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"),
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
                                 "Warmed one step", "Warmed two steps"))
 
 plot(nb_fig)
-ggsave("Figures/Fig5.png", dpi = 600, width = 14.5, height = 6)
+ggsave("Figures/Fig5_revised.png", dpi = 600, width = 14.5, height = 6)
 
 #correlation between 2017 abundance and slope------
 ab2017_df <- read.csv("Data/Species_change/2017abundance_slopes.csv")
@@ -107,12 +108,12 @@ abundance17_fig <-  ggplot(ab2017_df, aes(x = log(count.y), y = slope, color = t
   geom_jitter(height =0, width = 0.1)+
   theme_bw(base_size = 20)+
   facet_wrap(.~originSite)+
+  stat_cor(aes(label = paste(gsub("R", "r", after_stat(r.label)), after_stat(p.label), sep = "~`,`~")),
+           label.y = c(11.5,10, 13, 14.5), size = 5.5) +
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"), 
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
                      "Warmed one step", "Warmed two steps"))+
-  geom_smooth(method = "lm", se = FALSE)+
-  stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
-  stat_regline_equation(label.y = c(8.5,11,13.5,16,11), size = 4)+
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed")+
   xlab("Log of 2017 pre-transplant abundance")+
   labs(color = "Treatment")
 
@@ -128,24 +129,23 @@ rs_fig <- ggplot(test, aes(x=log(AOO), y=slope, color = treatment))+
   theme_bw(base_size = 20)+
   labs(x= "Log of range size")+
   facet_wrap(.~originSite)+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF",
-                              "#FDE725FF"), 
+  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"), 
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
                                 "Warmed one step", "Warmed two steps"))+
-  geom_smooth(method = "lm", se = FALSE)
- 
- #labs(color = "Treatment")
-  #stat_cor(label.y = c(9.5,12,14.5,17,12), size = 4) +
-  #stat_regline_equation(label.y = c(8.5,11,13.5,16,11), size = 4)+
-  
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed")+
+  stat_cor(aes(label = paste(gsub("R", "r", after_stat(r.label)), after_stat(p.label), sep = "~`,`~")),
+           label.y = c(11.5,10, 13, 14.5), size = 5.5)+
+  labs(color = "Treatment")+
+  theme(legend.position = 'none')
 
 plot(rs_fig)
 ggsave("Figures/rangesize_noequations.png", dpi = 600, width = 16, height = 5)
 
 #combine regression figures
+
 regression_fig <- abundance17_fig / rs_fig + 
   plot_annotation(tag_levels = c('A'), tag_suffix = ')')+
-  plot_layout(guides = 'collect')
+  plot_layout(guides = 'collect') 
 
 plot(regression_fig)
-ggsave("Figures/Fig6.png", height = 10.5, width = 14.5, dpi = 600)
+ggsave("Figures/Fig6_revised.png", height = 11.5, width = 14.5, dpi = 600)
