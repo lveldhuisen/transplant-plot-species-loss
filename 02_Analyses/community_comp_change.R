@@ -82,6 +82,10 @@ richness_df <- specnumber(comm_matrixID, groups = comm_matrixID$X, MARGIN = 1)
 richness_df <- as.data.frame(richness_df)    
 write.csv(richness_df, "Data/richness_data.csv")
 
+richness_df_baseline <- specnumber(comm_matrix_base, groups = comm_matrix_base$turfID, MARGIN = 1)
+richness_df <- as.data.frame(richness_df)    
+write.csv(richness_df, "Data/richness_data.csv")
+
 # baseline diversity for each origin site before transplant --------
 ## richness ---------
 base_richness <- abundance_df_baseline %>%

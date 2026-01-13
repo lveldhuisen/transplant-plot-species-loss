@@ -223,6 +223,8 @@ abundance_df_baseline = subset(abundance_df_baseline, select = -c(X,X.1))
 # reformat data for vegan and pd -------
 comm_matrix_base <- pivot_wider(abundance_df_baseline, names_from = species, 
                            values_from = occurrenceCount)
+#delete column percentCover
+comm_matrix_base = subset(comm_matrix_base, select = -c(percentCover))
 
 #replace NAs with 0s
 comm_matrix_base[is.na(comm_matrix_base)] <- 0
@@ -237,3 +239,18 @@ comm_matrixID <- comm_matrixID %>%
   )
 
 comm_matrixID <- comm_matrixID %>% column_to_rownames(var = "ID")
+
+#calculate baseline richness vlaues -------
+# bring in data
+baseline_richness <- read.csv("Data/richness_data.csv")
+
+df_new <- baseline_richness %>%
+  separate_wider_delim(X,
+                       delim = "_",
+                       names = c("originID", "treatment", "destinationID", "year", "treatment2"), 
+                       too_many = "merge")
+
+
+base_richness <- richness_df_2017 %>%
+  group_by(originPlotID) %>%
+  summarise(UniqueCount = n_distinct(species))
