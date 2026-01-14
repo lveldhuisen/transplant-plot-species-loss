@@ -69,9 +69,9 @@ comm_matrix_2017 <- comm_matrix_2017 %>% column_to_rownames(var = "ID")
 
 
 ##species richness-----------------
-richness_baseline <- specnumber(comm_matrix_2017, groups = comm_matrix_2017$ID, MARGIN = 1)
-richness__baseline <- as.data.frame(richness_baseline)    
-write.csv(richness_baseline, "Data/baseline_richness_data.csv")
+richness_baseline_2017 <- specnumber(comm_matrix_2017, MARGIN = 1)
+richness_baseline_2017 <- as.data.frame(richness_baseline_2017)    
+write.csv(richness_baseline_2017, "Data/2017_richness_data.csv")
 
 #2018-2023 baseline richness -----------
 #use only these years
