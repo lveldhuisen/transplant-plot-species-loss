@@ -1,0 +1,342 @@
+library(tidyverse)
+
+#run all code in "Data_prep_species_abundancechance.R" before running this
+
+#generate ICV values------------
+
+#Upper Montane####
+
+##within site transplant#######
+# Extract coefficients and calculate ICV
+# Total across plots
+um_win_reg <- um_win_reg %>% 
+  group_by(species, year) %>% 
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = TRUE
+  )
+
+um_win_reg$year <- as.numeric(um_win_reg$year) # Make year numeric
+
+# Do regression 
+um_win_model_icv <- dlply(um_win_reg, "species", function(um_win_reg) {
+  lm(percentCover ~ year, data = um_win_reg)
+})
+
+# Extract coefficients and calculate ICV
+um_win_values_icv <- ldply(um_win_model_icv, function(model) {
+  coefs <- coef(model)
+  se <- summary(model)$coefficients[, "Std. Error"]
+  
+  slope <- coefs["year"]
+  slope_se <- se["year"]
+  
+  # Calculate inverse coefficient of variation
+  icv <- slope / slope_se
+  
+  data.frame(
+    intercept = coefs["(Intercept)"],
+    slope = slope,
+    slope_se = slope_se,
+    icv = icv
+  )
+})
+
+##cooled 1#######
+um_c1_values_icv <- ldply(um_c1_model, function(model) {
+  coefs <- coef(model)
+  se <- summary(model)$coefficients[, "Std. Error"]
+  
+  slope <- coefs["year"]
+  slope_se <- se["year"]
+  
+  # Calculate inverse coefficient of variation
+  icv <- slope / slope_se
+  
+  data.frame(
+    intercept = coefs["(Intercept)"],
+    slope = slope,
+    slope_se = slope_se,
+    icv = icv
+  )
+})
+
+##cooled 2######
+um_c2_values_icv <- ldply(um_c2_model, function(model) {
+  coefs <- coef(model)
+  se <- summary(model)$coefficients[, "Std. Error"]
+  
+  slope <- coefs["year"]
+  slope_se <- se["year"]
+  
+  # Calculate inverse coefficient of variation
+  icv <- slope / slope_se
+  
+  data.frame(
+    intercept = coefs["(Intercept)"],
+    slope = slope,
+    slope_se = slope_se,
+    icv = icv
+  )
+})
+
+#Pfeiler######
+
+##within site transplant#######
+pf_win_values_icv <- ldply(pf_win_model, function(model) {
+  coefs <- coef(model)
+  se <- summary(model)$coefficients[, "Std. Error"]
+  
+  slope <- coefs["year"]
+  slope_se <- se["year"]
+  
+  # Calculate inverse coefficient of variation
+  icv <- slope / slope_se
+  
+  data.frame(
+    intercept = coefs["(Intercept)"],
+    slope = slope,
+    slope_se = slope_se,
+    icv = icv
+  )
+})
+
+##cooled 1####
+pf_c1_values_icv <- ldply(pf_c1_model, function(model) {
+  coefs <- coef(model)
+  se <- summary(model)$coefficients[, "Std. Error"]
+  
+  slope <- coefs["year"]
+  slope_se <- se["year"]
+  
+  # Calculate inverse coefficient of variation
+  icv <- slope / slope_se
+  
+  data.frame(
+    intercept = coefs["(Intercept)"],
+    slope = slope,
+    slope_se = slope_se,
+    icv = icv
+  )
+})
+
+##warmed 1####
+pf_w1_values_icv <- ldply(pf_w1_model, function(model) {
+  coefs <- coef(model)
+  se <- summary(model)$coefficients[, "Std. Error"]
+  
+  slope <- coefs["year"]
+  slope_se <- se["year"]
+  
+  # Calculate inverse coefficient of variation
+  icv <- slope / slope_se
+  
+  data.frame(
+    intercept = coefs["(Intercept)"],
+    slope = slope,
+    slope_se = slope_se,
+    icv = icv
+  )
+})
+
+#Monument######
+
+##within site transplant#######
+mo_win_values_icv <- ldply(mo_win_model, function(model) {
+  coefs <- coef(model)
+  se <- summary(model)$coefficients[, "Std. Error"]
+  
+  slope <- coefs["year"]
+  slope_se <- se["year"]
+  
+  # Calculate inverse coefficient of variation
+  icv <- slope / slope_se
+  
+  data.frame(
+    intercept = coefs["(Intercept)"],
+    slope = slope,
+    slope_se = slope_se,
+    icv = icv
+  )
+})
+
+##warmed 1####
+mo_w1_values_icv <- ldply(mo_w1_model, function(model) {
+  coefs <- coef(model)
+  se <- summary(model)$coefficients[, "Std. Error"]
+  
+  slope <- coefs["year"]
+  slope_se <- se["year"]
+  
+  # Calculate inverse coefficient of variation
+  icv <- slope / slope_se
+  
+  data.frame(
+    intercept = coefs["(Intercept)"],
+    slope = slope,
+    slope_se = slope_se,
+    icv = icv
+  )
+})
+
+##warmed 2####
+mo_w2_values_icv <- ldply(mo_w2_model, function(model) {
+  coefs <- coef(model)
+  se <- summary(model)$coefficients[, "Std. Error"]
+  
+  slope <- coefs["year"]
+  slope_se <- se["year"]
+  
+  # Calculate inverse coefficient of variation
+  icv <- slope / slope_se
+  
+  data.frame(
+    intercept = coefs["(Intercept)"],
+    slope = slope,
+    slope_se = slope_se,
+    icv = icv
+  )
+})
+
+#Format each table to include treatment, origin site, remove NAs-----------
+
+##Upper Montane####
+###within site####
+
+#get rid of intercept column
+um_win_values_icv = subset(um_win_values_icv, select = -c(intercept))
+
+#add columns for treatment and origin site
+um_win_values_icv$originSite = "Upper Montane"
+um_win_values_icv$treatment = "within_site_transplant"
+
+#remove NAs
+um_win_values_icv <- na.omit(um_win_values_icv)
+
+#save as csv
+write_csv(um_win_values_icv, "Data/Species_change/UM_win_slopesICV.csv")
+
+###cooled 1####
+
+#get rid of intercept column
+um_c1_values_icv = subset(um_c1_values_icv, select = -c(intercept))
+
+#add columns for treatment and origin site
+um_c1_values_icv$originSite = "Upper Montane"
+um_c1_values_icv$treatment = "cooled_one"
+
+#remove NAs
+um_c1_values_icv <- na.omit(um_c1_values_icv)
+
+#save as csv
+write_csv(um_c1_values_icv, "Data/Species_change/UM_c1_slopes_icv.csv")
+
+###cooled 2#####
+
+#get rid of intercept column
+um_c2_values_icv = subset(um_c2_values_icv, select = -c(intercept))
+
+#add columns for treatment and origin site
+um_c2_values_icv$originSite = "Upper Montane"
+um_c2_values_icv$treatment = "cooled_two"
+
+#remove NAs
+um_c2_values_icv <- na.omit(um_c2_values_icv)
+
+#save as csv
+write_csv(um_c2_values_icv, "Data/Species_change/UM_c2_slopes_icv.csv")
+
+##Pfeiler#####
+
+###within site transplant#####
+
+#get rid of intercept column
+pf_win_values_icv = subset(pf_win_values_icv, select = -c(intercept))
+
+#add columns for treatment and origin site
+pf_win_values_icv$originSite = "Pfeiler"
+pf_win_values_icv$treatment = "within_site_transplant"
+
+#remove NAs
+pf_win_values_icv <- na.omit(pf_win_values_icv)
+
+#save as csv
+write_csv(pf_win_values_icv, "Data/Species_change/Pfeiler_win_slopes_icv.csv")
+
+###cooled 1#####
+
+#get rid of intercept column
+pf_c1_values_icv = subset(pf_c1_values_icv, select = -c(intercept))
+
+#add columns for treatment and origin site
+pf_c1_values_icv$originSite = "Pfeiler"
+pf_c1_values_icv$treatment = "cooled_one"
+
+#remove NAs
+pf_c1_values_icv <- na.omit(pf_c1_values_icv)
+
+#save as csv
+write_csv(pf_c1_values_icv, "Data/Species_change/Pfeiler_c1_slopes_icv.csv")
+
+###warmed one####
+
+#get rid of intercept column
+pf_w1_values_icv = subset(pf_w1_values_icv, select = -c(intercept))
+
+#add columns for treatment and origin site
+pf_w1_values_icv$originSite = "Pfeiler"
+pf_w1_values_icv$treatment = "warmed_one"
+
+#remove NAs
+pf_w1_values_icv <- na.omit(pf_w1_values_icv)
+
+#save as csv
+write_csv(pf_w1_values_icv, "Data/Species_change/Pfeiler_w1_slopes_icv.csv")
+
+##Monument#######
+
+###within site transplant#####
+
+#get rid of intercept column
+mo_win_values_icv = subset(mo_win_values_icv, select = -c(intercept))
+
+#add columns for treatment and origin site
+mo_win_values_icv$originSite = "Monument"
+mo_win_values_icv$treatment = "within_site_transplant"
+
+#remove NAs
+mo_win_values_icv <- na.omit(mo_win_values_icv)
+
+#save as csv
+write_csv(mo_win_values_icv, "Data/Species_change/Monument_within_slopes_icv.csv")
+
+###warmed one#####
+
+#get rid of intercept column
+mo_w1_values_icv = subset(mo_w1_values_icv, select = -c(intercept))
+
+#add columns for treatment and origin site
+mo_w1_values_icv$originSite = "Monument"
+mo_w1_values_icv$treatment = "warmed_one"
+
+#remove NAs
+mo_w1_values_icv <- na.omit(mo_w1_values_icv)
+
+#save as csv
+write_csv(mo_w1_values_icv, "Data/Species_change/Monument_w1_slopes_icv.csv")
+
+###warmed two#####
+
+#get rid of intercept column
+mo_w2_values_icv = subset(mo_w2_values_icv, select = -c(intercept))
+
+#add columns for treatment and origin site
+mo_w2_values_icv$originSite = "Monument"
+mo_w2_values_icv$treatment = "warmed_two"
+
+#remove NAs
+mo_w2_values_icv <- na.omit(mo_w2_values_icv)
+
+#save as csv
+write_csv(mo_w2_values_icv, "Data/Species_change/Monument_w2_slopes_icv.csv")
