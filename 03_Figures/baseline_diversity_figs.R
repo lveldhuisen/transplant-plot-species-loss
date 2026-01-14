@@ -19,10 +19,11 @@ bl_richness_fig <- ggplot(bl_rich_df, aes(x=year, y= richness_baseline_df, colou
   geom_boxplot()+
   theme_bw(base_size = 20)+
   xlab("Year")+
-  ylab("Richness")
-  labs(colour = "Site")
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"),
-                     labels = c("Cooled two steps", "Cooled one step", "Local transplant",
-                                "Warmed one step", "Warmed two steps"))
+  ylab("Richness") +
+  labs(colour = "Site") + 
+  stat_summary(fun = mean, geom = "line", aes(group = originSite), linewidth = 1)
+  scale_color_manual(values=c("#287C8EFF", "#35B779FF", "#FDE725FF"),
+                     labels = c("Low","Mid","High"))
 
 plot(bl_richness_fig)
+ggsave("Figures/baseline_richness_overtime.png", dpi = 600, height = , width = )
