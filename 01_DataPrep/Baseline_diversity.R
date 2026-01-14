@@ -8,7 +8,7 @@ library(stringr) #to remove spaces
 abundance_df <- read.csv("Data/occurance2017-2023.csv")
 abundance_df$year <- as.factor(abundance_df$year)
 
-#reformat for richness calculation ----
+#2017 data for richness calculation ----
 
 #use only these years
 ins <- c("2017")
@@ -68,7 +68,64 @@ comm_matrix_2017 <- comm_matrix_2017 %>%
 comm_matrix_2017 <- comm_matrix_2017 %>% column_to_rownames(var = "ID")
 
 
-#species richness-----------------
+##species richness-----------------
 richness_baseline <- specnumber(comm_matrix_2017, groups = comm_matrix_2017$ID, MARGIN = 1)
 richness__baseline <- as.data.frame(richness_baseline)    
 write.csv(richness_baseline, "Data/baseline_richness_data.csv")
+
+#2018-2023 baseline richness -----------
+#use only these years
+year_ins <- c("2018","2019","2021","2022","2023")
+
+#get rid of extra control plots
+tx_ins <- c("within_site_transplant")
+
+# remove non-species from species column
+gc.outs <- c("litter", "bare_soil", "rock", "moss","unknown_seedling",
+             "unknown_forb","unknown_grass", "unknown_round_leaves")
+
+#remove block 6 plots since they were transplanted in 2018
+block.outs <- c("mo6-1", "mo6-2", "mo6-3", "mo6-4","mo6-5", "pf6-1",
+                "pf6-2", "pf6-3","pf6-4", "um6-1", "um6-2","um6-3","um6-4",
+                "um6-5","um6-6")
+
+#filter data for things you never want
+abundance_baseline_df <- abundance_df %>% filter(!is.na(treatment),
+                                         !species %in% gc.outs,
+                                         !originPlotID %in% block.outs,
+                                         treatment %in% tx_ins,
+                                         year %in% year_ins)
+#get rid of extra X columns
+abundance_baseline_df = subset(abundance_baseline_df, select = -c(X,X.1))
+
+abundance_baseline_df$percentCover <- as.numeric(abundance_baseline_df$percentCover)/100
+
+cover_baseline_df <- abundance_baseline_df
+
+###reformat to matrix for Vegan########
+
+#reformat data
+comm_matrix_baseline <- pivot_wider(cover_baseline_df, names_from = species, 
+                           values_from = percentCover)
+
+#make matrix with plot IDs
+comm_matrix_baseline$ID = NA
+comm_matrix_baseline$ID <- paste(comm_matrix_baseline$turfID,"_", comm_matrix_baseline$originSite,"_",
+                        comm_matrix_baseline$destinationSite,
+                        "_",comm_matrix_baseline$treatment,
+                        "_",comm_matrix_baseline$year)
+comm_matrix_baseline <- comm_matrix_baseline %>% relocate(ID)
+comm_matrix_baseline = subset(comm_matrix_baseline, select = -c(turfID,originSite, destinationSite,
+                                                  originPlotID, 
+                                                  treatment,treatmentOriginGroup,year,
+                                                  date_yyyymmdd, functionalGroup,
+                                                  unknownMorpho, occurrenceCount) )
+
+#replace NAs with 0s
+comm_matrix_baseline[is.na(comm_matrix_baseline)] <- 0
+
+
+##species richness-----------------
+richness_baseline_df <- specnumber(comm_matrix_baseline, groups = comm_matrix_baseline$ID, MARGIN = 1)
+richness_baseline_df <- as.data.frame(richness_baseline_df)    
+write.csv(richness_baseline_df, "Data/baseline_richness_data.csv")
