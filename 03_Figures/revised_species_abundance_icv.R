@@ -67,23 +67,22 @@ ggsave("Figures/Fig5_ICV_revised.png", dpi = 600, width = 14.5, height = 6)
 
 # NEEDS UPDATE WITH ICV VALUES FOR REVISION -----------------
 #correlation between 2017 abundance and slope------
-ab2017_df <- read.csv("Data/Species_change/2017abundance_slopes.csv")
-ab2017_df$slope <- as.numeric(ab2017_df$slope)
-ab2017_df$count.y <- as.numeric(ab2017_df$count.y)
+#ab2017_df <- read.csv("Data/Species_change/2017abundance_slopes.csv")
+
 
 #replace site names with elevations
 
-ab2017_df$originSite[ab2017_df$originSite == 'Upper Montane'] <- 'Low elevation (2900 m)'
-ab2017_df$originSite[ab2017_df$originSite == 'Pfeiler'] <- 'Mid elevation (3200 m)'
-ab2017_df$originSite[ab2017_df$originSite == 'Monument'] <- 'High elevation (3300 m)'
+icv_2017ab$originSite[icv_2017ab$originSite == 'Upper Montane'] <- 'Low elevation (2900 m)'
+icv_2017ab$originSite[icv_2017ab$originSite == 'Pfeiler'] <- 'Mid elevation (3200 m)'
+icv_2017ab$originSite[icv_2017ab$originSite == 'Monument'] <- 'High elevation (3300 m)'
 
 #reorder treatments
-ab2017_df$originSite <- factor(ab2017_df$originSite, 
+icv_2017ab$originSite <- factor(icv_2017ab$originSite, 
                                levels = c("Low elevation (2900 m)",
                                           "Mid elevation (3200 m)",
                                           "High elevation (3300 m)"))
 
-ab2017_df$treatment <- factor(ab2017_df$treatment, 
+icv_2017ab$treatment <- factor(icv_2017ab$treatment, 
                               levels = c("cooled_two",
                                          "cooled_one",
                                          "within_site_transplant",
@@ -91,10 +90,10 @@ ab2017_df$treatment <- factor(ab2017_df$treatment,
                                          "warmed_two"))
 
 #add 1 to all abundance averages for log
-ab2017_df$count.y <- ab2017_df$count.y + 1
+icv_2017ab$count.y <- icv_2017ab$count.y + 1
 
 #figure                     
-abundance17_fig <-  ggplot(ab2017_df, aes(x = log(count.y), y = slope, color = treatment))+
+abundance17_fig_rev <-  ggplot(icv_2017ab, aes(x = log(count.y), y = icv, color = treatment))+
   geom_jitter(height =0, width = 0.1)+
   theme_bw(base_size = 20)+
   facet_wrap(.~originSite)+
@@ -107,7 +106,7 @@ abundance17_fig <-  ggplot(ab2017_df, aes(x = log(count.y), y = slope, color = t
   xlab("Log of 2017 pre-transplant abundance")+
   labs(color = "Treatment")
 
-plot(abundance17_fig)
+plot(abundance17_fig_rev)
 ggsave("Figures/fig6a.pdf", height = 7, width = 15)
 
 #correlation between range size and slope-------
@@ -133,9 +132,9 @@ ggsave("Figures/rangesize_noequations.png", dpi = 600, width = 16, height = 5)
 
 #combine regression figures
 
-regression_fig <- abundance17_fig / rs_fig + 
+regression_fig_rev <- abundance17_fig_rev / rs_fig_rev + 
   plot_annotation(tag_levels = c('A'), tag_suffix = ')')+
   plot_layout(guides = 'collect') 
 
-plot(regression_fig)
+plot(regression_fig_rev)
 ggsave("Figures/Fig6_revised.png", height = 11.5, width = 14.5, dpi = 600)

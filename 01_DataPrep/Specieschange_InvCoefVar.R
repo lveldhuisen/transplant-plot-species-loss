@@ -396,3 +396,10 @@ big_df = subset(big_df, select = -c(icv.y))
 
 # save csv
 write_csv(big_df, "Data/Species_change/all_changes_forrevision.csv")
+
+# add ICV values to new dataframe for correlation with 2017 abundance
+ab2017_df <- read.csv("Data/Species_change/2017abundance_slopes.csv")
+
+# join with other df
+icv_2017ab <- left_join(ab2017_df, combined, by = c("species", "originSite", "treatment"))
+
