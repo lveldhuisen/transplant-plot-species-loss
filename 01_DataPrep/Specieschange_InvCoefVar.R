@@ -340,3 +340,59 @@ mo_w2_values_icv <- na.omit(mo_w2_values_icv)
 
 #save as csv
 write_csv(mo_w2_values_icv, "Data/Species_change/Monument_w2_slopes_icv.csv")
+
+# make into one dataframe ----------
+
+# Put all your dataframes in a list
+df_list <- list(um_win_values_icv, um_c1_values_icv, um_c2_values_icv,
+                pf_win_values_icv, pf_c1_values_icv, pf_w1_values_icv,
+                mo_win_values_icv, mo_w1_values_icv, mo_w2_values_icv)
+
+# Stack them all at once
+combined <- do.call(rbind, df_list)
+
+# update species names
+
+combined <- combined %>% mutate(species = recode(species, 
+                                         "Agoseris_glauca" = "Agoseris_glauca_var._dasycephala",
+                                         "Aquilegia_caerulea" = "Aquilegia_coerulea",
+                                         "Aphyllon_fasciculatum" = "Orobanche_fasciculata",
+                                         "Carex_sp." = "Carex_nelsonii",
+                                         "Chamaenerion_angustifolium" = "Chamerion_angustifolium",
+                                         "Epilobium_sp." = "Epilobium_ciliatum",
+                                         "Erigeron_elatior" = "Erigeron_grandiflorus",
+                                         "Festuca_rubra" = "Festuca_rubra_subsp._rubra",
+                                         "Helianthella_quinquenervis" = "Helianthella_uniflora",
+                                         "Heterotheca_pumila" = "Heterotheca_villosa",
+                                         "Hydrophyllum_capitatum" = "Hydrophyllum_capitatum_var._capitatum",
+                                         "Lupinus_sp." = "Lupinus_argenteus",
+                                         "Poa_pratensis" = "Poa_pratensis_subsp._pratensis",
+                                         "Polygonum_douglasii" = "Polygonum_douglasii_subsp._douglasii",
+                                         "Sedum_integrifolium" = "Rhodiola_integrifolia",
+                                         "Senecio_integerrimus" = "Senecio_integerrimus_var.exaltatus",
+                                         "Stipa_nelsonii" = "Achnatherum_nelsonii",
+                                         "Symphyotrichum_ascendens" = "Symphyotrichum_foliaceum",
+                                         "Veratrum_californicum" = "Veratrum_virginicum",
+                                      ))
+combined$species <- trimws(combined$species)
+
+write_csv(combined, "Data/Species_change/Slopes_ICV_forrevision.csv")
+
+## add AOO and niche breath data into same dataframe ######
+
+# bring in data 
+rs_nb_df <- read.csv("Data/Species_change/species_change_forrevision.csv")
+
+rs_nb_df$species <- trimws(rs_nb_df$species)
+
+# rename icv col to match 
+names(rs_nb_df)[names(rs_nb_df) == "updated_ICV_rev2026"] <- "icv"
+
+# join with other df
+big_df <- left_join(combined, rs_nb_df, by = c("species", "originSite", "treatment"))
+
+# delete extra icv column
+big_df = subset(big_df, select = -c(icv.y))
+
+# save csv
+write_csv(big_df, "Data/Species_change/all_changes_forrevision.csv")
