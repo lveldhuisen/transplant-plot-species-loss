@@ -50,7 +50,7 @@ heatmap_icv <- ggplot(icv_df, aes(treatment, species, fill= icv)) +
   theme(axis.text.y = element_text(face = "italic"))+
   facet_wrap(.~originSite)+
   xlab("Treatment") + 
-  ylab("ICV")
+  ylab("species")
 
 plot(heatmap_icv)
 ggsave("Figures/Heatmap_supplement_withICV.png", dpi = 600, width = 14.5, height = 14.5)

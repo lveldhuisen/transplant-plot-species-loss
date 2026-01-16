@@ -20,64 +20,66 @@ is.binary(SBtree)
 specieslist <- pruned.tree$tip.label
 specieslist <- as.data.frame(specieslist)
 
+
+# switch out vector with ICV results 
 #Blomberg's K (calculated with picante) --------------
 
 ##Upper Montane-------
 
-phylosignal(um_win_sig, pruned.tree, reps = 5000, checkdata = TRUE) 
+phylosignal(um_win_sig_icv, pruned.tree, reps = 5000, checkdata = TRUE) 
 
 
-phylosignal(um_c1_sig, pruned.tree, reps = 5000, checkdata = TRUE)
+phylosignal(um_c1_sig_icv, pruned.tree, reps = 5000, checkdata = TRUE)
 
 
-phylosignal(um_c2_sig, pruned.tree, reps = 5000, checkdata = TRUE) 
+phylosignal(um_c2_sig_icv, pruned.tree, reps = 5000, checkdata = TRUE) 
 
 ##Pfeiler-------
 
-phylosignal(pf_win_sig, pruned.tree, reps = 5000, checkdata = TRUE)
+phylosignal(pf_win_sig_icv, pruned.tree, reps = 5000, checkdata = TRUE)
 
-phylosignal(pf_c1_sig, pruned.tree, reps = 5000, checkdata = TRUE)
+phylosignal(pf_c1_sig_icv, pruned.tree, reps = 5000, checkdata = TRUE)
 
-phylosignal(pf_w1_sig, pruned.tree, reps = 5000, checkdata = TRUE)
+phylosignal(pf_w1_sig_icv, pruned.tree, reps = 5000, checkdata = TRUE)
 
 ##Monument-------
 
-phylosignal(mo_win_sig, pruned.tree, reps = 5000, checkdata = TRUE)
+phylosignal(mo_win_sig_icv, pruned.tree, reps = 5000, checkdata = TRUE)
 
-phylosignal(mo_w1_sig, pruned.tree, reps = 5000, checkdata = TRUE)
+phylosignal(mo_w1_sig_icv, pruned.tree, reps = 5000, checkdata = TRUE)
 
-phylosignal(mo_w2_sig, pruned.tree, reps = 5000, checkdata = TRUE)
+phylosignal(mo_w2_sig_icv, pruned.tree, reps = 5000, checkdata = TRUE)
 
 #Pagels lambda---------------------
 
 ##Upper Montane-----
-phylosig(pruned.tree, um_win_sig, method="lambda", test=TRUE, nsim=5000,
+phylosig(pruned.tree, um_win_sig_icv, method="lambda", test=TRUE, nsim=5000,
          se=NULL, start=NULL, control=list(), niter=10)
 
-phylosig(pruned.tree, um_c1_sig, method="lambda", test=TRUE, nsim=5000,
+phylosig(pruned.tree, um_c1_sig_icv, method="lambda", test=TRUE, nsim=5000,
          se=NULL, start=NULL, control=list(), niter=10)
 
-phylosig(pruned.tree, um_c2_sig, method="lambda", test=TRUE, nsim=5000,
+phylosig(pruned.tree, um_c2_sig_icv, method="lambda", test=TRUE, nsim=5000,
          se=NULL, start=NULL, control=list(), niter=10)
 
 ##Pfeiler-------
-phylosig(pruned.tree, pf_win_sig, method="lambda", test=TRUE, nsim=5000,
+phylosig(pruned.tree, pf_win_sig_icv, method="lambda", test=TRUE, nsim=5000,
          se=NULL, start=NULL, control=list(), niter=10)
 
-phylosig(pruned.tree, pf_c1_sig, method="lambda", test=TRUE, nsim=5000,
+phylosig(pruned.tree, pf_c1_sig_icv, method="lambda", test=TRUE, nsim=5000,
          se=NULL, start=NULL, control=list(), niter=10)
 
-phylosig(pruned.tree, pf_w1_sig, method="lambda", test=TRUE, nsim=5000,
+phylosig(pruned.tree, pf_w1_sig_icv, method="lambda", test=TRUE, nsim=5000,
          se=NULL, start=NULL, control=list(), niter=10)
 
 ##Monument------
-phylosig(pruned.tree, mo_win_sig, method="lambda", test=TRUE, nsim=5000,
+phylosig(pruned.tree, mo_win_sig_icv, method="lambda", test=TRUE, nsim=5000,
          se=NULL, start=NULL, control=list(), niter=10)
 
-phylosig(pruned.tree, mo_w1_sig, method="lambda", test=TRUE, nsim=5000,
+phylosig(pruned.tree, mo_w1_sig_icv, method="lambda", test=TRUE, nsim=5000,
          se=NULL, start=NULL, control=list(), niter=10)
 
-phylosig(pruned.tree, mo_w2_sig, method="lambda", test=TRUE, nsim=5000,
+phylosig(pruned.tree, mo_w2_sig_icv, method="lambda", test=TRUE, nsim=5000,
          se=NULL, start=NULL, control=list(), niter=10)
 
 
