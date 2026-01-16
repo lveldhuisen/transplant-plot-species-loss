@@ -13,7 +13,7 @@ icv_df$originSite[icv_df$originSite == 'Upper Montane'] <- 'Low elevation (2900 
 icv_df$originSite[icv_df$originSite == 'Pfeiler'] <- 'Mid elevation (3200 m)'
 icv_df$originSite[icv_df$originSite == 'Monument'] <- 'High elevation (3300 m)'
 
-#figures to display raw slope values----------
+#figure to display raw icv values----------
 
 #reorder treatments and origin site
 icv_df$treatment <- factor(icv_df$treatment, 
@@ -28,6 +28,12 @@ icv_df$originSite <- factor(icv_df$originSite,
                                           "Mid elevation (3200 m)",
                                           "High elevation (3300 m)"))
 
+icv_df_naomit <- na.omit(icv_df)
+
+
+#add column to have origin site and tx in same column 
+icv_df_naomit$group <- paste(icv_df_naomit$originSite,"_",icv_df_naomit$treatment)
+
 ##heatmap-----
 heat_labels <- c(
   expression(C[2]),
@@ -36,27 +42,29 @@ heat_labels <- c(
   expression(W[1]), 
   expression(W[2]))
 
-heatmap <- ggplot(icv_df, aes(treatment, species, fill= icv)) + 
+heatmap_icv <- ggplot(icv_df, aes(treatment, species, fill= icv)) + 
   geom_tile()+
   scale_fill_viridis(discrete = FALSE)+
   scale_x_discrete(labels = heat_labels)+
   theme_bw(base_size = 20)+
   theme(axis.text.y = element_text(face = "italic"))+
-  facet_wrap(.~originSite)
+  facet_wrap(.~originSite)+
+  xlab("Treatment") + 
+  ylab("ICV")
 
-plot(heatmap)
-ggsave("Figures/Heatmap_supplement.png", dpi = 600, width = 14.5, height = 14.5)
+plot(heatmap_icv)
+ggsave("Figures/Heatmap_supplement_withICV.png", dpi = 600, width = 14.5, height = 14.5)
 
 
 #niche breadth: slopes depending if species in destination site pre-transplant----
 
-nb_fig_rev <- ggplot(icv_df, aes(x=originally_at_destination., y= icv, colour = treatment))+
+nb_fig_rev <- ggplot(icv_df_naomit, aes(x=originally_at_destination., y= icv, colour = treatment))+
   geom_boxplot()+
   facet_wrap(.~originSite)+
   theme_bw(base_size = 20)+
-  xlab("Observed at destination site pre-transplant?")+
-  ylab("Species' change (inverse coefficient of variation)")+
-  labs(colour = "Treatment")+
+  labs(y = expression(Delta ~ "cover"), 
+       x = "Observed at destination site pre-transplant?", 
+       colour = "Treatment")+
   annotate("text", label = "All~italic(p)~'>'~0.05", size = 5.5, y = 9.5, x = 1.3, parse = TRUE) +
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"),
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
@@ -65,7 +73,6 @@ nb_fig_rev <- ggplot(icv_df, aes(x=originally_at_destination., y= icv, colour = 
 plot(nb_fig_rev)
 ggsave("Figures/Fig5_ICV_revised.png", dpi = 600, width = 14.5, height = 6)
 
-# NEEDS UPDATE WITH ICV VALUES FOR REVISION -----------------
 #correlation between 2017 abundance and slope------
 #ab2017_df <- read.csv("Data/Species_change/2017abundance_slopes.csv")
 
@@ -103,8 +110,9 @@ abundance17_fig_rev <-  ggplot(icv_2017ab, aes(x = log(count.y), y = icv, color 
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
                                 "Warmed one step", "Warmed two steps"))+
   geom_smooth(method = "lm", se = FALSE, linetype = "dashed")+
-  xlab("Log of 2017 pre-transplant abundance")+
-  labs(color = "Treatment")
+  labs(color = "Treatment", 
+       x = "Log of 2017 pre-transplant abundance",
+       y = expression(Delta ~ "cover"))
 
 plot(abundance17_fig_rev)
 ggsave("Figures/fig6a.pdf", height = 7, width = 15)
@@ -116,7 +124,9 @@ test_icv <- icv_df %>% drop_na(AOO)
 rs_fig_rev <- ggplot(test_icv, aes(x=log(AOO), y=icv, color = treatment))+
   geom_point()+
   theme_bw(base_size = 20)+
-  labs(x= "Log of range size")+
+  labs(color = "Treatment",
+    x = "Log of range size", 
+    y = expression(Delta ~ "cover"))+
   facet_wrap(.~originSite)+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"), 
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
@@ -124,7 +134,6 @@ rs_fig_rev <- ggplot(test_icv, aes(x=log(AOO), y=icv, color = treatment))+
   geom_smooth(method = "lm", se = FALSE, linetype = "dashed")+
   stat_cor(aes(label = paste(gsub("R", "r", after_stat(r.label)), after_stat(p.label), sep = "~`,`~")),
            label.y = c(11.5,10, 13, 14.5), size = 5.5)+
-  labs(color = "Treatment")+
   theme(legend.position = 'none')
 
 plot(rs_fig_rev)
@@ -137,4 +146,4 @@ regression_fig_rev <- abundance17_fig_rev / rs_fig_rev +
   plot_layout(guides = 'collect') 
 
 plot(regression_fig_rev)
-ggsave("Figures/Fig6_revised.png", height = 11.5, width = 14.5, dpi = 600)
+ggsave("Figures/Fig6_revised_with_icv.png", height = 11.5, width = 14.5, dpi = 600)

@@ -21,12 +21,32 @@ stat.test <- aoo_slopes %>%
   add_significance() %>%
   add_y_position()
 
+# Check sample sizes using table
+table(aoo_slopes$group, aoo_slopes$originally_at_destination.)
+
 view(stat.test)
 
 #figure
 ggplot(aoo_slopes, aes(x=slope))+
   geom_histogram()+
   facet_wrap(.~group)
+
+## niche breadth test with ICV values for revision #######
+
+
+# Check sample sizes using table
+table(icv_df_naomit$group, icv_df_naomit$originally_at_destination.)
+
+# only one data point in pfeiler w/in site transplant no group - filter out 
+stat_test_icv <- icv_df_naomit %>%
+  filter(group != "Mid elevation (3200 m) _ within_site_transplant") %>%
+  group_by(group) %>%
+  t_test(icv ~ originally_at_destination.) %>%
+  adjust_pvalue(method = "BH") %>%
+  add_significance() %>%
+  add_y_position()
+
+view(stat_test_icv)
 
 #does original abundance predict abundance change?------------------------
 ab2017_df <- read.csv("Data/Species_change/2017abundance_slopes.csv")
