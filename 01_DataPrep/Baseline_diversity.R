@@ -3,6 +3,13 @@ library(tidyverse)
 library(data.table)
 library(vegan) #community diversity
 library(stringr) #to remove spaces
+library(picante)
+library(geiger)
+library(ape)
+library(broom)
+library(janitor)
+library(patchwork)
+library(car)
 
 #bring in data
 abundance_df <- read.csv("Data/occurance2017-2023.csv")
@@ -35,11 +42,40 @@ abundance_17_df <- abundance_df %>% filter(!is.na(treatment),
 #get rid of extra X columns
 abundance_17_df = subset(abundance_17_df, select = -c(X,X.1, percentCover))
 
+#get rid of whitespace
+abundance_17_df$species <- trimws(abundance_17_df$species)
+
+#update species names 
+abundance_17_df <- abundance_17_df %>% 
+  mutate(species = case_match(species,
+                              "Agoseris_glauca" ~ "Agoseris_glauca_var._dasycephala",
+                              "Aquilegia_caerulea" ~ "Aquilegia_coerulea",
+                              "Aphyllon_fasciculatum" ~ "Orobanche_fasciculata",
+                              "Carex_sp." ~ "Carex_nelsonii",
+                              "Chamaenerion_angustifolium" ~ "Chamerion_angustifolium",
+                              "Epilobium_sp." ~ "Epilobium_ciliatum",
+                              "Erigeron_elatior" ~ "Erigeron_grandiflorus",
+                              "Festuca_rubra" ~ "Festuca_rubra_subsp._rubra",
+                              "Helianthella_quinquenervis" ~ "Helianthella_uniflora",
+                              "Heterotheca_pumila" ~ "Heterotheca_villosa",
+                              "Hydrophyllum_capitatum" ~ "Hydrophyllum_capitatum_var._capitatum",
+                              "Lupinus_sp." ~ "Lupinus_argenteus",
+                              "Poa_pratensis" ~ "Poa_pratensis_subsp._pratensis",
+                              "Polygonum_douglasii" ~ "Polygonum_douglasii_subsp._douglasii",
+                              "Sedum_integrifolium" ~ "Rhodiola_integrifolia",
+                              "Senecio_integerrimus" ~ "Senecio_integerrimus_var.exaltatus",
+                              "Stipa_nelsonii" ~ "Achnatherum_nelsonii",
+                              "Symphyotrichum_ascendens" ~ "Symphyotrichum_foliaceum",
+                              "Veratrum_californicum" ~ "Veratrum_virginicum",
+                              .default = species  # Keep all other values unchanged
+  ))
+
 ###reformat to matrix for Vegan########
 
 #reformat data
 comm_matrix_2017 <- pivot_wider(abundance_17_df, names_from = species, 
                            values_from = occurrenceCount)
+
 
 #make matrix with plot IDs
 comm_matrix_2017$ID = NA
@@ -102,6 +138,31 @@ abundance_baseline_df$percentCover <- as.numeric(abundance_baseline_df$percentCo
 
 cover_baseline_df <- abundance_baseline_df
 
+cover_baseline_df <- cover_baseline_df %>% 
+  mutate(species = case_match(species,
+                              "Agoseris_glauca" ~ "Agoseris_glauca_var._dasycephala",
+                              "Aquilegia_caerulea" ~ "Aquilegia_coerulea",
+                              "Aphyllon_fasciculatum" ~ "Orobanche_fasciculata",
+                              "Carex_sp." ~ "Carex_nelsonii",
+                              "Chamaenerion_angustifolium" ~ "Chamerion_angustifolium",
+                              "Epilobium_sp." ~ "Epilobium_ciliatum",
+                              "Erigeron_elatior" ~ "Erigeron_grandiflorus",
+                              "Festuca_rubra" ~ "Festuca_rubra_subsp._rubra",
+                              "Helianthella_quinquenervis" ~ "Helianthella_uniflora",
+                              "Heterotheca_pumila" ~ "Heterotheca_villosa",
+                              "Hydrophyllum_capitatum" ~ "Hydrophyllum_capitatum_var._capitatum",
+                              "Lupinus_sp." ~ "Lupinus_argenteus",
+                              "Poa_pratensis" ~ "Poa_pratensis_subsp._pratensis",
+                              "Polygonum_douglasii" ~ "Polygonum_douglasii_subsp._douglasii",
+                              "Sedum_integrifolium" ~ "Rhodiola_integrifolia",
+                              "Senecio_integerrimus" ~ "Senecio_integerrimus_var.exaltatus",
+                              "Stipa_nelsonii" ~ "Achnatherum_nelsonii",
+                              "Symphyotrichum_ascendens" ~ "Symphyotrichum_foliaceum",
+                              "Veratrum_californicum" ~ "Veratrum_virginicum",
+                              .default = species  # Keep all other values unchanged
+  ))
+
+
 ###reformat to matrix for Vegan########
 
 #reformat data
@@ -124,8 +185,30 @@ comm_matrix_baseline = subset(comm_matrix_baseline, select = -c(turfID,originSit
 #replace NAs with 0s
 comm_matrix_baseline[is.na(comm_matrix_baseline)] <- 0
 
+#sum to put all sites in same row
+comm_matrix_baseline <- comm_matrix_baseline %>%
+  group_by(ID) %>%
+  summarise_if(
+    is.numeric,
+    sum,
+    na.rm = FALSE
+  )
+
+comm_matrix_baseline <- comm_matrix_baseline %>% column_to_rownames(var = "ID")
+
 
 ##species richness-----------------
 richness_baseline_df <- specnumber(comm_matrix_baseline, groups = comm_matrix_baseline$ID, MARGIN = 1)
 richness_baseline_df <- as.data.frame(richness_baseline_df)    
 write.csv(richness_baseline_df, "Data/baseline_richness_data.csv")
+
+# 2017 phylogenetic diversity ----------------
+pd_2017 <- ses.pd(comm_matrix_2017, pruned.tree, null.model = c("sample.pool"),
+                      runs = 5000, include.root=TRUE)
+
+# 2018-2023 phylogenetic diversity -----------
+pd_baseline <- ses.pd(comm_matrix_baseline, pruned.tree, null.model = c("sample.pool"),
+                  runs = 5000, include.root=TRUE)
+
+
+
