@@ -8,7 +8,7 @@ library(CoordinateCleaner) # clean up coordinates
 #download data from GBIF--------------------------
 
 #get taxon key 
-name_backbone("Collomia_linearis")
+name_backbone("Achillea_millefolium")
 
 countries <- c("US","MX","CA")
 
@@ -20,13 +20,13 @@ occ_download(
   pred("occurrenceStatus","PRESENT"),
   pred_in("country", c("US","CA","MX")),
   pred_gte("year",1990),
-  pred("taxonKey",2927552),
+  pred("taxonKey",3120060),
   format = "SIMPLE_CSV",
   user="leah.veldhuisen", 
   pwd="Columbia2305", 
   email="leah.veldhuisen@gmail.com")
 
-d <- occ_download_get('0001187-260119153935675') %>%
+d <- occ_download_get('0000345-260120142942310') %>%
   occ_download_import()
 
 ##clean up data list to only have species name, lat and long##############
