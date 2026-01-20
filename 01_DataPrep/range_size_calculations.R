@@ -3,11 +3,12 @@
 library(rgbif) #to get gbif data
 library(dplyr) #manipulate data
 library(red) #range size calculations
+library(CoordinateCleaner) # clean up coordinates
 
 #download data from GBIF--------------------------
 
 #get taxon key 
-name_backbone("Viola_nuttallii")
+name_backbone("Collomia_linearis")
 
 countries <- c("US","MX","CA")
 
@@ -19,13 +20,13 @@ occ_download(
   pred("occurrenceStatus","PRESENT"),
   pred_in("country", c("US","CA","MX")),
   pred_gte("year",1990),
-  pred("taxonKey",5331211),
+  pred("taxonKey",2927552),
   format = "SIMPLE_CSV",
   user="leah.veldhuisen", 
   pwd="Columbia2305", 
   email="leah.veldhuisen@gmail.com")
 
-d <- occ_download_get('0024666-240906103802322') %>%
+d <- occ_download_get('0001187-260119153935675') %>%
   occ_download_import()
 
 ##clean up data list to only have species name, lat and long##############
@@ -38,8 +39,20 @@ df1 <- df1 %>%
   select(species, decimalLatitude, decimalLongitude)
 df1$species <- sub(" ",".", df1$species)
 
+#clean points 
+flags <- clean_coordinates(x = df1, 
+                  lon = "decimalLongitude", 
+                  lat = "decimalLatitude", 
+                  species = "species")
+
+summary(flags)
+plot(flags, lon = "decimalLongitude", lat = "decimalLatitude")
+
+#Exclude problematic records
+dat_cl <- df1[flags$.summary,]
+
 #extract species occurrences
-species_occ <- df1
+species_occ <- dat_cl
 
 #get occurrence points only
 points_species <- data.frame(species_occ[,c("decimalLongitude", "decimalLatitude")])

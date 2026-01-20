@@ -108,3 +108,6 @@ scale_color_manual(values=c("#287C8EFF", "#35B779FF", "#FDE725FF"))
 
 
 plot(bl_pd_fig)
+ggsave("Figures/baseline_PD_overtime.png", dpi = 600, height = 10, width = 15)
+
+
