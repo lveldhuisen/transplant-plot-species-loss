@@ -8,13 +8,16 @@ library(rstatix)
 
 #bring in data
 aoo_slopes <- read.csv("Data/Species_change/Cover_slopes_all_2.csv")
+slopes_df <- read.csv("Data/Species_change/all_changes_forrevision.csv")
 
 #add column to have origin site and tx in same column 
 aoo_slopes$group <- paste(aoo_slopes$originSite,"_",aoo_slopes$treatment)
-
+slopes_df$group <- paste(slopes_df$originSite, "_",slopes_df$treatment)
+  
 #niche breadth (y/n at destination site pre-transplant)--------------
 
-stat.test <- aoo_slopes %>%
+stat.test <- slopes_df %>%
+  filter(group != "Mid elevation (3200 m) _ within_site_transplant") %>%
   group_by(group) %>%
   t_test(slope ~ originally_at_destination.) %>%
   adjust_pvalue(method = "BH") %>%
@@ -22,7 +25,7 @@ stat.test <- aoo_slopes %>%
   add_y_position()
 
 # Check sample sizes using table
-table(aoo_slopes$group, aoo_slopes$originally_at_destination.)
+table(slopes_df$group, slopes_df$originally_at_destination.)
 
 view(stat.test)
 
@@ -41,7 +44,7 @@ table(icv_df_naomit$group, icv_df_naomit$originally_at_destination.)
 stat_test_icv <- icv_df_naomit %>%
   filter(group != "Mid elevation (3200 m) _ within_site_transplant") %>%
   group_by(group) %>%
-  t_test(icv ~ originally_at_destination.) %>%
+  t_test(slope ~ originally_at_destination.) %>%
   adjust_pvalue(method = "BH") %>%
   add_significance() %>%
   add_y_position()

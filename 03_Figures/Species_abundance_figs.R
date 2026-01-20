@@ -5,7 +5,7 @@ library(ggpubr)
 library(patchwork)
 
 #bring in data
-slopes_df <- read.csv("Data/Species_change/Cover_slopes_all_2.csv")
+slopes_df <- read.csv("Data/Species_change/all_changes_forrevision.csv")
 
 #replace site names with elevations
 
@@ -27,6 +27,8 @@ slopes_df$originSite <- factor(slopes_df$originSite,
                               levels = c("Low elevation (2900 m)",
                                          "Mid elevation (3200 m)",
                                          "High elevation (3300 m)"))
+
+slopes_df <- na.omit(slopes_df)
 
 ##heatmap-----
 heat_labels <- c(
@@ -68,7 +70,7 @@ nb_fig <- ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour =
   theme_bw(base_size = 20)+
   xlab("Observed at destination site pre-transplant?")+
   labs(colour = "Treatment")+
-  annotate("text", label = "All~italic(p)~'>'~0.05", size = 5.5, y = 9.5, x = 1.3, parse = TRUE) +
+  annotate("text", label = "All~italic(p)~'>'~0.05", size = 5.5, y = 10.5, x = 1.3, parse = TRUE) +
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"),
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
                                 "Warmed one step", "Warmed two steps"))
@@ -124,7 +126,7 @@ ggsave("Figures/fig6a.pdf", height = 7, width = 15)
 test <- slopes_df %>% drop_na(AOO)
 
 #plot
-rs_fig <- ggplot(test, aes(x=log(AOO), y=slope, color = treatment))+
+rs_fig <- ggplot(slopes_df, aes(x=log(AOO_clean), y=slope, color = treatment))+
   geom_point()+
   theme_bw(base_size = 20)+
   labs(x= "Log of range size")+

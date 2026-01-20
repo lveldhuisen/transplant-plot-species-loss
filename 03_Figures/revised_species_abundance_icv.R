@@ -121,7 +121,7 @@ ggsave("Figures/fig6a.pdf", height = 7, width = 15)
 test_icv <- icv_df %>% drop_na(AOO)
 
 #plot
-rs_fig_rev <- ggplot(test_icv, aes(x=log(AOO), y=icv, color = treatment))+
+rs_fig_rev <- ggplot(icv_df, aes(x=log(AOO_clean), y=icv, color = treatment))+
   geom_point()+
   theme_bw(base_size = 20)+
   labs(color = "Treatment",

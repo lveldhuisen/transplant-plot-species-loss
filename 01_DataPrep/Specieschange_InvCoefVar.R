@@ -43,6 +43,15 @@ um_win_values_icv <- ldply(um_win_model_icv, function(model) {
   )
 })
 
+#make plot for visual
+ggplot(um_win_reg,
+       aes(x = year, y = percentCover)) +
+  geom_point() +
+  # add regression lines
+  geom_smooth(method = "lm", se = FALSE)+
+  facet_wrap(~species)+
+  stat_poly_eq(use_label(c("eq")))
+
 ##cooled 1#######
 um_c1_values_icv <- ldply(um_c1_model, function(model) {
   coefs <- coef(model)

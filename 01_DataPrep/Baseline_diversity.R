@@ -210,5 +210,40 @@ pd_2017 <- ses.pd(comm_matrix_2017, pruned.tree, null.model = c("sample.pool"),
 pd_baseline <- ses.pd(comm_matrix_baseline, pruned.tree, null.model = c("sample.pool"),
                   runs = 5000, include.root=TRUE)
 
+# 2017 MPD -----------
+
+comm_matrix_2017 <- comm_matrix_2017 %>% 
+  mutate(across(everything(), ~ifelse(.x >= 1, 1, .x)))
+
+# Species in community matrix
+spp_comm <- colnames(comm_matrix_2017)
+
+# Species in tree
+spp_tree <- pruned.tree$tip.label
+
+# Find species in community but not in tree
+setdiff(spp_comm, spp_tree)
+
+# Find species in tree but not in community
+setdiff(spp_tree, spp_comm)
+
+mpd_2017 <- ses.mpd(comm_matrix_2017, cophenetic(pruned.tree), 
+                        null.model = c("sample.pool"), 
+                        abundance.weighted = FALSE, runs = 5000, 
+                        iterations = 5000)  
+
+# 2018-2023 MPD -------
+comm_matrix_baseline <- comm_matrix_baseline %>% 
+  mutate(across(everything(), ~ifelse(.x >= 1, 1, .x)))
+
+mpd_baseline <- ses.mpd(comm_matrix_baseline, cophenetic(pruned.tree), 
+                    null.model = c("sample.pool"), 
+                    abundance.weighted = FALSE, runs = 5000, 
+                    iterations = 5000)  
+
+# 2017 MNTD ---------
+
+# 2018-2023 MNTD ------
+
 
 
