@@ -234,4 +234,8 @@ bl_mntd_fig <- ggplot(all_mntd_baseline, aes(x=year, y= mntd.obs.z, colour = ori
 plot(bl_mntd_fig)
 ggsave("Figures/baseline_MNTD_overtime.png", dpi = 600, height = 10, width = 15)
 
+baseline_mpd_mntd <- bl_mpd_fig | bl_mntd_fig | bl_pd_fig + 
+  plot_annotation(tag_levels = c('A'), tag_suffix = ')')+
+  plot_layout(guides = 'collect') 
 
+plot(baseline_mpd_mntd) 
