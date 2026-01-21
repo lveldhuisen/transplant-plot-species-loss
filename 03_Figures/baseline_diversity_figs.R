@@ -99,15 +99,139 @@ bl_pd_fig <- ggplot(all_pd_baseline, aes(x=year, y= pd.obs.z, colour = originSit
   geom_boxplot()+
   theme_bw(base_size = 20)+
   xlab("Year")+
-  ylab("SES PD") +
+  ylab(expression(SES[PD])) +
   labs(colour = "Site") + 
   stat_summary(fun = mean, geom = "line", aes(group = originSite), linewidth = 1)+
   scale_color_manual(values = c("Low elevation" = "#FDE725FF", "Mid elevation" = "#35B779FF", "High elevation" = "#287C8EFF"),
                      limits = c("High elevation", "Mid elevation", "Low elevation"))
-scale_color_manual(values=c("#287C8EFF", "#35B779FF", "#FDE725FF"))
 
 
 plot(bl_pd_fig)
 ggsave("Figures/baseline_PD_overtime.png", dpi = 600, height = 10, width = 15)
+
+
+# MPD ------
+ ## 2017 -------
+# convert row names back to column to later split
+mpd_2017 <- mpd_2017 %>% 
+  rownames_to_column(var = "group")
+
+#split ID column to plot
+
+mpd_2017 <- mpd_2017 %>%
+  separate_wider_delim(group,
+                       delim = " _ ",
+                       names = c("ID", "originSite",
+                                 "destinationSite","treatment"))
+
+mpd_2017$year <- "2017"
+
+## 2018-2023 within site transplants only ------
+
+# convert row names back to column to later split
+mpd_baseline <- mpd_baseline %>% 
+  rownames_to_column(var = "group")
+
+#split ID column to plot
+
+mpd_baseline <- mpd_baseline %>%
+  separate_wider_delim(group,
+                       delim = " _ ",
+                       names = c("ID", "originSite",
+                                 "destinationSite","treatment",
+                                 "year"))
+
+## combine 2017 with other years ------
+all_mpd_baseline <- bind_rows(mpd_2017, mpd_baseline)
+
+## rename origin sites
+all_mpd_baseline <- all_mpd_baseline %>%  
+  mutate(originSite = case_match(originSite,
+                                 "Upper Montane" ~ "Low elevation",
+                                 "Pfeiler" ~ "Mid elevation",
+                                 "Monument" ~ "High elevation",
+                                 .default = originSite
+  ))
+
+all_mpd_baseline <- all_mpd_baseline %>%
+  mutate(group = fct_relevel(originSite, "Low elevation", "Mid elevation", "High elevation"))
+
+## make PD figure ------
+
+bl_mpd_fig <- ggplot(all_mpd_baseline, aes(x=year, y= mpd.obs.z, colour = originSite))+
+  geom_boxplot()+
+  theme_bw(base_size = 20)+
+  xlab("Year")+
+  ylab(expression(SES[MPD])) +
+  labs(colour = "Site") + 
+  stat_summary(fun = mean, geom = "line", aes(group = originSite), linewidth = 1)+
+  scale_color_manual(values = c("Low elevation" = "#FDE725FF", "Mid elevation" = "#35B779FF", "High elevation" = "#287C8EFF"),
+                     limits = c("High elevation", "Mid elevation", "Low elevation"))
+
+plot(bl_mpd_fig)
+ggsave("Figures/baseline_MPD_overtime.png", dpi = 600, height = 10, width = 15)
+
+# MNTD -----
+
+## 2017 -------
+# convert row names back to column to later split
+mntd_2017 <- mntd_2017 %>% 
+  rownames_to_column(var = "group")
+
+#split ID column to plot
+
+mntd_2017 <- mntd_2017 %>%
+  separate_wider_delim(group,
+                       delim = " _ ",
+                       names = c("ID", "originSite",
+                                 "destinationSite","treatment"))
+
+mntd_2017$year <- "2017"
+
+## 2018-2023 within site transplants only ------
+
+# convert row names back to column to later split
+mntd_baseline <- mntd_baseline %>% 
+  rownames_to_column(var = "group")
+
+#split ID column to plot
+
+mntd_baseline <- mntd_baseline %>%
+  separate_wider_delim(group,
+                       delim = " _ ",
+                       names = c("ID", "originSite",
+                                 "destinationSite","treatment",
+                                 "year"))
+
+## combine 2017 with other years ------
+all_mntd_baseline <- bind_rows(mntd_2017, mntd_baseline)
+
+## rename origin sites
+all_mntd_baseline <- all_mntd_baseline %>%  
+  mutate(originSite = case_match(originSite,
+                                 "Upper Montane" ~ "Low elevation",
+                                 "Pfeiler" ~ "Mid elevation",
+                                 "Monument" ~ "High elevation",
+                                 .default = originSite
+  ))
+
+all_mntd_baseline <- all_mntd_baseline %>%
+  mutate(group = fct_relevel(originSite, "Low elevation", "Mid elevation", "High elevation"))
+
+## make PD figure ------
+
+bl_mntd_fig <- ggplot(all_mntd_baseline, aes(x=year, y= mntd.obs.z, colour = originSite))+
+  geom_boxplot()+
+  theme_bw(base_size = 20)+
+  xlab("Year")+
+  ylab(expression(SES[MNTD])) +
+  labs(colour = "Site") + 
+  stat_summary(fun = mean, geom = "line", aes(group = originSite), linewidth = 1)+
+  scale_color_manual(values = c("Low elevation" = "#FDE725FF", "Mid elevation" = "#35B779FF", "High elevation" = "#287C8EFF"),
+                     limits = c("High elevation", "Mid elevation", "Low elevation"))
+
+
+plot(bl_mntd_fig)
+ggsave("Figures/baseline_MNTD_overtime.png", dpi = 600, height = 10, width = 15)
 
 

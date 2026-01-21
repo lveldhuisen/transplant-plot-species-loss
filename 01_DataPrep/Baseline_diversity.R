@@ -67,6 +67,7 @@ abundance_17_df <- abundance_17_df %>%
                               "Stipa_nelsonii" ~ "Achnatherum_nelsonii",
                               "Symphyotrichum_ascendens" ~ "Symphyotrichum_foliaceum",
                               "Veratrum_californicum" ~ "Veratrum_virginicum",
+                              "Mertensia_fusiformis" ~ "Mertensia_brevistyla",
                               .default = species  # Keep all other values unchanged
   ))
 
@@ -159,6 +160,7 @@ cover_baseline_df <- cover_baseline_df %>%
                               "Stipa_nelsonii" ~ "Achnatherum_nelsonii",
                               "Symphyotrichum_ascendens" ~ "Symphyotrichum_foliaceum",
                               "Veratrum_californicum" ~ "Veratrum_virginicum",
+                              "Mertensia_fusiformis" ~ "Mertensia_brevistyla",
                               .default = species  # Keep all other values unchanged
   ))
 
@@ -215,17 +217,11 @@ pd_baseline <- ses.pd(comm_matrix_baseline, pruned.tree, null.model = c("sample.
 comm_matrix_2017 <- comm_matrix_2017 %>% 
   mutate(across(everything(), ~ifelse(.x >= 1, 1, .x)))
 
-# Species in community matrix
-spp_comm <- colnames(comm_matrix_2017)
+matched <- match.phylo.comm(pruned.tree, comm_matrix_2017)
 
-# Species in tree
-spp_tree <- pruned.tree$tip.label
+pruned.tree <- matched$phy
+comm_matrix_2017 <- matched$comm
 
-# Find species in community but not in tree
-setdiff(spp_comm, spp_tree)
-
-# Find species in tree but not in community
-setdiff(spp_tree, spp_comm)
 
 mpd_2017 <- ses.mpd(comm_matrix_2017, cophenetic(pruned.tree), 
                         null.model = c("sample.pool"), 
@@ -236,6 +232,11 @@ mpd_2017 <- ses.mpd(comm_matrix_2017, cophenetic(pruned.tree),
 comm_matrix_baseline <- comm_matrix_baseline %>% 
   mutate(across(everything(), ~ifelse(.x >= 1, 1, .x)))
 
+matched <- match.phylo.comm(pruned.tree, comm_matrix_baseline)
+
+pruned.tree <- matched$phy
+comm_matrix_baseline <- matched$comm
+
 mpd_baseline <- ses.mpd(comm_matrix_baseline, cophenetic(pruned.tree), 
                     null.model = c("sample.pool"), 
                     abundance.weighted = FALSE, runs = 5000, 
@@ -243,7 +244,17 @@ mpd_baseline <- ses.mpd(comm_matrix_baseline, cophenetic(pruned.tree),
 
 # 2017 MNTD ---------
 
+mntd_2017 <- ses.mntd(comm_matrix_2017, cophenetic(pruned.tree), 
+                    null.model = c("sample.pool"), 
+                    abundance.weighted = FALSE, runs = 5000, 
+                    iterations = 5000)  
+
+
 # 2018-2023 MNTD ------
 
+mntd_baseline <- ses.mntd(comm_matrix_baseline, cophenetic(pruned.tree), 
+                      null.model = c("sample.pool"), 
+                      abundance.weighted = FALSE, runs = 5000, 
+                      iterations = 5000)  
 
 
