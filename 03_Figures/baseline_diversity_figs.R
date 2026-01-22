@@ -166,7 +166,8 @@ bl_mpd_fig <- ggplot(all_mpd_baseline, aes(x=year, y= mpd.obs.z, colour = origin
   labs(colour = "Site") + 
   stat_summary(fun = mean, geom = "line", aes(group = originSite), linewidth = 1)+
   scale_color_manual(values = c("Low elevation" = "#FDE725FF", "Mid elevation" = "#35B779FF", "High elevation" = "#287C8EFF"),
-                     limits = c("High elevation", "Mid elevation", "Low elevation"))
+                     limits = c("High elevation", "Mid elevation", "Low elevation"))+
+  theme(legend.position = 'none')
 
 plot(bl_mpd_fig)
 ggsave("Figures/baseline_MPD_overtime.png", dpi = 600, height = 10, width = 15)
@@ -234,8 +235,11 @@ bl_mntd_fig <- ggplot(all_mntd_baseline, aes(x=year, y= mntd.obs.z, colour = ori
 plot(bl_mntd_fig)
 ggsave("Figures/baseline_MNTD_overtime.png", dpi = 600, height = 10, width = 15)
 
-baseline_mpd_mntd <- bl_mpd_fig | bl_mntd_fig | bl_pd_fig + 
+
+## combine into one fig -------
+baseline_mpd_mntd <- bl_mpd_fig | bl_mntd_fig +
   plot_annotation(tag_levels = c('A'), tag_suffix = ')')+
   plot_layout(guides = 'collect') 
 
 plot(baseline_mpd_mntd) 
+ggsave("Figures/baseline_phylometrics_overtime.png", dpi = 600, height = 10, width = 18)
