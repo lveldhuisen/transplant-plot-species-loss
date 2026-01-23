@@ -121,6 +121,12 @@ h_dat = subset(h_dat, select = -c(X.1))
 h_dat$originSite <- as.factor(h_dat$originSite)
 contrasts(h_dat$originSite) <- contr.sum(length(levels(h_dat$originSite)))
 
+# make column for block
+h_dat <- h_dat %>%
+  separate(turfID,
+           into = c("origin_block", "o_blockplot", "tx", "dest_block","d_blockplot"),
+           sep = "[-_]")
+
 ###model nested#####
 model_r <- lmer(richness_df ~ year + originSite/treatment + 
                   (1|replicates), data = h_dat)
@@ -130,6 +136,15 @@ summary(model_r)
 Anova(model_r)
 AIC(model_r)
 
+###model nested with random block effect#####
+model_r_b <- lmer(richness_df ~ year + originSite/treatment + 
+                  (1|replicates) + (1|origin_block), data = h_dat)
+
+check_model(model_r_b)
+summary(model_r_b)
+Anova(model_r_b)
+
+
 ###model additive only#####
 model_r1 <- lmer(richness_df ~ year + originSite + treatment + 
                    (1|replicates), data = h_dat)
@@ -138,7 +153,7 @@ summary(model_r1)
 AIC(model_r1,model_r)
 
 ###compare nested and nonnested models####
-compare_performance(model_r,model_r1, rank = T) #nested looks better
+compare_performance(model_r,model_r1, model_r_b, rank = T) #nested looks better
 
 #save nested output
 pred_R <- test_predictions(model_r, terms = c("originSite","treatment"))
@@ -167,6 +182,12 @@ h_dat$year <- relevel(factor(h_dat$year),
 h_dat$originSite <- as.factor(h_dat$originSite)
 contrasts(h_dat$originSite) <- contr.sum(length(levels(h_dat$originSite)))
 
+# make column for block
+h_dat <- h_dat %>%
+  separate(turfID,
+           into = c("origin_block", "o_blockplot", "tx", "dest_block","d_blockplot"),
+           sep = "[-_]")
+
 #add column to ID replication
 h_dat$replicates <- paste(h_dat$originSite,"_", h_dat$destinationSite,"_",
                           h_dat$treatment,"_", h_dat$year)
@@ -180,6 +201,14 @@ summary(model2_n)
 anova(model2_n)
 AIC(model2_n)
 
+### model nested with block random effect ####
+
+model2_n_b <- lmer(shannon_plots ~ year + 
+                   originSite/treatment  + (1|replicates) + (1|origin_block), data = h_dat)
+
+check_model(model2_n_b)
+summary(model2_n_b)
+
 ###model additive only#####
 model2_a <- lmer(shannon_plots ~ year + 
                    originSite + treatment  + (1|replicates), data = h_dat)
@@ -187,13 +216,14 @@ check_model(model2_a)
 AIC(model2_a)
 
 ###compare models####
-compare_performance(model2_a,model2_n, rank = T) #nested looks better
+compare_performance(model2_a,model2_n,model2_n_b, rank = T) #nested looks better
 
 #save model2 output 
 saveRDS(model2_n, file = "ModelOutput/Shannon_LMM.RDS")
 
 #test predictions
 prediction_shannon_nested <- test_predictions(model2_n, terms = c("originSite","treatment"))
+prediction_shannon_nested_b <- test_predictions(model2_n_b, terms = c("originSite","treatment"))
 
 #save as csv
 write_csv(prediction_shannon_nested, file = "ModelOutput/Prediction_Shannon_nested.csv")
@@ -215,6 +245,12 @@ pd_dat18to23$year <- relevel(factor(pd_dat18to23$year),
                             ref = "2018")
 hist(pd_dat18to23$pd.obs.z)
 
+# make column for block <- 
+pd_dat18to23 <- pd_dat18to23 %>%
+  separate(originPlotID,
+           into = c("origin_block", "o_blockplot"),
+           sep = "-")
+
 ###model not nested####
 model3_a <- lmer(pd.obs.z ~ year + treatment + originSite + (1|replicates),
                data = pd_dat18to23)
@@ -227,6 +263,10 @@ anova(model3_a)
 model3_n <- lmer(pd.obs.z ~ year + originSite/treatment + (1|replicates),
                  data = pd_dat18to23)
 
+###model nested with block effect #####
+model3_n_b <- lmer(pd.obs.z ~ year + originSite/treatment + (1|replicates) + (1|origin_block),
+                 data = pd_dat18to23)
+
 ###compare models####
 AIC(model3_a)
 AIC(model3_n)
@@ -237,6 +277,7 @@ saveRDS(model3_n, file = "ModelOutput/PD_LMM.RDS")
 
 #test predictions
 predictions_pd_nested <- test_predictions(model3_n, terms = c("originSite","treatment"))
+predictions_pd_nested_b <- test_predictions(model3_n_b, terms = c("originSite","treatment"))
 
 #save as csv
 write_csv(predictions_pd_nested, file = "ModelOutput/Prediction_pd_nested.csv")
