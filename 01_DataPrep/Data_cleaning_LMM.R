@@ -20,7 +20,12 @@ h_dat <- shannon_df_plotID
 h_dat$replicates <- paste(h_dat$originSite,"_", h_dat$destinationSite,"_",
                           h_dat$treatment,"_", h_dat$year)
 
-write.csv(h_dat, "Data/Shannon_cover_forLMM.csv")
+h_dat_block <- h_dat %>%
+  separate(turfID,
+           into = c("origin_block", "o_blockplot", "tx", "dest_block","d_blockplot"),
+           sep = "[-_]")
+
+write.csv(h_dat_block, "Data/Shannon_cover_forLMM.csv")
 
 #Make dataframe with phylogenetic metrics for linear models---------------------
 
