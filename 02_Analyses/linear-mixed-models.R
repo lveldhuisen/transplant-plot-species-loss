@@ -281,6 +281,7 @@ predictions_pd_nested_b <- test_predictions(model3_n_b, terms = c("originSite","
 
 #save as csv
 write_csv(predictions_pd_nested, file = "ModelOutput/Prediction_pd_nested.csv")
+write_csv(predictions_pd_nested_b, file = "ModelOutput/Prediction_pd_nested_blockrevision.csv")
 
 ##MPD across treatment and years---------------------------------------
 
@@ -361,6 +362,13 @@ mntd_dat$treatment <- relevel(factor(mntd_dat$treatment),
 
 mntd_dat$year <- relevel(factor(mntd_dat$year),
                         ref = "2018")
+
+# make column for block <- 
+mntd_dat <- mntd_dat %>%
+  separate(originPlotID,
+           into = c("origin_block", "o_blockplot"),
+           sep = "-")
+
 ###model additive####
 model5_a <- lmer(mntd.obs.z ~ year + treatment + originSite + (1|replicates),
                data = mntd_dat)
@@ -374,14 +382,19 @@ anova(model5_a)
 model5_n <- lmer(mntd.obs.z ~ year + originSite/treatment + (1|replicates),
                  data = mntd_dat)
 
+###model nested with block effect #####
+model5_n_b <- lmer(mntd.obs.z ~ year + originSite/treatment + (1|replicates) + (1|origin_block),
+                   data = mntd_dat)
+
 ###compare nested and non-nested####
-compare_performance(model5_a, model5_n, rank = T) #equal, use nested
+compare_performance(model5_a, model5_n, model5_n_b, rank = T) #equal, use nested
 
 #save model output 
 saveRDS(model5_n, file = "ModelOutput/MNTD_LMM.RDS")
 
 #test predictions
 pred_mntd_nested <- test_predictions(model5_n, terms = c("originSite","treatment"))
+pred_mntd_b <- test_predictions(model5_n_b, terms = c("originSite","treatment"))
 
 #save as csv
 write_csv(pred_mntd_nested, file = "ModelOutput/Prediction_mntd_nested.csv")
