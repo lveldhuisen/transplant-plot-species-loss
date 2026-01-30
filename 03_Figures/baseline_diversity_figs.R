@@ -1,4 +1,5 @@
 library(tidyverse)
+library(patchwork)
 
 # Richness -----------
 ## 2017 without replication -------------
@@ -39,8 +40,9 @@ bl_richness_fig <- ggplot(all_baseline_df, aes(x=year, y= richness_baseline_df, 
   ylab("Richness") +
   labs(colour = "Site") + 
   stat_summary(fun = mean, geom = "line", aes(group = originSite), linewidth = 1)+
-  scale_color_manual(values=c("#287C8EFF", "#35B779FF", "#FDE725FF"),
-                     labels = c("High","Mid","Low"))
+  scale_color_manual(values=c("#8FD744FF", "#287C8EFF", "#440154FF"),
+                     labels = c("High","Mid","Low"))+
+  theme(legend.position = 'none')
 
 plot(bl_richness_fig)
 ggsave("Figures/baseline_richness_overtime.png", dpi = 600, height = 10, width = 15)
@@ -102,13 +104,21 @@ bl_pd_fig <- ggplot(all_pd_baseline, aes(x=year, y= pd.obs.z, colour = originSit
   ylab(expression(SES[PD])) +
   labs(colour = "Site") + 
   stat_summary(fun = mean, geom = "line", aes(group = originSite), linewidth = 1)+
-  scale_color_manual(values = c("Low elevation" = "#FDE725FF", "Mid elevation" = "#35B779FF", "High elevation" = "#287C8EFF"),
+  scale_color_manual(values = c("Low elevation" = "#440154FF", "Mid elevation" = "#287C8EFF", "High elevation" = "#8FD744FF"),
                      limits = c("High elevation", "Mid elevation", "Low elevation"))
 
 
 plot(bl_pd_fig)
 ggsave("Figures/baseline_PD_overtime.png", dpi = 600, height = 10, width = 15)
 
+# New manuscript figure --------
+
+fig2 <- bl_richness_fig + bl_pd_fig +
+  plot_annotation(tag_levels = c('A'), tag_suffix = ')')+
+  plot_layout(axis_titles = "collect", axes = "collect") 
+
+plot(fig2)
+ggsave("Figures/new_baseline_figure.png", dpi = 600, height = 10, width = 20)
 
 # MPD ------
  ## 2017 -------
@@ -165,7 +175,7 @@ bl_mpd_fig <- ggplot(all_mpd_baseline, aes(x=year, y= mpd.obs.z, colour = origin
   ylab(expression(SES[MPD])) +
   labs(colour = "Site") + 
   stat_summary(fun = mean, geom = "line", aes(group = originSite), linewidth = 1)+
-  scale_color_manual(values = c("Low elevation" = "#FDE725FF", "Mid elevation" = "#35B779FF", "High elevation" = "#287C8EFF"),
+  scale_color_manual(values = c("Low elevation" = "#440154FF", "Mid elevation" = "#287C8EFF", "High elevation" = "#8FD744FF"),
                      limits = c("High elevation", "Mid elevation", "Low elevation"))+
   theme(legend.position = 'none')
 
@@ -228,7 +238,7 @@ bl_mntd_fig <- ggplot(all_mntd_baseline, aes(x=year, y= mntd.obs.z, colour = ori
   ylab(expression(SES[MNTD])) +
   labs(colour = "Site") + 
   stat_summary(fun = mean, geom = "line", aes(group = originSite), linewidth = 1)+
-  scale_color_manual(values = c("Low elevation" = "#FDE725FF", "Mid elevation" = "#35B779FF", "High elevation" = "#287C8EFF"),
+  scale_color_manual(values = c("Low elevation" = "#440154FF", "Mid elevation" = "#287C8EFF", "High elevation" = "#8FD744FF"),
                      limits = c("High elevation", "Mid elevation", "Low elevation"))
 
 
@@ -237,9 +247,9 @@ ggsave("Figures/baseline_MNTD_overtime.png", dpi = 600, height = 10, width = 15)
 
 
 ## combine into one fig -------
-baseline_mpd_mntd <- bl_mpd_fig | bl_mntd_fig +
+baseline_mpd_mntd <- bl_mpd_fig + bl_mntd_fig +
   plot_annotation(tag_levels = c('A'), tag_suffix = ')')+
-  plot_layout(guides = 'collect') 
+  plot_layout(guides = 'collect', axis_titles = 'collect') 
 
 plot(baseline_mpd_mntd) 
 ggsave("Figures/baseline_phylometrics_overtime.png", dpi = 600, height = 10, width = 18)
