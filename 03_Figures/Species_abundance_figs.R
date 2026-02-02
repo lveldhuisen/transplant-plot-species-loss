@@ -3,6 +3,7 @@ library(tidyverse)
 library(viridis)
 library(ggpubr)
 library(patchwork)
+library(broom)
 
 #bring in data
 slopes_df <- read.csv("Data/Species_change/all_changes_forrevision.csv")
@@ -125,8 +126,17 @@ ggsave("Figures/fig6a.pdf", height = 7, width = 15)
 #correlation between range size and slope-------
 test <- slopes_df %>% drop_na(AOO)
 
-#plot
-rs_fig <- ggplot(slopes_df, aes(x=log(AOO_clean), y=slope, color = treatment))+
+# plot
+
+# Create a dataframe that defines linetype for each combination
+slopes_df <- slopes_df %>%
+  mutate(linetype = case_when(
+    originSite == "High elevation (3300 m)" & treatment == "warmed_one" ~ "solid",  # Warmed one step
+    originSite == "High elevation (3300 m)" & treatment == "warmed_two" ~ "solid",  # Warmed two steps
+    TRUE ~ "dashed"
+  ))
+
+rs_fig <- ggplot(slopes_df, aes(x=log(AOO_clean), y=slope, color = treatment, linetype = linetype))+
   geom_point()+
   theme_bw(base_size = 20)+
   labs(x= "Log of range size")+
@@ -134,16 +144,17 @@ rs_fig <- ggplot(slopes_df, aes(x=log(AOO_clean), y=slope, color = treatment))+
   scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"), 
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
                                 "Warmed one step", "Warmed two steps"))+
-  geom_smooth(method = "lm", se = FALSE, linetype = "dashed")+
+  geom_smooth(method = "lm", se = FALSE)+
+  scale_linetype_identity()+
   stat_cor(aes(label = paste(gsub("R", "r", after_stat(r.label)), after_stat(p.label), sep = "~`,`~")),
-           label.y = c(11.5,10, 13, 14.5), size = 5.5)+
+           label.y = c(11.5,10, 13, 14.5, 10), size = 5.5)+
   labs(color = "Treatment")+
   theme(legend.position = 'none')
 
 plot(rs_fig)
 ggsave("Figures/rangesize_noequations.png", dpi = 600, width = 16, height = 5)
 
-#combine regression figures
+#combine regression figures#combine regression figureslinetype.x.x
 
 regression_fig <- abundance17_fig / rs_fig + 
   plot_annotation(tag_levels = c('A'), tag_suffix = ')')+
