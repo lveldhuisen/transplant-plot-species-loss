@@ -65,19 +65,26 @@ ggplot(slopes_df, aes(x=treatment, y=slope))+
 
 #niche breadth: slopes depending if species in destination site pre-transplant----
 
-nb_fig <- ggplot(slopes_df, aes(x=originally_at_destination., y= slope, colour = treatment))+
-  geom_boxplot()+
+nb_fig <- ggplot(slopes_df, aes(x=originally_at_destination., 
+                                y= slope, 
+                                colour = treatment, 
+                                fill = treatment))+
+  geom_boxplot(alpha = 0.3, outlier.alpha = 1)+
   facet_wrap(.~originSite)+
   theme_bw(base_size = 20)+
   xlab("Observed at destination site pre-transplant?")+
   labs(colour = "Treatment")+
+  guides(fill = "none")+
   annotate("text", label = "All~italic(p)~'>'~0.05", size = 5.5, y = 10.5, x = 1.3, parse = TRUE) +
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"),
+  scale_color_manual(values=c("blue4", "dodgerblue2", "grey35", "orange1","red3"),
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
-                                "Warmed one step", "Warmed two steps"))
+                                "Warmed one step", "Warmed two steps"))+
+  scale_fill_manual(values = c("blue4","dodgerblue2","grey35","orange1","red3"),
+                    labels = c("Cooled two steps","Cooled one step","Local transplant",
+                               "Warmed one step","Warmed two steps"))
 
 plot(nb_fig)
-ggsave("Figures/Fig5_revised.png", dpi = 600, width = 14.5, height = 6)
+ggsave("Figures/Fig5_revised_newcolors.png", dpi = 600, width = 14.5, height = 6)
 
 #correlation between 2017 abundance and slope------
 ab2017_df <- read.csv("Data/Species_change/2017abundance_slopes.csv")
@@ -113,15 +120,16 @@ abundance17_fig <-  ggplot(ab2017_df, aes(x = log(count.y), y = slope, color = t
   facet_wrap(.~originSite)+
   stat_cor(aes(label = paste(gsub("R", "r", after_stat(r.label)), after_stat(p.label), sep = "~`,`~")),
            label.y = c(11.5,10, 13, 14.5), size = 5.5) +
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"), 
+  scale_color_manual(values=c("blue4", "dodgerblue2", "grey35", "orange1","red3"), 
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
                      "Warmed one step", "Warmed two steps"))+
   geom_smooth(method = "lm", se = FALSE, linetype = "dashed")+
   xlab("Log of 2017 pre-transplant abundance")+
   labs(color = "Treatment")
+  
 
 plot(abundance17_fig)
-ggsave("Figures/fig6a.pdf", height = 7, width = 15)
+ggsave("Figures/fig6a_newcolors.pdf", height = 7, width = 15)
 
 #correlation between range size and slope-------
 test <- slopes_df %>% drop_na(AOO)
@@ -141,7 +149,7 @@ rs_fig <- ggplot(slopes_df, aes(x=log(AOO_clean), y=slope, color = treatment, li
   theme_bw(base_size = 20)+
   labs(x= "Log of range size")+
   facet_wrap(.~originSite)+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"), 
+  scale_color_manual(values=c("blue4", "dodgerblue2", "grey35", "orange1","red3"), 
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
                                 "Warmed one step", "Warmed two steps"))+
   geom_smooth(method = "lm", se = FALSE)+
@@ -152,7 +160,7 @@ rs_fig <- ggplot(slopes_df, aes(x=log(AOO_clean), y=slope, color = treatment, li
   theme(legend.position = 'none')
 
 plot(rs_fig)
-ggsave("Figures/rangesize_noequations.png", dpi = 600, width = 16, height = 5)
+ggsave("Figures/rangesize_noequations_newcolors.png", dpi = 600, width = 16, height = 5)
 
 #combine regression figures#combine regression figureslinetype.x.x
 
@@ -161,4 +169,4 @@ regression_fig <- abundance17_fig / rs_fig +
   plot_layout(guides = 'collect') 
 
 plot(regression_fig)
-ggsave("Figures/Fig6_revised.png", height = 11.5, width = 14.5, dpi = 600)
+ggsave("Figures/Fig6_revised_newcolors.png", height = 11.5, width = 14.5, dpi = 600)
