@@ -58,20 +58,27 @@ ggsave("Figures/Heatmap_supplement_withICV.png", dpi = 600, width = 14.5, height
 
 #niche breadth: slopes depending if species in destination site pre-transplant----
 
-nb_fig_rev <- ggplot(icv_df_naomit, aes(x=originally_at_destination., y= icv, colour = treatment))+
-  geom_boxplot()+
+nb_fig_rev <- ggplot(icv_df_naomit, aes(x=originally_at_destination., 
+                                        y= icv, 
+                                        colour = treatment,
+                                        fill = treatment))+
+  geom_boxplot(alpha = 0.3, outlier.alpha = 1)+
   facet_wrap(.~originSite)+
   theme_bw(base_size = 20)+
+  guides(fill = "none")+
   labs(y = expression(Delta ~ "cover"), 
        x = "Observed at destination site pre-transplant?", 
        colour = "Treatment")+
   annotate("text", label = "All~italic(p)~'>'~0.05", size = 5.5, y = 9.5, x = 1.3, parse = TRUE) +
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"),
+  scale_color_manual(values=c("blue4", "dodgerblue2", "grey35", "orange1","red3"),
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
-                                "Warmed one step", "Warmed two steps"))
+                                "Warmed one step", "Warmed two steps"))+
+  scale_fill_manual(values = c("blue4","dodgerblue2","grey35","orange1","red3"),
+                    labels = c("Cooled two steps","Cooled one step","Local transplant",
+                               "Warmed one step","Warmed two steps"))
 
 plot(nb_fig_rev)
-ggsave("Figures/Fig5_ICV_revised.png", dpi = 600, width = 14.5, height = 6)
+ggsave("Figures/Supplemental_FigS3_ICV_revised.png", dpi = 600, width = 14.5, height = 6)
 
 #correlation between 2017 abundance and slope------
 #ab2017_df <- read.csv("Data/Species_change/2017abundance_slopes.csv")
@@ -106,7 +113,7 @@ abundance17_fig_rev <-  ggplot(icv_2017ab, aes(x = log(count.y), y = icv, color 
   facet_wrap(.~originSite)+
   stat_cor(aes(label = paste(gsub("R", "r", after_stat(r.label)), after_stat(p.label), sep = "~`,`~")),
            label.y = c(11.5,10, 13, 14.5), size = 5.5) +
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"), 
+  scale_color_manual(values=c("blue4","dodgerblue2","grey35","orange1","red3"), 
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
                                 "Warmed one step", "Warmed two steps"))+
   geom_smooth(method = "lm", se = FALSE, linetype = "dashed")+
@@ -128,7 +135,7 @@ rs_fig_rev <- ggplot(icv_df, aes(x=log(AOO_clean), y=icv, color = treatment))+
     x = "Log of range size", 
     y = expression(Delta ~ "cover"))+
   facet_wrap(.~originSite)+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#35B779FF", "#AADC32FF","#FDE725FF"), 
+  scale_color_manual(values=c("blue4","dodgerblue2","grey35","orange1","red3"), 
                      labels = c("Cooled two steps", "Cooled one step", "Local transplant",
                                 "Warmed one step", "Warmed two steps"))+
   geom_smooth(method = "lm", se = FALSE, linetype = "dashed")+
@@ -146,4 +153,4 @@ regression_fig_rev <- abundance17_fig_rev / rs_fig_rev +
   plot_layout(guides = 'collect') 
 
 plot(regression_fig_rev)
-ggsave("Figures/Fig6_revised_with_icv.png", height = 11.5, width = 14.5, dpi = 600)
+ggsave("Figures/Supplemental_FigS4_revised_with_icv.png", height = 11.5, width = 14.5, dpi = 600)
