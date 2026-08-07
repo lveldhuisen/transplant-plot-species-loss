@@ -8,19 +8,11 @@ library(patchwork) #combine plots
 #metrics relative to the within site transplant 
 
 #Richness--------------------
-pred_R <- read.csv("ModelOutput/Prediction_richness_nested.csv")
 
-#reorder groups
-pred_R$originSite <- factor(pred_R$originSite,
-                            levels  = c("Low elevation",
-                                        "Middle elevation",
-                                        "High elevation"))
+#pred_R <- read.csv("ModelOutput/Prediction_richness_nested.csv")
 
-pred_R$comparison2 <- factor(pred_R$comparison2, 
-                             levels = c("cooled_two_steps",
-                                        "cooled_one_step",
-                                        "warmed_one_step",
-                                        "warmed_two_steps"))
+#take pred_r object from Aug2026 LMM data prep script 
+
 #subscripts in axis labels
 tx_labels <- c(
   expression(C[2]),
@@ -30,150 +22,122 @@ tx_labels <- c(
 
 #figure 
 richness_fig_site <- ggplot(pred_R)+
-  geom_pointrange(mapping = aes(x = comparison2, y= Contrast, 
-                                ymin = conf.high,
-                                ymax = conf.low, 
+  geom_pointrange(mapping = aes(x = contrast, y= estimate, 
+                                ymin = ymin,
+                                ymax = ymax, 
                                 color=originSite), 
                   position = position_dodge(width = 0.2),
                   size = 0.8,
                   linewidth = 1.3)+
-  theme_classic(base_size = 22)+
+  theme_classic(base_size = 26)+
   labs(y = expression(Delta ~ "species richness"), x = "Treatment")+
-  scale_x_discrete(labels = c("C2", "C1","W1","W2"))+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
+  scale_x_discrete(labels = tx_labels)+
+  ylim(-6,6)+
+  scale_color_manual(values=c("#8FD744FF","#287C8EFF","#440154FF"))+
   labs(color='Origin site')+
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", linewidth = 1.3)
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", linewidth = 0.8)+
+  geom_text(aes(x = contrast, y = ymax + 0.5, label = sig, color = originSite),
+              position = position_dodge(width = 0.2),
+              size = 12, show.legend = FALSE)
 
 plot(richness_fig_site)
 
 #Shannon diversity------------------------
-
-#reorder groups
-pred_s <- read.csv("Data/Shannon_model_forfig.csv")
-
-pred_s$originSite <- factor(pred_s$originSite,
-                            levels  = c("Low elevation",
-                                        "Middle elevation",
-                                        "High elevation"))
-
-pred_s$comparison2 <- factor(pred_s$comparison2, 
-                             levels = c("cooled_two_steps",
-                                        "cooled_one_step",
-                                        "warmed_one_step",
-                                        "warmed_two_steps"))
+#take pred_S object from Aug2026 LMM data prep script 
 
 #figure 
-shannon_fig_site <- ggplot(pred_s)+
-  geom_pointrange(mapping = aes(x = comparison2, y= Contrast, 
-                                ymin = conf.high,
-                                ymax = conf.low, 
+shannon_fig_site <- ggplot(pred_S)+
+  geom_pointrange(mapping = aes(x = contrast, y= estimate, 
+                                ymin = ymin,
+                                ymax = ymax, 
                                 color=originSite), 
                   position = position_dodge(width = 0.2), 
                   size = 0.8,
                   linewidth = 1.3)+
-  theme_classic(base_size = 22)+
+  theme_classic(base_size = 26)+
   labs(y = expression(Delta ~ "Shannon diversity"), x = "Treatment")+
-  scale_x_discrete(labels = c("C2", "C1","W1","W2"))+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
+  scale_x_discrete(labels = tx_labels)+
+  scale_color_manual(values=c("#8FD744FF","#287C8EFF","#440154FF"))+
   labs(color='Origin site')+
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", linewidth = 1.3)
+  ylim(-0.5, 0.60) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", linewidth = 0.8)+
+  geom_text(aes(x = contrast, y = ymax + 0.1, label = sig, color = originSite),
+            position = position_dodge(width = 0.2),
+            size = 12, show.legend = FALSE)
+
 
 plot(shannon_fig_site)
 
 #PD---------------
 
-#reorder groups
-pred_pd$originSite <- factor(pred_pd$originSite,
-                            levels  = c("Low elevation",
-                                        "Middle elevation",
-                                        "High elevation"))
-
-pred_pd$comparison2 <- factor(pred_pd$comparison2, 
-                             levels = c("cooled_two_steps",
-                                        "cooled_one_step",
-                                        "warmed_one_step",
-                                        "warmed_two_steps"))
 
 #figure 
-pd_fig_site <- ggplot(pred_pd)+
-  geom_pointrange(mapping = aes(x = comparison2, y= Contrast, 
-                                ymin = conf.high,
-                                ymax = conf.low, 
+pd_fig_site <- ggplot(pred_PD)+
+  geom_pointrange(mapping = aes(x = contrast, y= estimate, 
+                                ymin = ymin,
+                                ymax = ymax, 
                                 color=originSite), 
                   position = position_dodge(width = 0.2), 
                   size = 0.8,
                   linewidth = 1.3)+
-  theme_classic(base_size = 22)+
+  theme_classic(base_size = 26)+
   labs(y = expression(Delta ~ "PD"), x = "Treatment")+
   scale_x_discrete(labels = tx_labels)+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
+  scale_color_manual(values=c("#8FD744FF","#287C8EFF","#440154FF"))+
   labs(color='Origin site')+
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", linewidth = 1.3)
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", linewidth = 0.8)+
+  geom_text(aes(x = contrast, y = ymax + 0.1, label = sig, color = originSite),
+            position = position_dodge(width = 0.2),
+            size = 12, show.legend = FALSE)
+
 
 plot(pd_fig_site)
 
 
 #MPD--------------------
 
-#reorder groups
-pred_mpd$originSite <- factor(pred_mpd$originSite,
-                             levels  = c("Low elevation",
-                                         "Middle elevation",
-                                         "High elevation"))
-
-pred_mpd$comparison2 <- factor(pred_mpd$comparison2, 
-                              levels = c("cooled_two_steps",
-                                         "cooled_one_step",
-                                         "warmed_one_step",
-                                         "warmed_two_steps"))
 
 #figure 
-mpd_fig_site <- ggplot(pred_mpd)+
-  geom_pointrange(mapping = aes(x = comparison2, y= Contrast, 
-                                ymin = conf.high,
-                                ymax = conf.low, 
+mpd_fig_site <- ggplot(pred_MPD)+
+  geom_pointrange(mapping = aes(x = contrast, y= estimate, 
+                                ymin = ymin,
+                                ymax = ymax,  
                                 color=originSite), 
                   position = position_dodge(width = 0.2), 
                   size = 0.8, 
                   linewidth = 1.3)+
-  theme_classic(base_size = 22)+
+  theme_classic(base_size = 26)+
   labs(y = expression(Delta ~ "MPD"), x = "Treatment")+
   scale_x_discrete(labels = tx_labels)+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
+  scale_color_manual(values=c("#8FD744FF","#287C8EFF","#440154FF"))+
   labs(color='Origin site')+
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", linewidth = 1.3)
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", linewidth = 0.8)+
+  geom_text(aes(x = contrast, y = ymax + 0.1, label = sig, color = originSite),
+            position = position_dodge(width = 0.2),
+            size = 12, show.legend = FALSE)
 
 plot(mpd_fig_site)
 
 #MNTD-----------------------------
 
-#reorder groups
-pred_mntd$originSite <- factor(pred_mntd$originSite,
-                              levels  = c("Low elevation",
-                                          "Middle elevation",
-                                          "High elevation"))
-
-pred_mntd$comparison2 <- factor(pred_mntd$comparison2, 
-                               levels = c("cooled_two_steps",
-                                          "cooled_one_step",
-                                          "warmed_one_step",
-                                          "warmed_two_steps"))
-
 #figure 
-mntd_fig_site <- ggplot(pred_mntd)+
-  geom_pointrange(mapping = aes(x = comparison2, y= Contrast, 
-                                ymin = conf.high,
-                                ymax = conf.low, 
-                                color=originSite), 
+mntd_fig_site <- ggplot(pred_MNTD)+
+  geom_pointrange(mapping = aes(x = contrast, y= estimate, 
+                                ymin = ymin,
+                                ymax = ymax,  
+                                color=originSite),
                   position = position_dodge(width = 0.2),
                   size = 0.8, 
                   linewidth = 1.3)+
-  theme_classic(base_size = 22)+
+  theme_classic(base_size = 26)+
   labs(y = expression(Delta ~ "MNTD"), x = "Treatment")+
   scale_x_discrete(labels = tx_labels)+
-  scale_color_manual(values=c("#440154FF", "#287C8EFF", "#8FD744FF"))+
+  scale_color_manual(values=c("#8FD744FF","#287C8EFF","#440154FF"))+
   labs(color='Origin site')+
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", linewidth = 1.3)
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey", linewidth = 0.8)+
+  geom_text(aes(x = contrast, y = ymax + 0.1, label = sig, color = originSite),
+            position = position_dodge(width = 0.2),
+            size = 12, show.legend = FALSE)
 
 plot(mntd_fig_site)
 
@@ -181,10 +145,11 @@ plot(mntd_fig_site)
 
 #two panels with shannon and richness
 sr_fig <- (richness_fig_site + shannon_fig_site) + 
-  plot_annotation(tag_levels = 'A')+
+  plot_annotation(tag_levels = 'A', tag_suffix = ')')+
   plot_layout(axis_titles = "collect", guides = "collect")
 
 plot(sr_fig)
+ggsave("Figures/Fig2_revAug26.jpeg", dpi = 600, width = 15.5, height = 6)
 
 #combine all phylo metrics
 phylo_fig <- (pd_fig_site + mpd_fig_site + mntd_fig_site)+
@@ -192,6 +157,6 @@ phylo_fig <- (pd_fig_site + mpd_fig_site + mntd_fig_site)+
   plot_layout(axis_titles = "collect", guides = "collect")
 
 plot(phylo_fig)
-ggsave("Figures/Fig3.pdf", dpi = 600, width = 14.5, height = 5)
+ggsave("Figures/Fig3_revAug26.jpeg", dpi = 600, width = 15.5, height = 5)
 
 

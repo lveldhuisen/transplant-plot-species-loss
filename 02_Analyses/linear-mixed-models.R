@@ -11,6 +11,7 @@ library(vegan)
 library(stringr)
 library(dplyr)
 library(merTools)
+library(see)
 
 #Species-level changes-----------------
 
@@ -156,7 +157,9 @@ AIC(model_r1,model_r)
 compare_performance(model_r,model_r1, model_r_b, rank = T) #nested looks better
 
 #save nested output
-pred_R <- test_predictions(model_r, terms = c("originSite","treatment"))
+# old, don't use: pred_R <- test_predictions(model_r, terms = c("originSite","treatment"), nesting = NULL)
+
+emmeans(model_r, ~ treatment | originSite)
 
 #save as csv
 write_csv(pred_R, file = "ModelOutput/Prediction_richness_nested.csv")
