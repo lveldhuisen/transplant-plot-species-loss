@@ -275,6 +275,7 @@ um_c2_forfig <- df2vec(um_c2_sig, colID=1)
 
 #make figure
 phylo_um_c2<- contMap(tree.umc2, um_c2_forfig, res=100, plot=FALSE)
-phylo_um_c2 <- setMap(phylo_um_c2, viridisLite::cividis(n=8))
-phylo_um_c2 <- setMap(phylo_um_c2, colorRampPalette(c("black", "gray100"))(8))
+phylo_um_c2 <- setMap(phylo_um_c2, viridisLite::magma(n=14))
+
 plot(phylo_um_c2)
+

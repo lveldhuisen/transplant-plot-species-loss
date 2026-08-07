@@ -41,7 +41,7 @@ heat_labels <- c(
 
 heatmap <- ggplot(slopes_df, aes(treatment, species, fill= slope)) + 
   geom_tile()+
-  scale_fill_viridis(discrete = FALSE)+
+  scale_fill_viridis_c(option = "magma")+
   scale_x_discrete(labels = heat_labels)+
   theme_bw(base_size = 20)+
   theme(axis.text.y = element_text(face = "italic"))+
