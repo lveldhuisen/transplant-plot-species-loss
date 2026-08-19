@@ -52,6 +52,10 @@ abundance_forcounts %>%
 abundance_forcounts %>%
   summarise(UniqueCount = n_distinct(species))
 
+rich <- abundance_forcounts %>%
+  filter(year %in% 2023) %>%
+  summarise(UniqueCount = n_distinct(species)) 
+
 ###reformat to matrix for Vegan########
 
 #reformat data
