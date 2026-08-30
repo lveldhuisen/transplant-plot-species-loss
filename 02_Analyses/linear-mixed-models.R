@@ -402,3 +402,28 @@ pred_mntd_b <- test_predictions(model5_n_b, terms = c("originSite","treatment"))
 #save as csv
 write_csv(pred_mntd_nested, file = "ModelOutput/Prediction_mntd_nested.csv")
 
+## Evenness model 6, added in revision ----------
+
+#use only within site transplant for control
+control.outs <- c("netted_untouched","untouched")
+h_dat <- h_dat %>% filter(!is.na(treatment),
+                          !treatment %in% control.outs)
+
+#reorder treatments
+h_dat$treatment <- relevel(factor(h_dat$treatment),
+                           ref = "within_site_transplant")
+
+h_dat$year <- relevel(factor(h_dat$year),
+                      ref = "2018")
+
+#set up sum to zero contrast
+h_dat$originSite <- as.factor(h_dat$originSite)
+contrasts(h_dat$originSite) <- contr.sum(length(levels(h_dat$originSite)))
+
+###model nested#####
+model_6 <- lmer(eveness ~ year + originSite/treatment + 
+                  (1|replicates), data = h_dat)
+
+check_model(model_6)
+summary(model_6)
+AIC(model_6)

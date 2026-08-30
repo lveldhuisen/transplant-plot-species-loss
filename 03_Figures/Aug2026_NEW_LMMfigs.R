@@ -179,9 +179,84 @@ shannon_fig_withdata <- overtime_shannon +
 
 shannon_fig_withdata
 
+# EVENNESS ----------------------
+
+# 1. Get marginal predictions across year, colored by originSite, faceted by treatment... 
+# wait -- matching your richness figure: colored by treatment, faceted by originSite
+preds6 <- ggpredict(model_6, terms = c("year", "treatment", "originSite"))
+
+# 2. Filter to only originSite x treatment combos that actually exist in the data
+valid_combos <- h_dat %>% distinct(originSite, treatment)
+
+preds6_filtered <- preds6 %>%
+  semi_join(valid_combos, by = c("group" = "treatment", "facet" = "originSite"))
+
+# 3. Relabel facets to elevation names, matching your richness figure
+preds6_filtered$facet <- as.character(preds6_filtered$facet)
+preds6_filtered$facet[preds6_filtered$facet == 'Upper Montane'] <- 'Low elevation (2900 m)'
+preds6_filtered$facet[preds6_filtered$facet == 'Pfeiler']       <- 'Mid elevation (3200 m)'
+preds6_filtered$facet[preds6_filtered$facet == 'Monument']      <- 'High elevation (3300 m)'
+
+preds6_filtered$facet <- factor(
+  preds6_filtered$facet,
+  levels = c('Low elevation (2900 m)', 'Mid elevation (3200 m)', 'High elevation (3300 m)')
+)
+
+#reorder treatments and origin site
+preds6_filtered$group <- factor(preds6_filtered$group, 
+                                levels = c("cooled_two_steps",
+                                           "cooled_one_step",
+                                           "within_site_transplant",
+                                           "warmed_one_step",
+                                           "warmed_two_steps"))
+
+
+evenness_fig <- ggplot(preds6_filtered, aes(x = x, y = predicted, color = group, group = group)) +
+  geom_line(aes(group = group), linewidth = 1.5) +
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.25, alpha = 0.6) +
+  facet_wrap(~ facet) +
+  scale_color_manual(
+    values = c(
+      "cooled_two_steps"       = "blue4",
+      "cooled_one_step"        = "dodgerblue2",
+      "within_site_transplant" = "grey35",
+      "warmed_one_step"        = "orange1",
+      "warmed_two_steps"       = "red3"
+    ),
+    labels = c(
+      "cooled_two_steps"       = "Cooled two steps",
+      "cooled_one_step"        = "Cooled one step",
+      "within_site_transplant" = "Local transplant",
+      "warmed_one_step"        = "Warmed one step",
+      "warmed_two_steps"       = "Warmed two steps"
+    )
+  ) +
+  labs(
+    x = "Year",
+    y = "Evenness",
+    color = "Treatment"
+  ) +
+  theme_bw(base_size = 22)
+
+evenness_fig
+
+# match factor order to preds_filtered so panels line up
+h_dat$facet <- factor(h_dat$facet, levels = levels(preds6_filtered$facet))
+
+evenness_fig_withdata <- evenness_fig +
+  geom_jitter(
+    data = h_dat,
+    aes(x = year, y = eveness, group = replicates, color = treatment),
+    width = 0.1, alpha = 0.2, inherit.aes = FALSE
+  ) +
+  facet_wrap(~ facet)
+
+evenness_fig_withdata
+
 # COMBINE FOR FIG 2 --------
 
-fig2 <- richness_fig_withdata / shannon_fig_withdata + 
+fig2 <- richness_fig_withdata / shannon_fig_withdata / evenness_fig_withdata + 
   plot_annotation(tag_levels = 'A')+
   plot_layout(guides = 'collect', axes = 'collect')
 fig2
@@ -221,7 +296,7 @@ preds3_filtered$group <- factor(preds3_filtered$group,
                                            "within_site_transplant",
                                            "warmed_one_step",
                                            "warmed_two_steps"))
-pd_label <- c(expression(SES[PD]))
+pd_label <- c(expression(PD[SES]))
 
 # make figure
 
@@ -307,7 +382,7 @@ preds4_filtered$group <- factor(preds4_filtered$group,
                                            "within_site_transplant",
                                            "warmed_one_step",
                                            "warmed_two_steps"))
-mpd_label <- c(expression(SES[MPD]))
+mpd_label <- c(expression(MPD[SES]))
 
 # make figure
 
@@ -393,7 +468,7 @@ preds5_filtered$group <- factor(preds5_filtered$group,
                                            "within_site_transplant",
                                            "warmed_one_step",
                                            "warmed_two_steps"))
-mntd_label <- c(expression(SES[MNTD]))
+mntd_label <- c(expression(MNTD[SES]))
 
 # make figure
 
@@ -455,3 +530,27 @@ fig3 <- pd_fig_withdata / mpd_fig_withdata / mntd_fig_withdata +
 fig3
 ggsave("Figures/fig3_sept26_revision.png", dpi = 600, height = 15, width = 15)
 
+# EVENESS SANITY CHECK ----
+
+# Get estimated marginal means for treatment, within each origin site
+emm <- emmeans(model_6, ~ treatment | originSite)
+
+# Compare every other treatment level to "within_site_transplant" as reference,
+# separately within each origin site
+contrasts_e <- contrast(emm, method = "trt.vs.ctrl", ref = "within_site_transplant")
+
+# Convert to a data frame with confidence intervals
+contrast_df <- as.data.frame(confint(contrasts_r))
+
+contrast_df
+ggplot(contrast_df, aes(x = estimate, y = contrast)) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  geom_errorbarh(aes(xmin = lower.CL, xmax = upper.CL), height = 0.15) +
+  geom_point(size = 3, color = "steelblue") +
+  facet_wrap(~ originSite, scales = "free_y") +
+  labs(
+    x = "Difference in richness vs. within-site transplant (95% CI)",
+    y = NULL,
+    title = "Treatment effects relative to within-site transplant, by origin site"
+  ) +
+  theme_minimal(base_size = 13)

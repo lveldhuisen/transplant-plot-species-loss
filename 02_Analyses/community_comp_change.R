@@ -92,4 +92,6 @@ base_richness <- abundance_df_baseline %>%
   group_by(turfID) %>%
   summarise(UniqueCount = n_distinct(species))
 
+# eveness for Sept 2026 revision -------------
 
+h_dat$eveness <- h_dat$shannon_plots / log(h_dat$richness_df)
